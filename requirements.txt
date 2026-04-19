@@ -1,0 +1,8 @@
+bbpb>=1.0.1
+javascript>=1!1.2.6
+loguru>=0.7.3
+#minebase>=0.3.0
+ormsgpack>=1.12.2
+protobuf>=7.34.1
+PyYAML>=6.0.3
+#aiorak>=0.1.0
