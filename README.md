@@ -26,9 +26,9 @@
 
 ### 安装依赖
 
-1. 安装 `loguru` 和 `javascript`：
+1. 安装 Python 依赖：
 ```bash
-pip install loguru javascript
+pip install -r requirements.txt
 ```
 
 2. 安装 `aiorak`：
