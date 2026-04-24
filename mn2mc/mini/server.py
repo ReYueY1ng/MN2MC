@@ -12,7 +12,7 @@ from mn2mc.mini.player import MiniPlayer, players
 
 default_extra_info = {
     "room_extra": {
-        "audioconfigurl": '{"audiourl":"http:\\/\\/map7.mini1.cn\\/map\\/7\\/time20260403\\/4657cc7f8935c4f749ad0f237ec3cf5b","editorSceneSwitch":1,"worldtype":4 } ',
+        "audioconfigurl": '{"editorSceneSwitch":1,"worldtype":4 } ',
         "autoTag": "综合",
         "editorSceneSwitch": 0,
         "modUuids": [],

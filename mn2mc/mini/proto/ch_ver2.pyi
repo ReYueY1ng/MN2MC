@@ -14,22 +14,10 @@ class PB_ThornBallCH(_message.Message):
     atkpoints: int
     num: int
     dir: int
-    def __init__(
-        self,
-        atkpoints: _Optional[int] = ...,
-        num: _Optional[int] = ...,
-        dir: _Optional[int] = ...,
-    ) -> None: ...
+    def __init__(self, atkpoints: _Optional[int] = ..., num: _Optional[int] = ..., dir: _Optional[int] = ...) -> None: ...
 
 class PB_ActorOperationCH(_message.Message):
-    __slots__ = (
-        "blockid",
-        "pos",
-        "blockdata",
-        "dropitem",
-        "waterPress",
-        "lowerWaterPress",
-    )
+    __slots__ = ("blockid", "pos", "blockdata", "dropitem", "waterPress", "lowerWaterPress")
     BLOCKID_FIELD_NUMBER: _ClassVar[int]
     POS_FIELD_NUMBER: _ClassVar[int]
     BLOCKDATA_FIELD_NUMBER: _ClassVar[int]
@@ -42,15 +30,7 @@ class PB_ActorOperationCH(_message.Message):
     dropitem: bool
     waterPress: int
     lowerWaterPress: int
-    def __init__(
-        self,
-        blockid: _Optional[int] = ...,
-        pos: _Optional[_Iterable[int]] = ...,
-        blockdata: _Optional[int] = ...,
-        dropitem: _Optional[bool] = ...,
-        waterPress: _Optional[int] = ...,
-        lowerWaterPress: _Optional[int] = ...,
-    ) -> None: ...
+    def __init__(self, blockid: _Optional[int] = ..., pos: _Optional[_Iterable[int]] = ..., blockdata: _Optional[int] = ..., dropitem: _Optional[bool] = ..., waterPress: _Optional[int] = ..., lowerWaterPress: _Optional[int] = ...) -> None: ...
 
 class PB_StorageBoxPutAllCH(_message.Message):
     __slots__ = ("playeruin", "baseindex", "blockid", "pos")
@@ -62,13 +42,7 @@ class PB_StorageBoxPutAllCH(_message.Message):
     baseindex: int
     blockid: int
     pos: _containers.RepeatedScalarFieldContainer[int]
-    def __init__(
-        self,
-        playeruin: _Optional[int] = ...,
-        baseindex: _Optional[int] = ...,
-        blockid: _Optional[int] = ...,
-        pos: _Optional[_Iterable[int]] = ...,
-    ) -> None: ...
+    def __init__(self, playeruin: _Optional[int] = ..., baseindex: _Optional[int] = ..., blockid: _Optional[int] = ..., pos: _Optional[_Iterable[int]] = ...) -> None: ...
 
 class PB_SyncDyeableItemCH(_message.Message):
     __slots__ = ("playeruin", "index", "itemid", "num", "sdata")
@@ -82,14 +56,7 @@ class PB_SyncDyeableItemCH(_message.Message):
     itemid: int
     num: int
     sdata: str
-    def __init__(
-        self,
-        playeruin: _Optional[int] = ...,
-        index: _Optional[int] = ...,
-        itemid: _Optional[int] = ...,
-        num: _Optional[int] = ...,
-        sdata: _Optional[str] = ...,
-    ) -> None: ...
+    def __init__(self, playeruin: _Optional[int] = ..., index: _Optional[int] = ..., itemid: _Optional[int] = ..., num: _Optional[int] = ..., sdata: _Optional[str] = ...) -> None: ...
 
 class PB_StoveTakeCH(_message.Message):
     __slots__ = ("pos", "uin", "index", "taketype")
@@ -101,13 +68,7 @@ class PB_StoveTakeCH(_message.Message):
     uin: int
     index: int
     taketype: int
-    def __init__(
-        self,
-        pos: _Optional[_Iterable[int]] = ...,
-        uin: _Optional[int] = ...,
-        index: _Optional[int] = ...,
-        taketype: _Optional[int] = ...,
-    ) -> None: ...
+    def __init__(self, pos: _Optional[_Iterable[int]] = ..., uin: _Optional[int] = ..., index: _Optional[int] = ..., taketype: _Optional[int] = ...) -> None: ...
 
 class PB_StopweaponanimCH(_message.Message):
     __slots__ = ("objid", "animid")
@@ -115,9 +76,7 @@ class PB_StopweaponanimCH(_message.Message):
     ANIMID_FIELD_NUMBER: _ClassVar[int]
     objid: int
     animid: int
-    def __init__(
-        self, objid: _Optional[int] = ..., animid: _Optional[int] = ...
-    ) -> None: ...
+    def __init__(self, objid: _Optional[int] = ..., animid: _Optional[int] = ...) -> None: ...
 
 class PB_StopweaponmotionCH(_message.Message):
     __slots__ = ("objid", "mclass")
@@ -125,9 +84,7 @@ class PB_StopweaponmotionCH(_message.Message):
     MCLASS_FIELD_NUMBER: _ClassVar[int]
     objid: int
     mclass: int
-    def __init__(
-        self, objid: _Optional[int] = ..., mclass: _Optional[int] = ...
-    ) -> None: ...
+    def __init__(self, objid: _Optional[int] = ..., mclass: _Optional[int] = ...) -> None: ...
 
 class PB_PlaySkinVoiceCH(_message.Message):
     __slots__ = ("skinId", "voiceType", "pos", "uinlist")
@@ -139,13 +96,7 @@ class PB_PlaySkinVoiceCH(_message.Message):
     voiceType: int
     pos: _containers.RepeatedScalarFieldContainer[int]
     uinlist: _containers.RepeatedScalarFieldContainer[int]
-    def __init__(
-        self,
-        skinId: _Optional[int] = ...,
-        voiceType: _Optional[int] = ...,
-        pos: _Optional[_Iterable[int]] = ...,
-        uinlist: _Optional[_Iterable[int]] = ...,
-    ) -> None: ...
+    def __init__(self, skinId: _Optional[int] = ..., voiceType: _Optional[int] = ..., pos: _Optional[_Iterable[int]] = ..., uinlist: _Optional[_Iterable[int]] = ...) -> None: ...
 
 class PB_BoxPlayAniCH(_message.Message):
     __slots__ = ("objid",)
@@ -165,11 +116,4 @@ class PB_CustomPbcCH(_message.Message):
     ziplen: int
     unziplen: int
     islua: bool
-    def __init__(
-        self,
-        type: _Optional[str] = ...,
-        payload: _Optional[bytes] = ...,
-        ziplen: _Optional[int] = ...,
-        unziplen: _Optional[int] = ...,
-        islua: _Optional[bool] = ...,
-    ) -> None: ...
+    def __init__(self, type: _Optional[str] = ..., payload: _Optional[bytes] = ..., ziplen: _Optional[int] = ..., unziplen: _Optional[int] = ..., islua: _Optional[bool] = ...) -> None: ...
