@@ -29,7 +29,7 @@ from mn2mc.utils.vector import Vector3f, Vector3
 def on_recv(client: MCClient, jsondata: dict, metadata: dict):
     entityid = jsondata["entityId"]
     entitytype = jsondata["type"]
-    if entitytype in (5, 71):  # armor stand / item
+    if entitytype in (5, 71, 131, 93, 73, 72, 49, 15, 60):  # armor stand / item / text display / painting / item frame / item display / experience orb / block display / glow item frame
         return
     uuid = jsondata["objectUUID"]
     pos3f = Vector3f(jsondata["x"], jsondata["y"], jsondata["z"])
