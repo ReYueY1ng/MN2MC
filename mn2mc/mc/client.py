@@ -63,7 +63,7 @@ class MCClient:
         self.players = {}
         self.add_player_count = 0
         self.entities = {}
-        self.state = 'handshaking'
+        self.state = "handshaking"
         logger.info(
             f"({miniplayer.name}) Connecting to {options['host']}:{options['port']}"
         )
@@ -83,11 +83,10 @@ class MCClient:
             )
             self.get_chunk_thread.start()
 
-    def on_disconnect(self, packet, a):
+    def on_disconnect(self, packet, _):
         logger.debug(packet)
-        logger.debug(a)
         logger.warning(
-            f"({self.miniplayer.name}) Disconnected from server: {packet.reason}"
+            f"({self.miniplayer.name}) Disconnected from server: {packet['reason']['value']['extra']['value']['value'][0]['text']['value']}"
         )
 
     def on_end(self, end):
@@ -156,7 +155,7 @@ class MCClient:
 
     def on_state_change(self, newstate, oldstate):
         self.state = newstate
-        logger.info(f'({self.miniplayer.name}) state {oldstate} -> {newstate}')
+        logger.info(f"({self.miniplayer.name}) state {oldstate} -> {newstate}")
 
     def on_packet(self, jsondata: dict, metadata: dict, buffer=None, fullbuffer=None):
         # logger.debug(f"mcpacket: {metadata}\n{jsondata}")
@@ -169,12 +168,12 @@ class MCClient:
         self.chunkmgr.running = False
         self.end()
 
-    def chat(self, content: str, ignorestate = False):
-        if self.state == 'play' or ignorestate:
+    def chat(self, content: str, ignorestate=False):
+        if self.state == "play" or ignorestate:
             self.client.chat(content)
 
-    def send(self, name: str, message: dict, ignorestate = False):
-        if self.state == 'play' or ignorestate:
+    def send(self, name: str, message: dict, ignorestate=False):
+        if self.state == "play" or ignorestate:
             self.client.write(name, message)
 
     def get_chunks(self):
