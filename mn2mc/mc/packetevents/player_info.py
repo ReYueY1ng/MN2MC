@@ -26,6 +26,7 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict):
                     continue
                 objid = client.players[uuid]["uin"]
                 entityid = client.players[uuid]["entityid"]
+                pos = client.entities[entityid]['pos'].convert().to_vec3()
                 client.players[uuid]["name"] = data["player"]["name"]
                 client.miniplayer.send_packet(
                     ePBMsgCode.PB_ACTOR_LEAVE_AOI_HC,
@@ -48,9 +49,9 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict):
                                         Uin=client.players[uuid]["uin"],
                                         HP=100,
                                         Pos=PB_Pos(
-                                            X=client.entities[entityid]["pos"].x,
-                                            Y=client.entities[entityid]["pos"].x,
-                                            Z=client.entities[entityid]["pos"].x,
+                                            X=pos.x,
+                                            Y=pos.y,
+                                            Z=pos.z,
                                             Map=0,
                                         ),
                                         Dir=PB_BodyDir(
