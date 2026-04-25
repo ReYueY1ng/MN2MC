@@ -35,11 +35,14 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket):
                 logger.info("Reloading...")
                 from mn2mc.mini.packetevents import reloadevents as mini_reloadevents
                 from mn2mc.mc.packetevents import reloadevents as mc_reloadevents
+                from mn2mc.mapping import reload_mapping
 
                 mini_reset_events()
                 mc_reset_events()
                 mini_reloadevents()
                 mc_reloadevents()
+                reload_mapping()
+
                 for player in players:
                     player.mcclient.load_events()
                 config.load()
