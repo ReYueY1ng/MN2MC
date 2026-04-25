@@ -11,9 +11,13 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict):
         "minecraft:brand",
         f"Mini World {client.miniplayer.cltversion} | MN2MC {mn2mc.version}",
     )
+
+    worldstate = jsondata["worldState"]
+    client.dimension = worldstate['dimension']
+
     gm = 1
     oldgm = 3
-    match jsondata["worldState"]["gamemode"]:
+    match worldstate["gamemode"]:
         case "survival":  # Survival
             gm = 1
             oldgm = 3

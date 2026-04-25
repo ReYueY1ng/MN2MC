@@ -45,7 +45,10 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket):
 
                 for player in players:
                     player.mcclient.load_events()
+
+                use_new_chunk_parser = config.mc['use_new_chunk_parser']
                 config.load()
+                config.mc['use_new_chunk_parser'] = use_new_chunk_parser
                 if config.debug:
                     reload(protobuf_parser)
                     protobuf_parser.init()

@@ -1,4 +1,5 @@
 from __future__ import annotations
+import javascript
 import time
 
 import zlib
@@ -29,9 +30,11 @@ language = minedata["language"]
 mcprotocol = require("minecraft-protocol")
 vec3 = require("vec3")
 ChunkManager = require("./chunk.js")
-
+registry = require("prismarine-registry")
+    
 
 class MCClient:
+    _dimension: int
     client: mcprotocol.Client
     miniplayer: MiniPlayer
     on_events: list[str]
@@ -46,10 +49,14 @@ class MCClient:
     players: dict
     add_player_count: int
     entities: dict
+    registry: registry
 
     def __init__(self, options: dict, miniplayer: MiniPlayer) -> None:
         self.client = mcprotocol.createClient(options)
         self.client.on("error", self.on_error)
+        self.client.on("end", self.on_end)
+        self.client.on("disconnect", self.on_disconnect)
+        self.client.on("connect", self.on_connect)
         self.username = options["username"]
         self.miniplayer = miniplayer
         self.on_events = []
@@ -64,24 +71,30 @@ class MCClient:
         self.add_player_count = 0
         self.entities = {}
         self.state = "handshaking"
+        self.registry = registry(config.mc["version"])
+        self._dimension = 0  # -1: the_nether | 0: overworld | 1: the_end
         logger.info(
             f"({miniplayer.name}) Connecting to {options['host']}:{options['port']}"
         )
-        self.client.on("end", self.on_end)
-        self.client.on("disconnect", self.on_disconnect)
-        self.client.on("connect", self.on_connect)
         self.client.on("playerChat", self.on_player_chat)
         self.client.on("systemChat", self.on_server_chat)
         self.client.on("state", self.on_state_change)
         # self.client.on("packet", self.on_packet)
         self.load_events()
         if config.mc["use_new_chunk_parser"]:
-            self.chunkmgr = ChunkManager(config.mc["version"], self, self.client)
+            self.chunkmgr = ChunkManager(config.mc["version"], self, self.client, self.registry)
             self.get_chunk_thread = threading.Thread(
                 target=self.get_chunks_task,
                 name=f"({self.miniplayer.name}) Get chunk thread",
             )
             self.get_chunk_thread.start()
+        else:
+            javascript.eval_js("""
+                self.client.on("registry_data", (data) => {
+                    if (data.id == "minecraft:dimension_type") self.registry.loadDimensionCodec(data)
+                })
+            """)
+
 
     def on_disconnect(self, packet, _):
         logger.debug(packet)
@@ -192,3 +205,27 @@ class MCClient:
             if event not in self.on_events:
                 self.client.on(event, self.on_packet)
                 self.on_events.append(event)
+
+    def set_world_miny(self, miny: int):
+        if not config.mc["use_new_chunk_parser"]:
+            import mn2mc.mc.packetevents.chunk.map_chunk as map_chunk
+
+            map_chunk.miny = miny
+
+    def set_world_height(self, height: int):
+        if not config.mc["use_new_chunk_parser"]:
+            import mn2mc.mc.packetevents.chunk.map_chunk as map_chunk
+
+            map_chunk.worldheight = height
+
+    @property
+    def dimension(self) -> int:
+        return self._dimension
+
+    @dimension.setter
+    def dimension(self, value: int):
+        self._dimension = value
+        dimdata = self.registry.dimensionsById[value]
+        logger.debug(f"({self.miniplayer.name}) dimension change {dimdata}")
+        self.set_world_miny(dimdata.minY)
+        self.set_world_height(dimdata.height)

@@ -10,6 +10,7 @@ registry = require("prismarine-registry")(config.mc["version"])
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict):
     spawn_info = jsondata["worldState"]
+    client.dimension = spawn_info['dimension']
 
     gm = 1
     oldgm = 3
@@ -29,16 +30,6 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict):
 
     gmc = PB_GameModeChangeHC(oldGameMode=gm, newGameMode=oldgm).SerializeToString()
     client.miniplayer.send_packet(ePBMsgCode.PB_GAME_MODE_CHANGE, gmc)
-    """
-    dim = registry.dimensionsByName(spawn_info['dimension'])
-    logger.info(dim)
-    if dim:
-        client.chunkmgr.minY = dim.minY
-        client.chunkmgr.worldHeight = dim.worldHeight
-    else:
-        client.chunkmgr.minY = 0
-        client.chunkmgr.worldHeight = 256
-    """
 
 
 add_event("respawn", on_recv)

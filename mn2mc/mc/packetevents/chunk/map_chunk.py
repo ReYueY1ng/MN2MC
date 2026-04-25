@@ -16,6 +16,8 @@ from mn2mc.mini.proto.hc import PB_SyncChunkDataHC, PB_BlockUpdateHC
 prismarine_chunk = require("prismarine-chunk")(config.mc["version"])
 Vec3 = require("vec3")
 chunkqueue = queue.Queue()
+miny: int = -64
+worldheight: int = 384
 
 javascript.eval_js("""
     global.Vec3 = Vec3
@@ -23,12 +25,42 @@ javascript.eval_js("""
 """)
 
 parse_js = javascript.eval_js("""
-    return function(datalist) {
-        let chunk = new prismarine_chunk({
-        minY: -64,
-        worldHeight: 384
-        })
-        chunk.load(Buffer.from(datalist))
+    return function(datalist, miny, worldheight) {
+        let isLoaded = false
+        try {
+            var chunk = new prismarine_chunk({
+                minY: miny,
+                worldHeight: worldheight
+            })
+            chunk.load(Buffer.from(datalist))
+            isLoaded = true
+        } catch (error) {
+            console.warn(`Failed to decode chunk data, fallback to old options: ${error}`)
+            if (worldheight == 256) {
+                var dimdatas = [[-64, 384]]
+            } else if (worldheight == 384) {
+                var dimdatas = [[0, 256]]
+            } else {
+                var dimdatas = [[0, 256], [-64, 384]]
+            }
+            for (var data of dimdatas) {
+                try {
+                    var chunk = new prismarine_chunk({
+                        minY: data[0],
+                        worldHeight: data[1]
+                    })
+                    chunk.load(Buffer.from(datalist))
+                    isLoaded = true
+                    break
+                } catch (error) {
+                    continue
+                }
+            }
+        }
+        if (!isLoaded) {
+            console.error(`Failed to decode chunk data`)
+            return JSON.stringify([])
+        }
         let blocks = []
         for (let y = 0; y < 256; y++) {
             for (let x = 0; x < 16; x++) {
@@ -65,7 +97,7 @@ def parse_new(client: MCClient, jsondata: dict):
     ).SerializeToString()
     client.miniplayer.send_packet(ePBMsgCode.PB_SYNC_CHUNK_DATA_HC, minichunk)
     # time.sleep(0.1)
-    output_json = parse_js(jsondata["chunkData"]["data"])
+    output_json = parse_js(jsondata["chunkData"]["data"], miny, worldheight)
     pyblocks = json.loads(output_json)
     # logger.debug(pyblocks)
     converted_blocks = []

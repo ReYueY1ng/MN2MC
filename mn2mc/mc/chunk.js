@@ -6,9 +6,10 @@ function sleep(ms) {
 }
 
 class ChunkManager {
-    constructor(version, pyclient, mcclient) {
+    constructor(version, pyclient, mcclient, registry) {
         this.version = version
         this.pyclient = pyclient
+        this.registry = registry
         this.mcclient = mcclient
         this.minY = -64
         this.worldHeight = 384
@@ -18,6 +19,18 @@ class ChunkManager {
         this.cacheChunks = []
         this.cacheParsedChunks = []
         this.running = true
+        this.mcclient.on("registry_data", (data) => {
+            if (data.id == "minecraft:dimension_type") {
+                this.registry.loadDimensionCodec(data)
+            }
+        })
+        let setDimension = (packet) => {
+            let data = this.registry.dimensionsById[packet.worldState.dimension]
+            this.minY = data.minY
+            this.worldHeight = data.height
+        }
+        this.mcclient.on('login', setDimension)
+        this.mcclient.on('respawn', setDimension)
         this.mcclient.on('map_chunk', (jsondata) => this.cacheChunks.push(jsondata))
         //this.intervalId = setInterval(async () => this.pushPyEvent(), 200)
         this.parseChunks()
@@ -41,11 +54,41 @@ class ChunkManager {
     }
 
     async onEvent(jsondata) {
-        let chunk = new this.chunk({
-            minY: this.minY,
-            worldHeight: this.worldHeight
-        })
-        chunk.load(jsondata.chunkData)
+        let isLoaded = false
+        try {
+            var chunk = new this.chunk({
+                minY: this.minY,
+                worldHeight: this.worldHeight
+            })
+            chunk.load(jsondata.chunkData)
+            isLoaded = true
+        } catch (error) {
+            console.warn(`Failed to decode chunk data (${jsondata.x}, ${jsondata.y}), fallback to old options: ${error}`)
+            if (this.worldHeight == 256) {
+                var dimdatas = [[-64, 384]]
+            } else if (this.worldHeight == 384) {
+                var dimdatas = [[0, 256]]
+            } else {
+                var dimdatas = [[0, 256], [-64, 384]]
+            }
+            for (var data of dimdatas) {
+                try {
+                    var chunk = new this.chunk({
+                        minY: data[0],
+                        worldHeight: data[1]
+                    })
+                    chunk.load(jsondata.chunkData)
+                    isLoaded = true
+                    break
+                } catch (error) {
+                    continue
+                }
+            }
+        }
+        if (!isLoaded) {
+            console.error(`Failed to decode chunk data (${jsondata.x}, ${jsondata.z})`)
+            return
+        }
         let blocks = []
         for (let y = 0; y < 256; y++) {
             for (let x = 0; x < 16; x++) {
@@ -58,7 +101,7 @@ class ChunkManager {
             }
         }
         //console.log('Parse done')
-        this.cacheParsedChunks.push({x: jsondata.x, z: jsondata.z, blocks: blocks})
+        this.cacheParsedChunks.push({ x: jsondata.x, z: jsondata.z, blocks: blocks })
     }
 
     async pushPyEvent() {
