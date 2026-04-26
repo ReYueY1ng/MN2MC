@@ -20,7 +20,7 @@ default_extra_info = {
         "translate": "",
         "translate_sourcelang": 0,
         "uilibsurl": "",
-        "version": "1.54.1",
+        "version": "1.55.0",
         "vipExp": 0,
         "vipLevel": 0,
         "vipType": 0,
