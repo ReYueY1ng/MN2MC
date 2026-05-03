@@ -1,13 +1,13 @@
 import aiorak
 from loguru import logger
 
-import mn2mc.mini.proto as proto
-from mn2mc.mini.packet import on_event
-from mn2mc.mc.client import MCClient
-from mn2mc.mini.packet import MiniClientPacket, MiniServerPacket
-from mn2mc.mini.proto import common
-import mn2mc.utils.protobuf_parser as protobuf_parser
 import mn2mc.config as config
+import mn2mc.mini.auth
+import mn2mc.mini.proto as proto
+import mn2mc.utils.protobuf_parser as protobuf_parser
+from mn2mc.mc.client import MCClient
+from mn2mc.mini.packet import MiniClientPacket, MiniServerPacket, on_event
+from mn2mc.mini.proto import common
 
 players = []
 
@@ -44,11 +44,18 @@ class MiniPlayer:
     ) -> None:
         # logger.debug(f"({self.uin}) send packet {msg_code}")
         if self.conn.state == aiorak.ConnectionState.CONNECTED:
-            self.conn.send(
-                MiniServerPacket(msg_code, data).encode(),
-                reliability,
-                priority=priority,
-            )
+            if config.mini["server"]["host_to_room_server"]:
+                self.conn.send(
+                    MiniClientPacket(mn2mc.mini.auth.uin, msg_code, data).encode(),
+                    reliability,
+                    priority=priority,
+                )
+            else:
+                self.conn.send(
+                    MiniServerPacket(msg_code, data).encode(),
+                    reliability,
+                    priority=priority,
+                )
 
     def send_msg(self, msg: str, nocolor: bool = False):
         self.send_packet(

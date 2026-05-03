@@ -481,8 +481,8 @@ mc_to_mini_mapping = {
     719: 719,  # Redstone Block - 红石块
     720: 720,  # Repeater - 红石中继器
     721: 721,  # Comparator - 红石比较器
-    722: 722,  # Piston - 活塞
-    723: 723,  # Sticky Piston - 粘性活塞
+    722: 367,  # Piston - 活塞
+    723: 368,  # Sticky Piston - 粘性活塞
     724: 724,  # Slime Block - 粘液块
     725: 725,  # Honey Block - 蜂蜜块
     726: 726,  # Observer - 观察者

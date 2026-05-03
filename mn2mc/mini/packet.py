@@ -1,8 +1,9 @@
-from loguru import logger
+import importlib
 import struct
 import types
-import importlib
 from typing import Optional
+
+from loguru import logger
 
 PLACEHOLDER = b"\x90\x00\x02\x9a"
 
@@ -14,10 +15,17 @@ class MiniClientPacket:
     msgcode: int
     data: bytes
 
-    def __init__(self, data: Optional[bytes]) -> None:
-        if data:
-            self.decode(data)
-
+    def __init__(self, uinordata: int | bytes | None, msgcode: Optional[int] = None, data: Optional[bytes] = None) -> None:
+        if type(uinordata) is int:
+            if type(msgcode) is not int:
+                raise TypeError('msgcode must be int')
+            elif type(data) is not bytes:
+                raise TypeError('data must be bytes')
+            self.uin = uinordata
+            self.msgcode = msgcode
+            self.data = data
+        elif type(uinordata) is bytes:
+            self.decode(uinordata)
     def __str__(self) -> str:
         return f"""\
 Uin: {self.uin}

@@ -1,13 +1,19 @@
+import time
+import asyncio
 import json
 
 import aiorak
 from loguru import logger
 
 import mn2mc
-import mn2mc.mini.proto as proto
 import mn2mc.config as config
-from mn2mc.mini.packet import MiniServerPacket, load_all_event as mini_load_all_event
+import mn2mc.mini.auth
+import mn2mc.mini.proto as proto
+import mn2mc.mini.room
+import mn2mc.mini.wsconn
 from mn2mc.mc.packet import load_all_event as mc_load_all_event
+from mn2mc.mini.packet import MiniServerPacket, MiniClientPacket
+from mn2mc.mini.packet import load_all_event as mini_load_all_event
 from mn2mc.mini.player import MiniPlayer, players
 
 default_extra_info = {
@@ -20,7 +26,7 @@ default_extra_info = {
         "translate": "",
         "translate_sourcelang": 0,
         "uilibsurl": "",
-        "version": "1.55.0",
+        "version": mn2mc.mini.version,
         "vipExp": 0,
         "vipLevel": 0,
         "vipType": 0,
@@ -39,7 +45,12 @@ miniserver: aiorak.Server
 
 
 def broadcast_packet(msgcode: proto.common.ePBMsgCode, data: bytes):
-    miniserver.broadcast(MiniServerPacket(msgcode, data).encode())
+    if config.mini["server"]["host_to_room_server"]:
+        miniserver.broadcast(
+            MiniClientPacket(mn2mc.mini.auth.uin, msgcode, data).encode()
+        )
+    else:
+        miniserver.broadcast(MiniServerPacket(msgcode, data).encode())
 
 
 def send_log(msg: str):
@@ -59,24 +70,43 @@ async def handler(conn: aiorak.Connection):
         proto.common.ePBMsgCode.PB_SYNC_ROOM_EXTRA_HC, room_extra_info_bytes
     )
 
+    if config.mini["server"]["host_to_room_server"]:
+        await mn2mc.mini.room.room_update(len(players))
+
     await player.handler()
     player.kick()
     logger.info(f"{uin} {conn.remote_address} disconnected")
 
+    if config.mini["server"]["host_to_room_server"]:
+        await mn2mc.mini.room.room_update(len(players) - 1)
+
 
 async def start(host: str = "0.0.0.0", port: int = 19132):
     global miniserver
+    if config.mini["server"]["host_to_room_server"]:
+        await mn2mc.mini.wsconn.fetch_s2()
+        await mn2mc.mini.room.create_room()
     logger.info("Loading events...")
     mini_load_all_event()
     mc_load_all_event()
-    miniserver = await aiorak.create_server((host, port), handler, guid=666)
+    miniserver = await aiorak.create_server(
+        (host, port),
+        handler,
+        guid=mn2mc.mini.auth.uin
+        if config.mini["server"]["host_to_room_server"]
+        else 666,
+    )
     logger.info(f"Server started at {host}:{port}")
     logger.add(send_log, level="INFO", format="#W[{level}] {message}")
 
     await miniserver.serve_forever()
 
 
-def stop():
-    for player in players:
+async def stop():
+    for player in players[:]:
         player.kick()
+    if miniserver:
+        await miniserver.close()
+    if config.mini["server"]["host_to_room_server"] and mn2mc.mini.room.room_token:
+        await mn2mc.mini.room.close_room()
     mn2mc.running = False

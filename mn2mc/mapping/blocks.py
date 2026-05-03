@@ -84,6 +84,7 @@ mc_to_mini_mapping = {
     102: 411, # lapis_ore - 铁块
     103: 411, # deepslate_lapis_ore - 铁块
     104: 411, # lapis_block - 铁块
+    105: 717,  # dispenser - 发射装置
     106: 108, # sandstone - 素纹黄砖
     107: 108, # chiseled_sandstone - 素纹黄砖
     108: 108, # cut_sandstone - 素纹黄砖
@@ -104,12 +105,13 @@ mc_to_mini_mapping = {
     123: 883, # green_bed - 精致木床
     124: 884, # red_bed - 豪华木床
     125: 883, # black_bed - 精致木床
+    128: 368, # sticky_piston - 推拉机械臂
     129: 232, # cobweb - 气根
     131: 238, # fern - 荆棘草
     132: 225, # dead_bush - 枯草
     136: 245, # seagrass - 水草
     137: 245, # tall_seagrass - 水草
-    138: 505, # piston - 碎石块
+    138: 367, # piston - 机械臂
     139: 505, # piston_head - 碎石块
     140: 600, # white_wool - 棉花块
     141: 601, # orange_wool - 棉花块
@@ -338,6 +340,7 @@ mc_to_mini_mapping = {
     477: 540, # chiseled_quartz_block - 古老黄砖
     478: 540, # quartz_pillar - 古老黄砖
     479: 529, # quartz_stairs - 石质楼梯
+    481: 720,  # dropper - 投掷发射装置
     482: 666,  # white_terracotta - 水泥块 (白色)
     483: 667,  # orange_terracotta - 上色水泥块 (橙色)
     484: 668,  # magenta_terracotta - 上色水泥块 (红紫色)

@@ -86,6 +86,7 @@ class MCClient:
             self.get_chunk_thread = threading.Thread(
                 target=self.get_chunks_task,
                 name=f"({self.miniplayer.name}) Get chunk thread",
+                daemon=True,
             )
             self.get_chunk_thread.start()
         else:
@@ -125,8 +126,8 @@ class MCClient:
             logger.error("Cannot find available content!")
             logger.debug(e)
         chat = prismarinechat(content)
-        # logger.debug(chat)
-        logger.debug(f"[Chat] {chat.toAnsi()}")
+        if config.mc['log_message']:
+            logger.debug(f"[Chat] {chat.toAnsi()}")
         msg = color_converter.convert_minecraft_to_miniworld(chat.toMotd())
         try:
             name = json.loads(e["senderName"])["text"]
@@ -164,7 +165,8 @@ class MCClient:
             "\n"
         ):
             self.miniplayer.send_msg(msg)
-        logger.debug(f"[Chat] {chat.toAnsi()}")
+        if config.mc['log_message']:
+            logger.debug(f"[Chat] {chat.toAnsi()}")
 
     def on_state_change(self, newstate, oldstate):
         self.state = newstate
@@ -190,7 +192,7 @@ class MCClient:
             self.client.write(name, message)
 
     def get_chunks(self):
-        if self.chunkmgr.cacheParsedChunks.length > 0:
+        if self.running and self.chunkmgr.cacheParsedChunks.length > 0:
             compressed_chunks = self.chunkmgr.compressedChunks.blobValueOf()
             chunks = ormsgpack.unpackb(zlib.decompress(compressed_chunks))
             self.on_packet(chunks, {"name": "parsed_chunk"})

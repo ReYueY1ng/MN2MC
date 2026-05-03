@@ -21,9 +21,8 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket):
     if chat_ch.Content.startswith("/mn2mc"):
         args = chat_ch.Content.split(" ")[1:]
         if len(args) == 0:
-            player.send_msg(
-                f"[color=#aaeeee]MN2MC {mn2mc.version}\nPowered by YueY1ng", False
-            )
+            player.send_msg(f"[color=#aaeeee]MN2MC {mn2mc.version}", False)
+            player.send_msg("[color=#aaeeee]github.com/ReYueY1ng/MN2MC")
             return
 
         match args[0]:

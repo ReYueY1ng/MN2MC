@@ -363,3 +363,5 @@ vite.config.ts.timestamp-*
 
 config.yaml
 logs/
+resources/
+tools/raknet_proxy

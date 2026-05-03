@@ -1,17 +1,19 @@
 import json
-import threading
 import queue
+import threading
+
 import javascript
-import mn2mc
 from javascript import require
 
+import mn2mc
 import mn2mc.config as config
-import mn2mc.utils.mini_block as mini_block
+import mn2mc.mapping.block_face as block_face_mapping
 import mn2mc.mapping.blocks as block_mapping
+import mn2mc.utils.mini_block as mini_block
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
-from mn2mc.mini.proto.common import ePBMsgCode, PB_ChunkSaveDB, PB_ChunkBlob
-from mn2mc.mini.proto.hc import PB_SyncChunkDataHC, PB_BlockUpdateHC
+from mn2mc.mini.proto.common import PB_ChunkBlob, PB_ChunkSaveDB, ePBMsgCode
+from mn2mc.mini.proto.hc import PB_BlockUpdateHC, PB_SyncChunkDataHC
 
 prismarine_chunk = require("prismarine-chunk")(config.mc["version"])
 Vec3 = require("vec3")
@@ -65,9 +67,15 @@ parse_js = javascript.eval_js("""
         for (let y = 0; y < 256; y++) {
             for (let x = 0; x < 16; x++) {
                 for (let z = 0; z < 16; z++) {
-                    let type = chunk.getBlock(Vec3(x, y, z)).type
+                    let block = chunk.getBlock(Vec3(x, y, z))
+                    let type = block.type
+                    let properties = block.getProperties()
                     if (type != 0) {
-                        blocks.push([x, y, z, type])
+                        if (Object.keys(properties).length === 0) {
+                            blocks.push([x, y, z, type])
+                        } else {
+                            blocks.push([x, y, z, type, properties])
+                        }
                     }
                 }
             }
@@ -102,13 +110,19 @@ def parse_new(client: MCClient, jsondata: dict):
     # logger.debug(pyblocks)
     converted_blocks = []
     blocksex = []
+    blockstates = []
     for block in pyblocks:
         if block[3] != 0:
+            blockid = block_mapping.mc_to_mini(block[3])
             encoded, quotient = mini_block.encode_block(
-                block_mapping.mc_to_mini(block[3]), 15 - block[0], block[1], block[2]
+                blockid, 15 - block[0], block[1], block[2]
             )
             converted_blocks.append(encoded)
             blocksex.append(quotient)
+            if len(block) == 5:
+                blockstates.append(block_face_mapping.get_block_face(blockid, block[4]))
+            else:
+                blockstates.append(0)
             if len(blocksex) % 2048 == 0:
                 send_blocks(
                     client,
@@ -116,17 +130,30 @@ def parse_new(client: MCClient, jsondata: dict):
                     jsondata["z"],
                     converted_blocks,
                     blocksex,
+                    blockstates,
                 )
                 converted_blocks.clear()
                 blocksex.clear()
 
-    send_blocks(client, -jsondata["x"] - 1, jsondata["z"], converted_blocks, blocksex)
+    send_blocks(
+        client,
+        -jsondata["x"] - 1,
+        jsondata["z"],
+        converted_blocks,
+        blocksex,
+        blockstates,
+    )
     del converted_blocks
     del blocksex
 
 
 def send_blocks(
-    client: MCClient, x: int, z: int, converted_blocks: list, blocksex: list
+    client: MCClient,
+    x: int,
+    z: int,
+    converted_blocks: list,
+    blocksex: list,
+    blockstates: list,
 ):
     client.miniplayer.send_packet(
         ePBMsgCode.PB_BLOCK_DATA_UPDATE_HC,
@@ -136,7 +163,7 @@ def send_blocks(
             MapID=0,
             Blocks=converted_blocks,
             BlocksEx=blocksex,
-            BlockStateIndex=[0 for _ in range(len(blocksex))],
+            BlockStateIndex=blockstates,
         ).SerializeToString(),
     )
 
@@ -155,6 +182,8 @@ def stop():
 
 
 for i in range(config.mc["chunk_parse_thread"]):
-    threading.Thread(target=chunk_parse_thread, name=f"Chunk parser {i}").start()
+    threading.Thread(
+        target=chunk_parse_thread, name=f"Chunk parser {i}", daemon=True
+    ).start()
 
 add_event("map_chunk", on_recv)

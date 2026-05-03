@@ -6,3 +6,5 @@ ormsgpack>=1.12.2
 protobuf>=7.34.1
 PyYAML>=6.0.3
 #aiorak>=0.1.0
+aiohttp>=3.13.5
+websockets>=16.0

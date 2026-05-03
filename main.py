@@ -1,12 +1,11 @@
 import mn2mc
-import atexit
 import javascript
 import asyncio
 import sys
-import signal
 from loguru import logger
 from javascript import require
 import mn2mc.mini.server as server
+import mn2mc.mini.room
 import mn2mc.config as config
 import mn2mc.utils.protobuf_parser as protobuf_parser
 
@@ -33,26 +32,20 @@ def prepare_dependencies():
     """)
 
 
-@atexit.register
-def signal_handler(signal=None, frame=None):
-    if mn2mc.running:
-        logger.info("Stopping server")
-        if "mn2mc.mc.packetevents.chunk.parsed_chunk" in sys.modules:
-            sys.modules["mn2mc.mc.packetevents.chunk.parsed_chunk"].stop()
-        elif "mn2mc.mc.packetevents.chunk.map_chunk" in sys.modules:
-            sys.modules["mn2mc.mc.packetevents.chunk.map_chunk"].stop()
-        server.stop()
-        sys.exit(0)
-
-
+@logger.catch
 async def main():
     logger.add("logs/{time}.log")
     config.load()
     prepare_dependencies()
     if config.debug:
         protobuf_parser.init()
-    signal.signal(signal.SIGINT, signal_handler)
-    await server.start(config.mini["server"]["ip"], config.mini["server"]["port"])
+    try:
+        await server.start(config.mini["server"]["ip"], config.mini["server"]["port"])
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        logger.info("Shutting down...")
+    finally:
+        await server.stop()
+        sys.exit(0)
 
 
 if __name__ == "__main__":

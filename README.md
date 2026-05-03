@@ -17,7 +17,9 @@
 - [x] 背包
 - [x] 实体（基础）
 - [ ] 快速区块转换（直接构建区块包）
-- [ ] 创建房间
+- [x] 创建房间
+- [ ] 打洞直连
+- [ ] 代理转发
 - [ ] 自定义 UI
 
 ## 使用方法
@@ -59,7 +61,11 @@ npm install minecraft-protocol prismarine-chat prismarine-block prismarine-chunk
 python main.py
 ```
 
-### 中间人替换
+### 进入代理
+
+目前有两种方式：
+
+#### 中间人替换（推荐）
 
 只需将 http://cs-gsmgr.mini1.cn/v2/room/get 响应中的 ip 和 port 替换为代理的地址和端口即可。
 
@@ -69,7 +75,12 @@ Linux 示例：
 mitmdump --mode local:wineserver -s tools/mitm.py
 ```
 
-### 进入代理
+在迷你世界里面选择一个地图（最好是云服地图），点击“联机”即可进入。
 
-选择一个地图，点击“联机”即可进入。
+#### 创建房间
 
+构建 [raknet_proxy](https://github.com/ReYueY1ng/raknet-proxy)，将产物放进 tools 文件夹里
+
+将 config.yaml 内的 auth 子项填完，host_to_room_server 改为 true 即可创建房间
+
+启动代理后在联机大厅搜索迷你号，即可直接进入

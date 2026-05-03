@@ -39,7 +39,7 @@ class ChunkManager {
 
     async parseChunks() {
         let processedChunks = 0
-        while (true) {
+        while (this.running) {
             let jsondata = this.cacheChunks.shift()
             if (jsondata == undefined) {
                 await sleep(200)
@@ -93,9 +93,15 @@ class ChunkManager {
         for (let y = 0; y < 256; y++) {
             for (let x = 0; x < 16; x++) {
                 for (let z = 0; z < 16; z++) {
-                    let type = chunk.getBlock(Vec3(x, y, z)).type
+                    let block = chunk.getBlock(Vec3(x, y, z))
+                    let type = block.type
+                    let properties = block.getProperties()
                     if (type != 0) {
-                        blocks.push([x, y, z, type])
+                        if (Object.keys(properties).length === 0) {
+                            blocks.push([x, y, z, type])
+                        } else {
+                            blocks.push([x, y, z, type, properties])
+                        }
                     }
                 }
             }
