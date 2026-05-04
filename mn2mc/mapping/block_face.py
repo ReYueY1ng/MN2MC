@@ -2961,9 +2961,9 @@ def get_block_face(blockid: int, properties: Optional[dict]):
                 case 'south':
                     return 3
                 case 'down':
-                    return 5
-                case 'up':
                     return 4
+                case 'up':
+                    return 5
                 case _:
                     return 0
         case _:
