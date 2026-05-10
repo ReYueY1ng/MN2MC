@@ -21,6 +21,7 @@ mc_to_mini_mapping = {
     3: {},  # 9x4
     4: {},  # 9x5
     5: {},  # 9x6
+    6: {}   # 3x3
 }
 
 for i in range(27):
@@ -38,6 +39,8 @@ for k, v in mc_to_mini_mapping["base"].items():
     mc_to_mini_mapping["direct"][k + 4] = v
     for i in range(6):
         mc_to_mini_mapping[i][k + (i + 1) * 9] = v
+
+mc_to_mini_mapping[6] = mc_to_mini_mapping[0]
 
 mini_to_mc_mapping = {}
 
