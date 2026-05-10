@@ -115,7 +115,7 @@ class MCClient:
         self.miniplayer.send_msg("Connected to server")
 
     def on_player_chat(self, e):
-        logger.debug(e)
+        #logger.debug(e)
         if "formattedMessage" in e:
             content = json.loads(e["formattedMessage"])
         elif "unsignedContent" in e and e["unsignedContent"]:
