@@ -22,7 +22,8 @@ async def start():
         "-coordinator_ip",
         mn2mc.mini.room.config["proxy"]["ip"],
         "-coordinator_port",
-        str(mn2mc.mini.room.config["proxy"]["port"])
+        str(mn2mc.mini.room.config["proxy"]["port"]),
+        "-upnp"
     )
 
 
