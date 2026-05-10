@@ -18,7 +18,7 @@ CONFIG_URL = " http://openroom.mini1.cn:8080/server/room?"
 AUTH_KEY = "f5711eb1640712de051e5aedc35329c3"
 
 CREATE_ROOM_PARAMS = {
-    "can_trace": "9323",
+    "can_trace": "9335",
     "cmd": "create_room",
     "connect_mode": "1",
     "country": "CN",
@@ -183,9 +183,9 @@ async def room_update(count: int | None = None):
     params = {
         **auth_params,
         "pause": "0",
-        "can_trace": "9323",
+        "can_trace": "9335",
         "public_type": "0",
-        "max_count": "10",
+        "max_count": "65535",
         "passwd": "",
         "is_empty_night": "0",
     }
