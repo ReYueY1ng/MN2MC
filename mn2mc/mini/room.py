@@ -51,7 +51,7 @@ CREATE_ROOM_PARAMS = {
     "uin": "",
     "uname": "",
     "use_proxy": "0",
-    "version": "1.55.0",
+    "version": str(mn2mc.mini.version),
 }
 
 CREATE_ROOM_EXTEND_PARAMS = {
@@ -59,7 +59,7 @@ CREATE_ROOM_EXTEND_PARAMS = {
     "prei_room_name_idx": "0",
     "regapiid": "6",
     "cltapiid": "110",
-    "cltversion": "79616",
+    "cltversion": str(mn2mc.mini.cltversion),
     "lang": "0",
     "game_session_id": "",
     "session_id": "",
