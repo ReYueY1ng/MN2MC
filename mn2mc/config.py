@@ -1,7 +1,6 @@
 from typing import TypedDict
 import yaml
 from pathlib import Path
-import mn2mc.utils.xxtea as xxtea
 
 default_file = """
 mini:
@@ -10,8 +9,7 @@ mini:
     uin: 0
     passwd: ""
     api_id: 110
-    device_id: ""
-    xxtea_key: "" # 必填，不填无法加密登录数据
+    device_id: "MN2MCDefault"
   server:
     ip: 127.0.0.1
     port: 11155
@@ -43,7 +41,6 @@ class auth(TypedDict):
     passwd: str
     api_id: int
     device_id: str
-    xxtea_key: str
 
 
 class Mini(TypedDict):
@@ -54,7 +51,7 @@ class Mini(TypedDict):
 
 mini: Mini = {
     "server": {"ip": "127.0.0.1", "port": 11155, "host_to_room_server": False},
-    "auth": {"uin": 0, "passwd": "", 'api_id': 110, 'device_id': '', "xxtea_key": ""},
+    "auth": {"uin": 0, "passwd": "", 'api_id': 110, 'device_id': ''},
     "send_log_to_chat": False,
 }
 
@@ -90,7 +87,6 @@ def load(path: Path = Path("config.yaml")) -> None:
             mini = config["mini"]
             mc = config["mc"]
             debug = config["debug"]
-            xxtea.xxtea_key = bytes.fromhex(config['mini']['auth']['xxtea_key'])
     else:
         save(path)
 

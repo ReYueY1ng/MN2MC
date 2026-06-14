@@ -3,7 +3,7 @@ import zlib
 
 import xxtea
 
-xxtea_key = b''
+xxtea_key = bytes.fromhex("b48e6ef44ed13eee606141750e729cf4")
 
 def pack(data):
     packdata = struct.pack(f'>I{len(data)}s', len(data), data)
