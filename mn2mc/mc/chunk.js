@@ -25,7 +25,9 @@ class ChunkManager {
             }
         })
         let setDimension = (packet) => {
+            if (!this.registry.dimensionsById) return
             let data = this.registry.dimensionsById[packet.worldState.dimension]
+            if (!data) return
             this.minY = data.minY
             this.worldHeight = data.height
         }

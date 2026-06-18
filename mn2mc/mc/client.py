@@ -229,7 +229,11 @@ class MCClient:
     @dimension.setter
     def dimension(self, value: int):
         self._dimension = value
+        if not hasattr(self.registry, 'dimensionsById') or self.registry.dimensionsById is None:
+            return
         dimdata = self.registry.dimensionsById[value]
+        if dimdata is None:
+            return
         logger.debug(f"({self.miniplayer.name}) dimension change {dimdata}")
         self.set_world_miny(dimdata.minY)
         self.set_world_height(dimdata.height)
