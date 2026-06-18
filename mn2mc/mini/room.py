@@ -4,6 +4,7 @@ import json
 import time
 import urllib.parse
 import asyncio
+from typing import TYPE_CHECKING
 
 import aiohttp
 from loguru import logger
@@ -244,10 +245,15 @@ class MiniRoom:
 
     def _start_update_loop(self) -> None:
         async def _loop() -> None:
-            await self.room_update()
-            while True:
-                await asyncio.sleep(15)
+            try:
                 await self.room_update()
+                while True:
+                    await asyncio.sleep(15)
+                    await self.room_update()
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                logger.exception("Room update loop crashed")
 
         self._update_task = asyncio.create_task(_loop())
         logger.info("Room update loop started (every 15s)")
@@ -258,6 +264,19 @@ class MiniRoom:
 
 # Module-level singleton — all external code accesses via mn2mc.mini.room.xxx
 room = MiniRoom()
+
+if TYPE_CHECKING:
+    config: dict
+    room_token: str
+    player_count: int
+    room_url: str
+    session_id: str
+    _update_task: asyncio.Task | None
+    async def get_config(self) -> dict: ...
+    async def create_room(self) -> None: ...
+    async def room_update(self, count: int | None = None) -> None: ...
+    async def close_room(self) -> None: ...
+    def set_player_count(self, count: int) -> None: ...
 
 
 def __getattr__(name: str):

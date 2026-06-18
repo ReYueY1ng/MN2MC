@@ -103,7 +103,7 @@ async def start(host: str = "0.0.0.0", port: int = 19132):
 
 
 async def stop():
-    for player in players[:]:
+    for player in players.copy():
         player.kick()
     if miniserver:
         await miniserver.close()

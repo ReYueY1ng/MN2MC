@@ -2,6 +2,7 @@ import base64
 import hashlib
 import json
 import time
+from typing import TYPE_CHECKING
 
 import aiohttp
 import ormsgpack
@@ -84,6 +85,15 @@ class MiniAuth:
 
 
 auth = MiniAuth()
+
+if TYPE_CHECKING:
+    uin: int
+    api_id: int
+    jwt: str
+    full_sign: str
+    s2: str
+    s2t: str
+    name: str
 
 
 def __getattr__(name: str):

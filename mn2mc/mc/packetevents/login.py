@@ -25,6 +25,8 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
 
     gm = 1
     oldgm = 3
+    # 注意：Mini World 的 gm/oldgm 与 MC 的 gamemode 是反向映射
+    # MC survival → Mini gm=1(oldgm=3), MC creative → Mini gm=3(oldgm=1)
     match worldstate["gamemode"]:
         case "survival":  # Survival
             gm = 1

@@ -60,9 +60,9 @@ class MiniServerPacket:
     data: bytes = b""
 
     def __init__(self, msgcode: Optional[int], data: Optional[bytes]) -> None:
-        if msgcode:
+        if msgcode is not None:
             self.msgcode = msgcode
-        if data:
+        if data is not None:
             self.data = data
 
     def __str__(self) -> str:

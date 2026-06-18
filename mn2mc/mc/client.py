@@ -139,7 +139,7 @@ class MCClient:
                 from mn2mc.mini.player import players
 
                 uin = 0
-                for player in players:
+                for player in players.copy():
                     if player.name == name:
                         uin = player.uin
                         break
@@ -181,7 +181,8 @@ class MCClient:
         self.client.end()
 
     def remove(self):
-        self.chunkmgr.running.clear()
+        if hasattr(self, "chunkmgr"):
+            self.chunkmgr.running = False
         self.end()
 
     def chat(self, content: str, ignorestate=False):

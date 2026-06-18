@@ -18,6 +18,8 @@ from mn2mc.mc.packetevents.chunk.chunk_parser import (
 prismarine_chunk = require("prismarine-chunk")(config.mc["version"])
 Vec3 = require("vec3")
 chunkqueue = queue.Queue()
+# miny/worldheight 由 dimension setter 写入，chunk parser 线程读取
+# CPython 的 GIL 保证 int 赋值/读取的原子性，无需额外同步
 miny: int = -64
 worldheight: int = 384
 

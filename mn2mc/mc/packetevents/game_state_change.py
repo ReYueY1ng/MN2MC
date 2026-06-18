@@ -17,6 +17,7 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     if jsondata["reason"] == "change_game_mode":
         gm = 1
         oldgm = 3
+        # 注意：Mini World 的 gm/oldgm 与 MC 的 gamemode 是反向映射
         match jsondata["gameMode"]:
             case 0:  # Survival
                 gm = 1

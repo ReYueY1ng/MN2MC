@@ -130,7 +130,7 @@ def create_worker_threads(process_func, chunkqueue, thread_count=None):
         while mn2mc.running:
             try:
                 data = chunkqueue.get()
-                process_func(data[0], data[1])
+                process_func(data)
             except queue.ShutDown:
                 return
 

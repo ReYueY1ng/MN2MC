@@ -1,2 +1,2 @@
-version: str = "0.0.6"
+version: str = "0.0.8"
 running: bool = True

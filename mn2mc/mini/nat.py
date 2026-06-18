@@ -4,8 +4,12 @@ import mn2mc.config as config
 import mn2mc.mini.auth
 import mn2mc.mini.room
 
+_process: asyncio.subprocess.Process | None = None
+
+
 async def start():
-    await asyncio.create_subprocess_exec(
+    global _process
+    _process = await asyncio.create_subprocess_exec(
         "./tools/raknet_proxy",
         "-target_ip",
         "127.0.0.1",
@@ -27,4 +31,9 @@ async def start():
     )
 
 
-    
+async def stop():
+    global _process
+    if _process is not None:
+        _process.terminate()
+        await _process.wait()
+        _process = None

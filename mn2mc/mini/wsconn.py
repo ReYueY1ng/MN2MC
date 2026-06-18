@@ -13,6 +13,7 @@ import asyncio
 import json
 import urllib.parse
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 import aiohttp
 import ormsgpack
@@ -114,6 +115,12 @@ class WsConnManager:
 
 # Module-level singleton
 wsconn = WsConnManager()
+
+if TYPE_CHECKING:
+    s2: str
+    s2t: str
+    async def fetch_s2(self) -> dict: ...
+    def save(self, session: dict, path: str = ...) -> None: ...
 
 
 def __getattr__(name):

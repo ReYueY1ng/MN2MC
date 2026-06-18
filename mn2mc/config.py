@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import TYPE_CHECKING, TypedDict
 import yaml
 from pathlib import Path
 
@@ -116,6 +116,13 @@ config = ConfigManager()
 
 # Sentinel names that __getattr__ proxies to the singleton.
 _CONFIG_ATTRS = frozenset({"mini", "mc", "debug", "load", "save"})
+
+if TYPE_CHECKING:
+    mini: Mini
+    mc: MC
+    debug: bool
+    def load(path: Path = ...) -> None: ...
+    def save(path: Path | None = ...) -> None: ...
 
 
 def __getattr__(name: str):

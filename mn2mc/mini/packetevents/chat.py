@@ -51,7 +51,7 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                 mc_reloadevents()
                 reload_mapping()
 
-                for player in players:
+                for player in players.copy():
                     player.mcclient.load_events()
 
                 use_new_chunk_parser = config.mc['use_new_chunk_parser']

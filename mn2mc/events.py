@@ -5,7 +5,7 @@ Handler dispatch supports both sync and async functions.
 """
 
 import inspect
-from typing import Any, Callable, Optional
+from typing import TYPE_CHECKING, Any, Callable, Optional
 
 from loguru import logger
 
@@ -86,6 +86,9 @@ add_event = event_manager.add_event
 del_event = event_manager.del_event
 reset_events = event_manager.reset_events
 on_event = event_manager.on_event
+
+if TYPE_CHECKING:
+    events: dict[int | str, list[Optional[Callable]]]
 
 
 def __getattr__(name: str) -> Any:

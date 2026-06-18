@@ -34,7 +34,7 @@ class MiniPlayer:
         if self.conn.state == aiorak.ConnectionState.CONNECTED:
             self.kick()
         if hasattr(self, "mcclient"):
-            self.mcclient.running = False
+            self.mcclient.running.clear()
             self.mcclient.end()
             self.mcclient.remove()
 
@@ -90,9 +90,12 @@ class MiniPlayer:
         if self.conn.state == aiorak.ConnectionState.CONNECTED:
             self.conn.disconnect()
         if hasattr(self, "mcclient"):
-            self.mcclient.running = False
+            self.mcclient.running.clear()
             self.mcclient.end()
-        players.remove(self)
+        try:
+            players.remove(self)
+        except ValueError:
+            pass
 
     async def handler(self) -> None:
         """Main packet handling loop for the Mini World client connection."""

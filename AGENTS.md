@@ -1,6 +1,6 @@
 # AGENTS.md
 
-MN2MC — Protocol translation proxy between 迷你世界 1.55.0 and Minecraft Java 1.21.11.
+MN2MC — Protocol translation proxy between 迷你世界 1.56.1 and Minecraft Java 1.21.11.
 
 ## How to run
 
@@ -41,6 +41,7 @@ Mini World client <--aiorak--> mn2mc/mini/ (server) <--bridge--> mn2mc/mc/ (clie
 | `mn2mc/mini/` | Mini World server side — RakNet (aiorak) server, packet codec, protobuf message handlers |
 | `mn2mc/mc/` | Minecraft client side — wraps `minecraft-protocol` (Node.js via `javascript` bridge), MC event handlers |
 | `mn2mc/mapping/` | ID translation tables: `blocks.py`, `items.py`, `mobs.py`, `face.py`, `slotid.py` |
+| `mn2mc/data/` | JSON mapping files (`blocks.json`, `items.json`, `mobs.json`) loaded by `loader.py` |
 | `mn2mc/mini/proto/` | Pre-compiled Protocol Buffer `.py`/`.pyi` files (ch, hc, common messages) |
 | `mn2mc/utils/` | Utilities: XXTEA crypto, protobuf debug parser, color converter, vector math |
 | `resources/` | Reference data, C++ test code, JSON — not imported at runtime |
@@ -83,17 +84,17 @@ Old map_chunk files (`_map_chunk_old*.py`) are legacy, not imported at runtime.
 
 Files in `mn2mc/mini/proto/` are pre-compiled from `.proto` sources (not in the repo). To regenerate, you need the `.proto` files from the Mini World client. Do not edit `.py`/`.pyi` files directly.
 
-### No tests
+### Tests
 
-There is no test suite. All testing is manual — start the proxy, connect a Mini World client, verify against an MC server.
+Tests exist in `tests/` (10 files). `pyproject.toml` configures pytest with `asyncio_mode = "auto"`, but pytest is not in `requirements.txt` — install separately. Tests cover mapping data, utils, packet encoding, and constants. No integration tests.
 
 ### Hardcoded authentication
 
 `mini/auth.py` contains hardcoded MD5 key `2ddb7619717147439c83ab022e9d4d38` and `room.py` contains hardcoded `AUTH_KEY`. These are from the Mini World client binary. The auth module also hardcodes a login server URL.
 
-### Block mapping is enormous
+### Block mapping
 
-`mapping/blocks.py` is ~1100 lines of `mc_to_mini_mapping` dict. This is the primary mapping source. Unknown MC blocks default to Mini ID 0 (air) — check the lookup logic before assuming fallback behavior.
+`mapping/blocks.py` loads from `data/blocks.json` via `data/loader.py`. The JSON files (`blocks.json`, `items.json`, `mobs.json`) are the primary mapping source. Unknown MC blocks default to Mini ID 470 (question mark block) — check the lookup logic before assuming fallback behavior. Reverse mappings (`mini_to_mc`) are auto-generated (last-wins on collisions).
 
 ### aiorak protocol
 
@@ -109,6 +110,10 @@ The `aiorak` server is created with `guid=666`.
 - `mn2mc.mini.player.players` — global list of all connected MiniPlayer instances
 - `mn2mc.config.mini`, `mn2mc.config.mc`, `mn2mc.config.debug` — global config (loaded at startup)
 - Node.js globals via `javascript.eval_js` — shared across all MCClient instances
+
+### Module `__getattr__` proxy pattern
+
+`config`, `events`, `auth`, `room`, `wsconn` use `__getattr__` to expose singleton attributes at module level (e.g. `import mn2mc.config as config` then `config.mini`). `TYPE_CHECKING` guards provide static type hints. When adding attributes to these modules, update both the class and the `TYPE_CHECKING` block.
 
 ## Conventions
 
