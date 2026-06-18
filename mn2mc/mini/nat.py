@@ -27,7 +27,8 @@ async def start():
         mn2mc.mini.room.config["proxy"]["ip"],
         "-coordinator_port",
         str(mn2mc.mini.room.config["proxy"]["port"]),
-        "-upnp"
+        "-upnp",
+        start_new_session=True
     )
 
 

@@ -88,6 +88,10 @@ class MiniPlayer:
     def kick(self) -> None:
         """Disconnect the Mini World client and clean up resources."""
         if self.conn.state == aiorak.ConnectionState.CONNECTED:
+            self.send_packet(
+                common.ePBMsgCode.PB_LEAVE_ROOM_INFO_HC,
+                proto.hc.PB_LeaveRoomInfoHC(Cause=0, KickerType=0).SerializeToString(),
+            )
             self.conn.disconnect()
         if hasattr(self, "mcclient"):
             self.mcclient.running.clear()
