@@ -1,3 +1,7 @@
+"""Handle MC player rotation and synchronize camera angles to Mini World."""
+
+from __future__ import annotations
+
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
@@ -5,7 +9,11 @@ from mn2mc.mini.proto.hc import PB_PlayerCameraRotateHC
 from mn2mc.utils.angle import Angle
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Update local yaw/pitch and broadcast Mini World camera rotation.
+
+    Registered on the 'position' event in addition to dedicated rotation.
+    """
     client.angle = Angle(jsondata["yaw"], jsondata["pitch"])
     rotate = PB_PlayerCameraRotateHC(
         Yaw=client.angle.to_mini_yaw_float(), Pitch=client.angle.to_mini_pitch_float()

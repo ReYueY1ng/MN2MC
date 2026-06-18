@@ -15,13 +15,14 @@ from loguru import logger
 
 import mn2mc.config as config
 import mn2mc.utils.color_converter as color_converter
+from mn2mc.constants import DIMENSION_OVERWORLD
 from mn2mc.mc.packet import on_event, events
 from mn2mc.utils.vector import Vector3f
 from mn2mc.utils.angle import Angle
 
 try:
     from mn2mc.mini.player import MiniPlayer
-except Exception:
+except ImportError:
     pass
 
 prismarinechat = require("prismarine-chat")(config.mc["version"])
@@ -66,13 +67,14 @@ class MCClient:
         self.container_sequence = 0
         self.inventory_type = "inventory"
         self.window_id = 0
-        self.running = True
+        self.running = threading.Event()
+        self.running.set()
         self.players = {}
         self.add_player_count = 0
         self.entities = {}
         self.state = "handshaking"
         self.registry = registry(config.mc["version"])
-        self._dimension = 0  # -1: the_nether | 0: overworld | 1: the_end
+        self._dimension = DIMENSION_OVERWORLD
         logger.info(
             f"({miniplayer.name}) Connecting to {options['host']}:{options['port']}"
         )
@@ -104,7 +106,7 @@ class MCClient:
         )
 
     def on_end(self, end):
-        self.running = False
+        self.running.clear()
         if self.miniplayer.conn.state == aiorak.ConnectionState.CONNECTED:
             logger.info(f"({self.miniplayer.name}) Connection lost: {end}")
 
@@ -115,7 +117,6 @@ class MCClient:
         self.miniplayer.send_msg("Connected to server")
 
     def on_player_chat(self, e):
-        #logger.debug(e)
         if "formattedMessage" in e:
             content = json.loads(e["formattedMessage"])
         elif "unsignedContent" in e and e["unsignedContent"]:
@@ -180,7 +181,7 @@ class MCClient:
         self.client.end()
 
     def remove(self):
-        self.chunkmgr.running = False
+        self.chunkmgr.running.clear()
         self.end()
 
     def chat(self, content: str, ignorestate=False):
@@ -192,13 +193,13 @@ class MCClient:
             self.client.write(name, message)
 
     def get_chunks(self):
-        if self.running and self.chunkmgr.cacheParsedChunks.length > 0:
+        if self.running.is_set() and self.chunkmgr.cacheParsedChunks.length > 0:
             compressed_chunks = self.chunkmgr.compressedChunks.blobValueOf()
             chunks = ormsgpack.unpackb(zlib.decompress(compressed_chunks))
             self.on_packet(chunks, {"name": "parsed_chunk"})
 
     def get_chunks_task(self):
-        while self.running:
+        while self.running.is_set():
             time.sleep(0.2)
             self.get_chunks()
 

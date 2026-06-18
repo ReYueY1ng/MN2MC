@@ -1,3 +1,7 @@
+"""Handle MC player_info and synchronize player list with Mini World AOI."""
+
+from __future__ import annotations
+
 import mn2mc.mini.skin as skin
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
@@ -15,7 +19,12 @@ from mn2mc.mini.proto.common import (
 from mn2mc.mini.proto.hc import PB_ActorEnterAOIHC
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Synchronize player additions/updates to Mini World.
+
+    Sends leave+enter AOI packets for tracked players and registers
+    unknown players for later entity mapping.
+    """
     # print(jsondata)
     # client.add_player_count += 1
     if jsondata["action"]["add_player"]:

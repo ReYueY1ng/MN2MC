@@ -1,3 +1,7 @@
+"""Handle MC set_slot and synchronize window slot contents to Mini World."""
+
+from __future__ import annotations
+
 import mn2mc.config as config
 import mn2mc.mapping.slotid as slotid_mapping
 import mn2mc.mapping.items as item_mapping
@@ -10,7 +14,12 @@ from javascript import require
 prismarine_item = require("prismarine-item")(config.mc["version"])
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Update a single window slot in Mini World.
+
+    Tracks container sequence for the active window and converts MC item
+    data to Mini World PB_ItemData.
+    """
     slot = jsondata["slot"]
     window = jsondata["windowId"]
     # client.window_id = window

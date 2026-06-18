@@ -1,10 +1,19 @@
+"""Handle Mini World backpack grid discard and translate to MC window_click."""
+
+from __future__ import annotations
+
 import mn2mc.mini.proto as proto
 import mn2mc.mapping.slotid as slotid_mapping
 from mn2mc.mini.player import MiniPlayer
 from mn2mc.mini.packet import MiniClientPacket, add_event
 
 
-async def on_recv(player: MiniPlayer, mcp: MiniClientPacket):
+async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
+    """Drop or discard an item from a backpack grid.
+
+    Grid 7000 is treated as the cursor slot and mapped to slot -999.
+    Other grids are translated via slotid mapping.
+    """
     discard = proto.ch.PB_BackPackGridDiscardCH()
     discard.ParseFromString(mcp.data)
 

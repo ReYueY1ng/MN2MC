@@ -1,3 +1,7 @@
+"""Handle MC set_cursor_item and update Mini World cursor slot state."""
+
+from __future__ import annotations
+
 import mn2mc.config as config
 import mn2mc.mapping.items as item_mapping
 from mn2mc.mc.client import MCClient
@@ -9,7 +13,11 @@ from javascript import require
 prismarine_item = require("prismarine-item")(config.mc["version"])
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Translate MC cursor item into Mini World grid update (index 7000).
+
+    Maps MC item IDs to Mini World IDs and preserves count/durability.
+    """
     itemdata = jsondata["contents"]
     item = prismarine_item.fromNotch(itemdata)
 

@@ -1,3 +1,7 @@
+"""Handle Mini World chat packets, commands, and relay to MC chat."""
+
+from __future__ import annotations
+
 from loguru import logger
 import mn2mc
 import mn2mc.mini.proto as proto
@@ -13,7 +17,12 @@ from importlib import reload
 import mn2mc.config as config
 
 
-async def on_recv(player: MiniPlayer, mcp: MiniClientPacket):
+async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
+    """Process Mini World chat messages and /mn2mc commands.
+
+    Handles /mn2mc version, reload, and respawn commands; relays all
+    other messages to the MC server via client.chat().
+    """
     chat_ch = proto.ch.PB_ChatCH()
     chat_ch.ParseFromString(mcp.data)
     # chat_hc = proto.hc.PB_ChatHC(ChatType=0, Uin=player.uin, Speaker=player.name, Content=chat_ch.Content, Language=1, Extend='{"buddle":1}')

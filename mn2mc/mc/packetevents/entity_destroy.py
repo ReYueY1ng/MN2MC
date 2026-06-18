@@ -1,10 +1,20 @@
+"""Handle MC entity_destroy and remove entities from Mini World AOI."""
+
+from __future__ import annotations
+
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_ActorLeaveAOIHC
+from mn2mc.constants import MINI_OBJ_ID_BASE
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Remove destroyed MC entities from Mini World.
+
+    Maps entity IDs back to Mini World object IDs and broadcasts
+    PB_ACTOR_LEAVE_AOI_HC to the Mini World client.
+    """
     for entityid in jsondata["entityIds"]:
         for _, player in client.players.items():
             if "entityid" in player and player["entityid"] == entityid:
@@ -12,7 +22,7 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict):
                 del player["entityid"]
                 break
         else:
-            objid = 4294967294 + entityid
+            objid = MINI_OBJ_ID_BASE + entityid
             if entityid in client.entities:
                 if 'uin' in client.entities[entityid]:
                     objid = client.entities[entityid]['uin']

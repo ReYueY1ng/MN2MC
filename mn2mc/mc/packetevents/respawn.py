@@ -1,3 +1,7 @@
+"""Handle MC respawn and synchronize new world state to Mini World."""
+
+from __future__ import annotations
+
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
@@ -8,7 +12,11 @@ from javascript import require
 registry = require("prismarine-registry")(config.mc["version"])
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Update dimension and game mode after respawn.
+
+    Broadcasts PB_GAME_MODE_CHANGE so Mini World matches the MC world.
+    """
     spawn_info = jsondata["worldState"]
     client.dimension = spawn_info['dimension']
 

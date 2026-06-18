@@ -1,3 +1,7 @@
+"""Handle Mini World backpack set item and translate to MC creative slot updates."""
+
+from __future__ import annotations
+
 import mn2mc.mini.proto as proto
 import mn2mc.mapping.slotid as slotid_mapping
 import mn2mc.mapping.items as item_mapping
@@ -9,7 +13,12 @@ from javascript import require
 prismarine_item = require("prismarine-item")(config.mc["version"])
 
 
-async def on_recv(player: MiniPlayer, mcp: MiniClientPacket):
+async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
+    """Set an item in a specific backpack grid.
+
+    Converts Mini World item IDs to MC IDs and sends set_creative_slot
+    plus a backpack grid update back to the client.
+    """
     setitem = proto.ch.PB_BackPackSetItemCH()
     setitem.ParseFromString(mcp.data)
     item = prismarine_item(item_mapping.mini_to_mc(setitem.ItemId), setitem.Num)

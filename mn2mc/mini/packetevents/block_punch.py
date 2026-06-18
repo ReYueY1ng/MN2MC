@@ -1,3 +1,7 @@
+"""Handle Mini World block punch packets and translate to MC block_dig."""
+
+from __future__ import annotations
+
 import mn2mc.mini.proto as proto
 from mn2mc.mini.player import MiniPlayer
 from mn2mc.mini.packet import MiniClientPacket, add_event
@@ -5,7 +9,12 @@ from mn2mc.utils.vector import Vector3
 import mn2mc.mapping.face as face_mapping
 
 
-async def on_recv(player: MiniPlayer, mcp: MiniClientPacket):
+async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
+    """Translate Mini World block punch to MC block_dig packet.
+
+    Normalizes Mini World punch status and converts position/face to
+    MC format.
+    """
     punch = proto.ch.PB_BlockPunchCH()
     punch.ParseFromString(mcp.data)
 

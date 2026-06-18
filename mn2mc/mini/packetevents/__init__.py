@@ -1,3 +1,5 @@
+"""Auto-import and hot-reload Mini World packet event handlers."""
+
 from importlib import import_module, reload, invalidate_caches
 from pathlib import Path
 

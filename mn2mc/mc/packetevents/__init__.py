@@ -1,3 +1,5 @@
+"""Auto-import and hot-reload Minecraft packet event handlers."""
+
 from importlib import import_module, reload, invalidate_caches
 from pathlib import Path
 

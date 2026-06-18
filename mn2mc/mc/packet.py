@@ -1,36 +1,27 @@
-from loguru import logger
 import importlib
-import types
+
+from loguru import logger
+
 import mn2mc.config as config
+from mn2mc.events import add_event, del_event, reset_events
+from mn2mc.events import events
 
-
-events = {}
-
-
-def add_event(event: str, func: types.FunctionType):
-    __check_event(event)
-    events[event].append(func)
-    return len(events[event])
-
-
-def del_event(event: str, id: int):
-    __check_event(event)
-    events[event][id] = None
-
-
-def reset_events():
-    global events
-    events = {}
-
-
-def __check_event(event: str):
-    if event not in events:
-        events[event] = []
+# NOTE: on_event is kept as a sync wrapper here because mc/client.py calls it
+# synchronously from on_packet (JS bridge callback). The shared events.on_event
+# is async (for mini side), but mc packet handlers are all sync functions.
 
 
 def on_event(event: str, client: object, jsondata: dict, metadata: dict):
-    __check_event(event)
+    """Sync dispatcher for mc packet events.
+
+    Iterates handlers from the shared events registry. All mc packet handlers
+    are sync functions, so no async bridging is needed.
+    """
+    if event not in events:
+        events[event] = []
     for func in events[event]:
+        if func is None:
+            continue
         try:
             func(client, jsondata, metadata)
         except Exception as e:

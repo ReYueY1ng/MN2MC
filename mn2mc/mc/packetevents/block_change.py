@@ -1,3 +1,7 @@
+"""Handle MC block_change packets and broadcast Mini World block updates."""
+
+from __future__ import annotations
+
 from loguru import logger
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
@@ -13,7 +17,12 @@ from javascript import require
 prismarine_block = require("prismarine-block")(config.mc["version"])
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Translate an MC block_change into a Mini World block update broadcast.
+
+    Converts the MC block state and coordinates into Mini World chunk
+    coordinates and sends PB_BLOCK_DATA_UPDATE_HC to all nearby players.
+    """
     pos = Vector3.from_dict(jsondata["location"]).convert()
     block = prismarine_block.fromStateId(jsondata["type"])
     block_id = block_mapping.mc_to_mini(block.type)

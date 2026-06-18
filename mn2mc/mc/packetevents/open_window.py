@@ -1,3 +1,7 @@
+"""Handle MC open_window and notify Mini World of container properties."""
+
+from __future__ import annotations
+
 from loguru import logger
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
@@ -5,7 +9,11 @@ from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_OpenContainerHC
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Translate MC open_window into Mini World container open.
+
+    Maps MC inventory types to grid counts and sends PB_OPEN_CONTAINER_HC.
+    """
     window_id = jsondata["windowId"]
     inventory_type = jsondata["inventoryType"]
     client.window_id = window_id

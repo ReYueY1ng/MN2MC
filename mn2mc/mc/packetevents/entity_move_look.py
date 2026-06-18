@@ -1,3 +1,8 @@
+"""Handle MC entity move+look packets and forward as Mini World actor move."""
+
+from __future__ import annotations
+
+from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import (
@@ -8,7 +13,12 @@ from mn2mc.mini.proto.hc import PB_ActorMoveHC
 from mn2mc.utils.angle import Angle
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Send an entity's new position and look to Mini World.
+
+    Applies fixed-point delta movement, converts angles, and broadcasts
+    PB_ACTOR_MOVE_HC.
+    """
     entityid = jsondata["entityId"]
     if entityid not in client.entities:
         return
@@ -17,7 +27,7 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict):
             objid = player["uin"]
             break
     else:
-        objid = 4294967294 + entityid
+        objid = MINI_OBJ_ID_BASE + entityid
     pos3f = client.entities[entityid]["pos"]
     pos3f.x += jsondata["dX"] / (1 << 12)
     pos3f.y += jsondata["dY"] / (1 << 12)

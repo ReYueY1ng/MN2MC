@@ -13,6 +13,12 @@ players = []
 
 
 class MiniPlayer:
+    """Represents a connected Mini World client player.
+
+    Manages the RakNet connection, packet sending, and lifecycle
+    of a Mini World client connected through the proxy.
+    """
+
     uin: int = 0
     name: str = "Unknown"
     conn: aiorak.Connection
@@ -42,6 +48,7 @@ class MiniPlayer:
         reliability: aiorak.Reliability = aiorak.Reliability.RELIABLE_ORDERED,
         priority: aiorak.Priority = aiorak.Priority.MEDIUM,
     ) -> None:
+        """Send a packet to the Mini World client."""
         # logger.debug(f"({self.uin}) send packet {msg_code}")
         if self.conn.state == aiorak.ConnectionState.CONNECTED:
             if config.mini["server"]["host_to_room_server"]:
@@ -58,6 +65,7 @@ class MiniPlayer:
                 )
 
     def send_msg(self, msg: str, nocolor: bool = False):
+        """Send a system chat message to the Mini World client."""
         self.send_packet(
             common.ePBMsgCode.PB_CHAT_HC,
             proto.hc.PB_ChatHC(
@@ -69,6 +77,7 @@ class MiniPlayer:
     def send_player_msg(
         self, uin: int = 0, speaker: str = "System", msg: str = "default"
     ):
+        """Send a player chat message to the Mini World client."""
         self.send_packet(
             common.ePBMsgCode.PB_CHAT_HC,
             proto.hc.PB_ChatHC(
@@ -77,6 +86,7 @@ class MiniPlayer:
         )
 
     def kick(self) -> None:
+        """Disconnect the Mini World client and clean up resources."""
         if self.conn.state == aiorak.ConnectionState.CONNECTED:
             self.conn.disconnect()
         if hasattr(self, "mcclient"):
@@ -85,6 +95,7 @@ class MiniPlayer:
         players.remove(self)
 
     async def handler(self) -> None:
+        """Main packet handling loop for the Mini World client connection."""
         try:
             async for data in self.conn:
                 mcp = MiniClientPacket(data)
@@ -93,5 +104,5 @@ class MiniPlayer:
                 await on_event(mcp.msgcode, self, mcp)
                 # logger.debug(mcp)
         except Exception as e:
-            logger.exception(f"({self.uin}) Fatel exception occurred: {str(e)}")
+            logger.exception(f"({self.uin}) Fatal exception occurred: {str(e)}")
             self.kick()

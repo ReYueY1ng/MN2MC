@@ -2,7 +2,8 @@ from typing import TypedDict
 import yaml
 from pathlib import Path
 
-default_file = """
+# Default config as a string — used only for initial file generation and as documentation.
+_default_file = """\
 mini:
   auth:
     # 仅创建房间时才使用
@@ -49,13 +50,6 @@ class Mini(TypedDict):
     send_log_to_chat: bool
 
 
-mini: Mini = {
-    "server": {"ip": "127.0.0.1", "port": 11155, "host_to_room_server": False},
-    "auth": {"uin": 0, "passwd": "", 'api_id': 110, 'device_id': ''},
-    "send_log_to_chat": False,
-}
-
-
 class MC(TypedDict):
     ip: str
     port: int
@@ -66,31 +60,66 @@ class MC(TypedDict):
     log_message: bool
 
 
-mc: MC = {
-    "ip": "127.0.0.1",
-    "port": 25565,
-    "username": "",  # use mini player name
-    "version": "1.21.11",
-    "chunk_parse_thread": 4,
-    "use_new_chunk_parser": True,
-    "log_message": False
-}
+class ConfigManager:
+    """Manages application configuration loaded from / saved to YAML."""
 
-debug: bool = False
+    def __init__(self) -> None:
+        self.mini: Mini = {
+            "server": {"ip": "127.0.0.1", "port": 11155, "host_to_room_server": False},
+            "auth": {"uin": 0, "passwd": "", "api_id": 110, "device_id": ""},
+            "send_log_to_chat": False,
+        }
+        self.mc: MC = {
+            "ip": "127.0.0.1",
+            "port": 25565,
+            "username": "",
+            "version": "1.21.11",
+            "chunk_parse_thread": 4,
+            "use_new_chunk_parser": True,
+            "log_message": False,
+        }
+        self.debug: bool = False
+        self._config_path: Path = Path("config.yaml")
+
+    def load(self, path: Path = Path("config.yaml")) -> None:
+        self._config_path = path
+        if path.exists():
+            with path.open() as f:
+                data = yaml.safe_load(f)
+                self.mini = data["mini"]
+                self.mc = data["mc"]
+                self.debug = data["debug"]
+        else:
+            self.save(path)
+
+    def save(self, path: Path | None = None) -> None:
+        """Serialize the current config state to YAML.
+
+        If *path* is ``None``, writes to the same file that was last loaded
+        (or the default ``config.yaml`` on first run).
+        """
+        if path is None:
+            path = self._config_path
+        with path.open("w") as f:
+            yaml.dump(
+                {"mini": self.mini, "mc": self.mc, "debug": self.debug},
+                f,
+                default_flow_style=False,
+                sort_keys=False,
+                allow_unicode=True,
+            )
 
 
-def load(path: Path = Path("config.yaml")) -> None:
-    global mini, mc, debug
-    if path.exists():
-        with path.open() as f:
-            config = yaml.safe_load(f)
-            mini = config["mini"]
-            mc = config["mc"]
-            debug = config["debug"]
-    else:
-        save(path)
+# Module-level singleton — importers use ``import mn2mc.config as config``
+# then access ``config.mini``, ``config.mc``, ``config.load()``, etc.
+config = ConfigManager()
+
+# Sentinel names that __getattr__ proxies to the singleton.
+_CONFIG_ATTRS = frozenset({"mini", "mc", "debug", "load", "save"})
 
 
-def save(path: Path = Path("config.yaml")):
-    with path.open("w") as f:
-        f.write(default_file)
+def __getattr__(name: str):
+    """Proxy attribute lookups to the singleton for live values."""
+    if name in _CONFIG_ATTRS:
+        return getattr(config, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

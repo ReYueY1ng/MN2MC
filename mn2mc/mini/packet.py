@@ -1,30 +1,32 @@
 import importlib
 import struct
-import types
 from typing import Optional
 
-from loguru import logger
+from mn2mc.events import add_event, del_event, on_event, reset_events
 
 PLACEHOLDER = b"\x90\x00\x02\x9a"
 
-events = {}
-
 
 class MiniClientPacket:
+    """Packet received from a Mini World client.
+
+    Format: \\x89 + 4-byte big-endian uin + 8-byte placeholder + 2-byte LE msgcode + 2-byte LE length + data
+    """
+
     uin: int
     msgcode: int
     data: bytes
 
     def __init__(self, uinordata: int | bytes | None, msgcode: Optional[int] = None, data: Optional[bytes] = None) -> None:
-        if type(uinordata) is int:
-            if type(msgcode) is not int:
+        if isinstance(uinordata, int):
+            if not isinstance(msgcode, int):
                 raise TypeError('msgcode must be int')
-            elif type(data) is not bytes:
+            elif not isinstance(data, bytes):
                 raise TypeError('data must be bytes')
             self.uin = uinordata
             self.msgcode = msgcode
             self.data = data
-        elif type(uinordata) is bytes:
+        elif isinstance(uinordata, bytes):
             self.decode(uinordata)
     def __str__(self) -> str:
         return f"""\
@@ -49,6 +51,11 @@ data: {self.data}
 
 
 class MiniServerPacket:
+    """Packet sent from the proxy server to a Mini World client.
+
+    Format: \\x89 + 2-byte LE msgcode + 2-byte LE length + data
+    """
+
     msgcode: int
     data: bytes = b""
 
@@ -72,35 +79,6 @@ data: {self.data}
         return b"\x89" + struct.pack("<HH", self.msgcode, len(self.data)) + self.data
 
 
-def add_event(event: int, func: types.FunctionType):
-    __check_event(event)
-    events[event].append(func)
-    return len(events[event])
-
-
-def del_event(event: int, id: int):
-    __check_event(event)
-    events[event][id] = None
-
-
-def reset_events():
-    global events
-    events = {}
-
-
-def __check_event(event: int):
-    if event not in events:
-        events[event] = []
-
-
-async def on_event(event: int, player: object, mcp: MiniClientPacket):
-    __check_event(event)
-    for func in events[event]:
-        try:
-            await func(player, mcp)
-        except Exception as e:
-            logger.exception(f"Exception occurred: {str(e)}")
-
-
 def load_all_event():
+    """Import all Mini World packet event handlers from the packetevents module."""
     importlib.import_module("mn2mc.mini.packetevents")

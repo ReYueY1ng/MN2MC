@@ -1,3 +1,7 @@
+"""Handle Mini World block interact packets and translate to MC block_place."""
+
+from __future__ import annotations
+
 import mn2mc.mini.proto as proto
 from mn2mc.mini.player import MiniPlayer
 from mn2mc.mini.packet import MiniClientPacket, add_event
@@ -5,7 +9,12 @@ from mn2mc.utils.vector import Vector3
 import mn2mc.mapping.face as face_mapping
 
 
-async def on_recv(player: MiniPlayer, mcp: MiniClientPacket):
+async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
+    """Translate Mini World block interact to MC block_place packet.
+
+    Converts Mini World block position and face to MC format and sends
+    block_place with default cursor values.
+    """
     interact = proto.ch.PB_BlockInteractCH()
     interact.ParseFromString(mcp.data)
     pos = Vector3.from_mini(interact.blockpos).convert()

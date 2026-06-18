@@ -1,3 +1,7 @@
+"""Handle MC position packets and synchronize player position/rotation."""
+
+from __future__ import annotations
+
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
@@ -5,7 +9,12 @@ from mn2mc.mini.proto.hc import PB_MoveSyncHC, PB_PlayerCameraRotateHC
 from mn2mc.utils.angle import Angle
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Update tracked position/angle and send Mini World move/rotation packets.
+
+    Uses per-axis flags to distinguish absolute vs relative updates, then
+    sends PB_SYNC_MOVE_HC and PB_PLAYER_CAMERAROTATE_HC.
+    """
     # logger.debug(jsondata)
     if jsondata["flags"]["x"]:
         client.position.x += jsondata["x"]

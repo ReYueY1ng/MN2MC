@@ -14,7 +14,7 @@ import mn2mc.mini.auth
 import mn2mc.mini.nat
 import mn2mc.mini.wsconn
 
-CONFIG_URL = " http://openroom.mini1.cn:8080/server/room?"
+CONFIG_URL = "http://openroom.mini1.cn:8080/server/room?"
 AUTH_KEY = "f5711eb1640712de051e5aedc35329c3"
 
 CREATE_ROOM_PARAMS = {
@@ -66,200 +66,211 @@ CREATE_ROOM_EXTEND_PARAMS = {
     "room_token": "",
 }
 
-room_url = "http://%s:%s/server/room?"
-config = {}
-session_id = "".join(random.choices("0123456789abcdef", k=32))
-room_token: str
-player_count = 0
-_update_task: asyncio.Task | None = None
 
+class MiniRoom:
+    """Manages Mini World room creation, updates, and teardown."""
 
-def _make_auth(params: dict) -> str:
-    """MD5(sorted non-empty params + AUTH_KEY)."""
-    body = "&".join(f"{k}={v}" for k, v in sorted(params.items()) if v is not None)
-    return hashlib.md5((body + AUTH_KEY).encode()).hexdigest()
+    def __init__(self) -> None:
+        self.config: dict = {}
+        self.room_token: str = ""
+        self.player_count: int = 0
+        self.room_url: str = "http://%s:%s/server/room?"
+        self.session_id: str = "".join(random.choices("0123456789abcdef", k=32))
+        self._update_task: asyncio.Task | None = None
 
+    @staticmethod
+    def _make_auth(params: dict) -> str:
+        """MD5(sorted non-empty params + AUTH_KEY)."""
+        body = "&".join(f"{k}={v}" for k, v in sorted(params.items()) if v is not None)
+        return hashlib.md5((body + AUTH_KEY).encode()).hexdigest()
 
-async def get_config():
-    global config
-    logger.info("Getting server config...")
-    config_params = {"cmd": "server_config", "uin": mn2mc.mini.auth.uin}
-    encoded_params = urllib.parse.urlencode(config_params)
-    encoded_params += (
-        "&auth=" + hashlib.md5((encoded_params + AUTH_KEY).encode()).hexdigest()
-    )
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            CONFIG_URL + encoded_params, headers=mn2mc.mini.HEADERS
-        ) as response:
-            data = await response.text()
-            jsondata = json.loads(data)
-            if jsondata["result"] == 0:
-                config = jsondata["config"]
-                return config
-            else:
-                raise Exception(f"Failed to get server config: {data}")
-
-
-async def create_room():
-    global room_url, room_token
-    server_config = await get_config()
-    room_url = room_url % (server_config["room"]["ip"], server_config["room"]["port"])
-    logger.info("Creating room...")
-    cur_time = str(int(time.time()))
-    room_token = f"{mn2mc.mini.auth.uin:0>12}{int(cur_time):0>12}{session_id}"
-
-    params = CREATE_ROOM_PARAMS.copy()
-    params["device"] = str(mn2mc.mini.auth.api_id)
-    params["extra_data"] = (
-        "{"
-        f'"audioconfigurl":"","autoTag":"创造","editorSceneSwitch":0,"version":"{mn2mc.mini.version}",'
-        #'"limit":6,"modGoods":[],"modUuids":[],"modurl":"","platform":1,'
-        #f'"stime":{cur_time},"translate_sourcelang":0,"uilibsurl":"",'
-        #f'"uniqueCode":"{room_token}","version":"{mn2mc.mini.version}",'
-        '"worldtype":4'
-        "}"
-    )
-    params["proxy_ip"] = server_config["proxy"]["ip"]
-    params["proxy_port"] = server_config["proxy"]["port"]
-    params["punch_ip"] = server_config["punch"]["ip"]
-    params["punch_port"] = server_config["punch"]["port"]
-    params["room_name"] = f"MN2MC {mn2mc.version}"
-    params["s2t"] = mn2mc.mini.wsconn.s2t
-    params["time"] = cur_time
-    params["token"] = hashlib.md5(
-        (cur_time + mn2mc.mini.wsconn.s2 + str(mn2mc.mini.auth.uin)).encode()
-    ).hexdigest()
-    params["uin"] = str(mn2mc.mini.auth.uin)
-    params["version"] = mn2mc.mini.version
-
-    extend_params = CREATE_ROOM_EXTEND_PARAMS.copy()
-    extend_params["session_id"] = session_id
-    extend_params["room_token"] = room_token
-    extend_params["cltapiid"] = str(mn2mc.mini.auth.api_id)
-    extend_params["cltversion"] = str(mn2mc.mini.cltversion)
-
-    encoded = urllib.parse.urlencode(params)
-    auth = _make_auth(params)
-    encoded += f"&{urllib.parse.urlencode(extend_params)}&auth={auth}"
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            room_url + encoded, headers=mn2mc.mini.HEADERS
-        ) as response:
-            data = await response.text()
-            jsondata = json.loads(data)
-            if jsondata["result"] == 0:
-                logger.info("Room created. Now you can search the room by uin.")
-                await mn2mc.mini.nat.start()
-                _start_update_loop()
-            else:
-                raise Exception(f"Failed to create room: {data}")
-
-
-
-async def room_update(count: int | None = None):
-    global player_count
-    if count is not None:
-        player_count = count
-    if not room_token:
-        return
-
-    # Auth is computed on first 9 params only
-    auth_params = {
-        "cmd": "host_update_room",
-        "locked": "0",
-        "members": str(mn2mc.mini.auth.uin),
-        "ping": "89",
-        "aiPlayerCounts": "",
-        "ready": "1",
-        "stage": "0",
-        "uin": str(mn2mc.mini.auth.uin),
-        "umpire": "0",
-    }
-    auth = _make_auth(auth_params)
-
-    # Remaining params added to URL but NOT auth
-    params = {
-        **auth_params,
-        "pause": "0",
-        "can_trace": "9335",
-        "public_type": "0",
-        "max_count": "65535",
-        "passwd": "",
-        "is_empty_night": "0",
-    }
-    encoded = urllib.parse.urlencode(params) + f"&auth={auth}"
-
-    try:
+    async def get_config(self) -> dict:
+        logger.info("Getting server config...")
+        config_params = {"cmd": "server_config", "uin": mn2mc.mini.auth.uin}
+        encoded_params = urllib.parse.urlencode(config_params)
+        encoded_params += (
+            "&auth=" + hashlib.md5((encoded_params + AUTH_KEY).encode()).hexdigest()
+        )
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                room_url + encoded, headers=mn2mc.mini.HEADERS
+                CONFIG_URL + encoded_params, headers=mn2mc.mini.HEADERS
             ) as response:
-                result = json.loads(await response.text())
-                if result["result"] != 0:
-                    logger.error(f"Room update failed: {result}")
-    except Exception as e:
-        logger.error(f"Room update failed: {e}")
-
-
-async def close_room():
-    global _update_task
-    if _update_task:
-        _update_task.cancel()
-        _update_task = None
-    if not room_token:
-        return
-
-    # Auth computed on cmd + uin only
-    auth = _make_auth({
-        "cmd": "close_room",
-        "uin": str(mn2mc.mini.auth.uin),
-    })
-
-    params = {
-        "cmd": "close_room",
-        "uin": str(mn2mc.mini.auth.uin),
-        "apiid": str(mn2mc.mini.auth.api_id),
-        "country": "CN",
-        "lang": "0",
-        "ver": mn2mc.mini.version,
-        "regapiid": "6",
-        "cltapiid": str(mn2mc.mini.auth.api_id),
-        "cltversion": str(mn2mc.mini.cltversion),
-        "game_session_id": "",
-        "session_id": session_id,
-        "room_token": room_token,
-    }
-    encoded = urllib.parse.urlencode(params) + f"&auth={auth}"
-
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                room_url + encoded, headers=mn2mc.mini.HEADERS
-            ) as response:
-                result = json.loads(await response.text())
-                if result.get("result") != 0:
-                    logger.error(f"Close room failed: {result}")
+                data = await response.text()
+                jsondata = json.loads(data)
+                if jsondata["result"] == 0:
+                    self.config = jsondata["config"]
+                    return self.config
                 else:
-                    logger.info("Room closed successfully")
-    except Exception as e:
-        logger.error(f"Close room failed: {e}")
+                    raise Exception(f"Failed to get server config: {data}")
+
+    async def create_room(self) -> None:
+        server_config = await self.get_config()
+        self.room_url = self.room_url % (server_config["room"]["ip"], server_config["room"]["port"])
+        logger.info("Creating room...")
+        cur_time = str(int(time.time()))
+        self.room_token = f"{mn2mc.mini.auth.uin:0>12}{int(cur_time):0>12}{self.session_id}"
+
+        params = CREATE_ROOM_PARAMS.copy()
+        params["device"] = str(mn2mc.mini.auth.api_id)
+        params["extra_data"] = (
+            "{"
+            f'"audioconfigurl":"","autoTag":"创造","editorSceneSwitch":0,"version":"{mn2mc.mini.version}",'
+            #'"limit":6,"modGoods":[],"modUuids":[],"modurl":"","platform":1,'
+            #f'"stime":{cur_time},"translate_sourcelang":0,"uilibsurl":"",'
+            #f'"uniqueCode":"{self.room_token}","version":"{mn2mc.mini.version}",'
+            '"worldtype":4'
+            "}"
+        )
+        params["proxy_ip"] = server_config["proxy"]["ip"]
+        params["proxy_port"] = server_config["proxy"]["port"]
+        params["punch_ip"] = server_config["punch"]["ip"]
+        params["punch_port"] = server_config["punch"]["port"]
+        params["room_name"] = f"MN2MC {mn2mc.version}"
+        params["s2t"] = mn2mc.mini.wsconn.s2t
+        params["time"] = cur_time
+        params["token"] = hashlib.md5(
+            (cur_time + mn2mc.mini.wsconn.s2 + str(mn2mc.mini.auth.uin)).encode()
+        ).hexdigest()
+        params["uin"] = str(mn2mc.mini.auth.uin)
+        params["version"] = mn2mc.mini.version
+
+        extend_params = CREATE_ROOM_EXTEND_PARAMS.copy()
+        extend_params["session_id"] = self.session_id
+        extend_params["room_token"] = self.room_token
+        extend_params["cltapiid"] = str(mn2mc.mini.auth.api_id)
+        extend_params["cltversion"] = str(mn2mc.mini.cltversion)
+
+        encoded = urllib.parse.urlencode(params)
+        auth = self._make_auth(params)
+        encoded += f"&{urllib.parse.urlencode(extend_params)}&auth={auth}"
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                self.room_url + encoded, headers=mn2mc.mini.HEADERS
+            ) as response:
+                data = await response.text()
+                jsondata = json.loads(data)
+                if jsondata["result"] == 0:
+                    logger.info("Room created. Now you can search the room by uin.")
+                    await mn2mc.mini.nat.start()
+                    self._start_update_loop()
+                else:
+                    raise Exception(f"Failed to create room: {data}")
+
+    async def room_update(self, count: int | None = None) -> None:
+        if count is not None:
+            self.player_count = count
+        if not self.room_token:
+            return
+
+        # Auth is computed on first 9 params only
+        auth_params = {
+            "cmd": "host_update_room",
+            "locked": "0",
+            "members": str(mn2mc.mini.auth.uin),
+            "ping": "89",
+            "aiPlayerCounts": "",
+            "ready": "1",
+            "stage": "0",
+            "uin": str(mn2mc.mini.auth.uin),
+            "umpire": "0",
+        }
+        auth = self._make_auth(auth_params)
+
+        # Remaining params added to URL but NOT auth
+        params = {
+            **auth_params,
+            "pause": "0",
+            "can_trace": "9335",
+            "public_type": "0",
+            "max_count": "65535",
+            "passwd": "",
+            "is_empty_night": "0",
+        }
+        encoded = urllib.parse.urlencode(params) + f"&auth={auth}"
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    self.room_url + encoded, headers=mn2mc.mini.HEADERS
+                ) as response:
+                    result = json.loads(await response.text())
+                    if result["result"] != 0:
+                        logger.error(f"Room update failed: {result}")
+        except Exception as e:
+            logger.error(f"Room update failed: {e}")
+
+    async def close_room(self) -> None:
+        if self._update_task:
+            self._update_task.cancel()
+            self._update_task = None
+        if not self.room_token:
+            return
+
+        # Auth computed on cmd + uin only
+        auth = self._make_auth({
+            "cmd": "close_room",
+            "uin": str(mn2mc.mini.auth.uin),
+        })
+
+        params = {
+            "cmd": "close_room",
+            "uin": str(mn2mc.mini.auth.uin),
+            "apiid": str(mn2mc.mini.auth.api_id),
+            "country": "CN",
+            "lang": "0",
+            "ver": mn2mc.mini.version,
+            "regapiid": "6",
+            "cltapiid": str(mn2mc.mini.auth.api_id),
+            "cltversion": str(mn2mc.mini.cltversion),
+            "game_session_id": "",
+            "session_id": self.session_id,
+            "room_token": self.room_token,
+        }
+        encoded = urllib.parse.urlencode(params) + f"&auth={auth}"
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    self.room_url + encoded, headers=mn2mc.mini.HEADERS
+                ) as response:
+                    result = json.loads(await response.text())
+                    if result.get("result") != 0:
+                        logger.error(f"Close room failed: {result}")
+                    else:
+                        logger.info("Room closed successfully")
+        except Exception as e:
+            logger.error(f"Close room failed: {e}")
+
+    def _start_update_loop(self) -> None:
+        async def _loop() -> None:
+            await self.room_update()
+            while True:
+                await asyncio.sleep(15)
+                await self.room_update()
+
+        self._update_task = asyncio.create_task(_loop())
+        logger.info("Room update loop started (every 15s)")
+
+    def set_player_count(self, count: int) -> None:
+        self.player_count = count
 
 
-def _start_update_loop():
-    global _update_task
-
-    async def _loop():
-        await room_update()
-        while True:
-            await asyncio.sleep(15)
-            await room_update()
-
-    _update_task = asyncio.create_task(_loop())
-    logger.info("Room update loop started (every 15s)")
+# Module-level singleton — all external code accesses via mn2mc.mini.room.xxx
+room = MiniRoom()
 
 
-def set_player_count(count: int):
-    global player_count
-    player_count = count
+def __getattr__(name: str):
+    """Proxy attribute access to the room singleton for backward compatibility.
+
+    This allows `mn2mc.mini.room.room_token`, `mn2mc.mini.room.config`, etc.
+    to transparently resolve to `room.room_token`, `room.config`, etc.
+    """
+    if name in {
+        "config", "room_token", "player_count", "room_url",
+        "session_id", "_update_task",
+        "get_config", "create_room", "room_update", "close_room",
+        "_start_update_loop", "set_player_count",
+    }:
+        return getattr(room, name)
+    raise AttributeError(f"module 'mn2mc.mini.room' has no attribute {name!r}")

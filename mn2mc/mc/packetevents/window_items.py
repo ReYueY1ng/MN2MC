@@ -1,3 +1,7 @@
+"""Handle MC window_items and synchronize full container contents to Mini World."""
+
+from __future__ import annotations
+
 import mn2mc.config as config
 import mn2mc.mapping.slotid as slotid_mapping
 import mn2mc.mapping.items as item_mapping
@@ -10,7 +14,11 @@ from javascript import require
 prismarine_item = require("prismarine-item")(config.mc["version"])
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Translate a full window_items payload into Mini World backpack updates.
+
+    Maps MC slot IDs and item IDs, including the carried cursor item.
+    """
     window = jsondata["windowId"]
     client.container_sequence = jsondata["stateId"]
     items = jsondata["items"]

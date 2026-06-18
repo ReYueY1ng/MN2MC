@@ -1,3 +1,7 @@
+"""Handle MC login and synchronize initial state to Mini World."""
+
+from __future__ import annotations
+
 import mn2mc
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
@@ -5,7 +9,11 @@ from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_GameModeChangeHC
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Complete MC login handshake and send game mode to Mini World.
+
+    Sends a brand channel message and broadcasts the initial game mode.
+    """
     client.client.registerChannel("minecraft:brand", ["string", []])
     client.client.writeChannel(
         "minecraft:brand",

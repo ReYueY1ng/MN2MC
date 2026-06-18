@@ -1,10 +1,19 @@
+"""Handle MC game_state_change and synchronize game mode to Mini World."""
+
+from __future__ import annotations
+
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_GameModeChangeHC
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Translate MC game mode changes to Mini World.
+
+    Maps MC survival/creative/adventure/spectator to Mini World modes
+    and broadcasts PB_GAME_MODE_CHANGE.
+    """
     if jsondata["reason"] == "change_game_mode":
         gm = 1
         oldgm = 3

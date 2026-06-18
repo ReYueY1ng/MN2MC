@@ -1,3 +1,7 @@
+"""Handle MC set_player_inventory and map slot contents to Mini World."""
+
+from __future__ import annotations
+
 import mn2mc.config as config
 import mn2mc.mapping.slotid as slotid_mapping
 import mn2mc.mapping.items as item_mapping
@@ -10,7 +14,11 @@ from javascript import require
 prismarine_item = require("prismarine-item")(config.mc["version"])
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
+    """Map a direct MC inventory slot to a Mini World backpack grid.
+
+    Translates item type and count, then sends PB_BACKPACK_GRID_UPDATE_HC.
+    """
     slot = jsondata["slotId"]
     content = jsondata["content"]
     item = prismarine_item.fromNotch(content)

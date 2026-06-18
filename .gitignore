@@ -365,3 +365,5 @@ config.yaml
 logs/
 resources/
 tools/raknet_proxy
+.omo/
+archive/
