@@ -21,7 +21,7 @@ from mn2mc.mini.proto.common import (
     PB_RoleData,
     PB_RoleInfo,
     ePBMsgCode,
-    PB_ActorAttInfo,
+    PB_ActorAttInfo, PB_ActorItem,
 )
 from mn2mc.mini.proto.hc import (
     PB_ActorEnterAOIHC,
@@ -34,7 +34,6 @@ from mn2mc.utils.vector import Vector3f, Vector3
 # Entity types that should be ignored (not spawned in Mini World).
 _IGNORED_ENTITY_TYPES = frozenset({
     5,   # armor stand
-    71,  # item
     131, # text display
     93,  # painting
     73,  # item frame
@@ -46,7 +45,7 @@ _IGNORED_ENTITY_TYPES = frozenset({
 
 # MC entity type ID for players.
 _PLAYER_ENTITY_TYPE = 155
-
+_ITEM_ENTITY_TYPE = 71
 
 def _build_entity_data(client: MCClient, jsondata: dict) -> tuple[int, int, str, Vector3f, Angle, Vector3] | None:
     """Parse common entity fields from the packet data.
@@ -144,6 +143,40 @@ def _handle_mob_spawn(
         ).SerializeToString(),
     )
 
+def _handle_item_spawn(client: MCClient, entityid: int, pos: Vector3, angle: Angle):
+    """Send AOI enter packet for a item entity."""
+    mini_obj_id = MINI_OBJ_ID_BASE + entityid
+    if entityid in client.entities:
+        client.miniplayer.send_packet(
+            ePBMsgCode.PB_ACTOR_LEAVE_AOI_HC,
+            PB_ActorLeaveAOIHC(ObjID=mini_obj_id).SerializeToString(),
+        )
+
+    client.miniplayer.send_packet(
+        ePBMsgCode.PB_GENERAL_ENTER_AOI_HC,
+        PB_GeneralEnterAOIHC(
+            ObjID=mini_obj_id,
+            MapId=0,
+            ActorItem=PB_ActorItem(
+                basedata=PB_ActorCommon(
+                    wid=mini_obj_id,
+                    pos=pos.to_mini(),
+                    motion=Vector3().to_mini(),
+                    yaw=angle.to_mini_yaw_int32(),
+                    pitch=angle.to_mini_pitch_int32(),
+                    flags=0,
+                    falldist=0,
+                    liveticks=0,
+                    attinfo=PB_ActorAttInfo(),
+                    masterobjid=0,
+                    cancollide=True,
+                ),
+                itemid=100,
+                num=1,
+                durable=-1
+            )
+        ).SerializeToString(),
+    )
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     """Handle MC spawn_entity and create Mini World AOI entries.
@@ -158,6 +191,8 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     entityid, entitytype, uuid, _pos3f, angle, pos = entity_data
     if entitytype == _PLAYER_ENTITY_TYPE:
         _handle_player_spawn(client, entityid, uuid, pos, angle)
+    elif entitytype == _ITEM_ENTITY_TYPE:
+        _handle_item_spawn(client, entityid, pos, angle)
     else:
         _handle_mob_spawn(client, entityid, entitytype, pos, angle)
 
