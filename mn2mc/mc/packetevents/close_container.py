@@ -14,7 +14,7 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     Resets tracked window state and sends PB_CLOSE_CONTAINER_HC.
     """
     client.window_id = 0
-    #client.inventory_type = "inventory"
+    client.inventory_type = "inventory"
     client.miniplayer.send_packet(
         ePBMsgCode.PB_CLOSE_CONTAINER_HC,
         PB_CloseContainerHC(
