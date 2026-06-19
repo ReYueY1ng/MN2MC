@@ -25,7 +25,6 @@ def _handle_item(client: MCClient, entityid: int, metadata):
     item = prismarine_item.fromNotch(metadata[8]['value'])
 
     entity = client.entities[entityid]
-    logger.debug(entity)
 
     client.miniplayer.send_packet(
         ePBMsgCode.PB_ACTOR_LEAVE_AOI_HC,
