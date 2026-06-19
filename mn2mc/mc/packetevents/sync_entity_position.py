@@ -5,7 +5,6 @@ from __future__ import annotations
 from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
-from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mini.proto.common import (
     ePBMsgCode,
     PB_MoveMotion,
@@ -32,8 +31,10 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
         objid = MINI_OBJ_ID_BASE + entityid
     pos3f = Vector3f(jsondata["x"], jsondata["y"], jsondata["z"])
     angle = Angle(jsondata["yaw"], jsondata["pitch"])
-    client.entities[entityid]["pos"] = pos3f
-    client.entities[entityid]["angle"] = angle
+    client.entities[entityid].pos = pos3f
+    client.entities[entityid].angle = angle
+    if client.entities[entityid].type == 71:
+        pos3f.y += 0.12 # 防止物品遁地
     pos = pos3f.convert().to_vec3().to_mini()
     yaw, pitch = angle.to_mini_uint8()
     client.miniplayer.send_packet(

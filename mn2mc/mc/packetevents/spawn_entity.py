@@ -9,6 +9,7 @@ import mn2mc.mini.skin as skin
 from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
+from mn2mc.mc.entity import MCEntity
 from mn2mc.mini.proto.common import (
     PB_ActorCommon,
     PB_ActorInfo,
@@ -61,7 +62,7 @@ def _build_entity_data(client: MCClient, jsondata: dict) -> tuple[int, int, str,
     uuid = jsondata["objectUUID"]
     pos3f = Vector3f(jsondata["x"], jsondata["y"], jsondata["z"])
     angle = Angle(jsondata["yaw"], jsondata["pitch"])
-    client.entities[entityid] = {"pos": pos3f, "angle": angle}
+    client.entities[entityid] = MCEntity(pos3f, angle, entitytype)
     pos = pos3f.convert().to_vec3()
     return entityid, entitytype, uuid, pos3f, angle, pos
 
@@ -75,7 +76,7 @@ def _handle_player_spawn(
         client.add_player_count += 1
         client.players[uuid] = {"name": "Unknown", "uin": client.add_player_count}
 
-    client.entities[entityid]["uin"] = client.players[uuid]["uin"]
+    client.entities[entityid].uin = client.players[uuid]["uin"]
     client.players[uuid]["entityid"] = entityid
     client.miniplayer.send_packet(
         ePBMsgCode.PB_ACTOR_ENTER_AOI_HC,

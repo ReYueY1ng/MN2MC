@@ -17,6 +17,7 @@ import mn2mc.config as config
 import mn2mc.utils.color_converter as color_converter
 from mn2mc.constants import DIMENSION_OVERWORLD
 from mn2mc.mc.packet import on_event, events
+from mn2mc.mc.entity import MCEntity
 from mn2mc.utils.vector import Vector3f
 from mn2mc.utils.angle import Angle
 
@@ -49,7 +50,7 @@ class MCClient:
     inventory_type: str | int
     players: dict
     add_player_count: int
-    entities: dict
+    entities: dict[int, MCEntity]
     registry: registry
 
     def __init__(self, options: dict, miniplayer: MiniPlayer) -> None:
@@ -206,7 +207,7 @@ class MCClient:
 
     def load_events(self):
         for event in events:
-            if event not in self.on_events:
+            if isinstance(event, str) and event not in self.on_events:
                 self.client.on(event, self.on_packet)
                 self.on_events.append(event)
 

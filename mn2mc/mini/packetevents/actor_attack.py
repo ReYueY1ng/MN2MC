@@ -26,7 +26,7 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                 entityid = objid - MINI_OBJ_ID_BASE
             else:
                 for eid, entity in player.mcclient.entities.items():
-                    if 'uin' in entity and entity['uin'] == objid:
+                    if entity.uin == objid:
                         entityid = eid
                 else:
                     entityid = objid

@@ -24,8 +24,8 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
         else:
             objid = MINI_OBJ_ID_BASE + entityid
             if entityid in client.entities:
-                if 'uin' in client.entities[entityid]:
-                    objid = client.entities[entityid]['uin']
+                if client.entities[entityid].uin is not None:
+                    objid = client.entities[entityid].uin
                 del client.entities[entityid]
 
         client.miniplayer.send_packet(

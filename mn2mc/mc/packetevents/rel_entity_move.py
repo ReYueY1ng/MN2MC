@@ -29,12 +29,12 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
             break
     else:
         objid = MINI_OBJ_ID_BASE + entityid
-    pos3f = client.entities[entityid]["pos"]
+    pos3f = client.entities[entityid].pos
     pos3f.x += jsondata["dX"] / (1 << 12)
     pos3f.y += jsondata["dY"] / (1 << 12)
     pos3f.z += jsondata["dZ"] / (1 << 12)
     pos = pos3f.convert().to_vec3().to_mini()
-    angle: Angle = client.entities[entityid]["angle"]
+    angle: Angle = client.entities[entityid].angle
     yaw, pitch = angle.to_mini_uint8()
     client.miniplayer.send_packet(
         ePBMsgCode.PB_ACTOR_MOVE_HC,
