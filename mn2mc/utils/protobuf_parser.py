@@ -935,6 +935,222 @@ def to_camel_case(text):
     return s[0].upper() + s[1:]
 
 
+# 手动映射：枚举名 -> 实际消息类名
+# 当自动转换失败时使用此映射
+ENUM_TO_CLASS_MANUAL = {
+    10: "PB_MsgErrorHC",  # PB_REQ_ERROR_HC
+    103: None,  # PB_BLOCK_DATA_UPDATE_CH - 无对应消息类
+    2013: None,  # PB_SYNC_GRIDUSERDATA_CH - 无对应消息类
+    2014: None,  # PB_SYNC_GRIDUSERDATA_HC - 无对应消息类
+    2015: "PB_SyncTriggerBlock",  # PB_SYNC_TRIGGERBLOCK_HC
+    2018: "PB_ActorMoveV3HC_Batch",  # PB_ACTOR_MOVEV3_HC
+    2019: "PB_ActorModelChange",  # PB_ACTOR_MODELCHG_HC
+    3052: None,  # PB_ACTOT_SET_CUSTOM_CH - 无对应消息类
+    3053: None,  # PB_ACTOT_SET_CUSTOM_HC - 无对应消息类
+    3064: None,  # PB_LIVING_INTERACT_NEW_NEWTAME_HC - 无对应消息类
+    3065: None,  # PB_LIVING_REPRODUCTION_HC - 无对应消息类
+    3066: None,  # PB_LIVING_INTERACT_NEW_NEWGROW_HC - 无对应消息类
+    3069: "PB_RefinableTakeResultCH",  # PB_TRAIN_REFINABLE_TAKE_RESULT_CH
+    4042: None,  # PB_OTHER_PLAYER_ATTR_CHANGE_HC - 无对应消息类
+    4045: "PB_SetTeamIDHC",  # PB_SET_TEAM_HC
+    4050: None,  # PB_SYNC_MOVEV2_CH - 无对应消息类
+    4051: "PB_ActorMoveV2HC",  # PB_SYNC_MOVEV2_HC
+    4052: "PB_MoveIntervalHC",  # PB_UPDATE_MOVE_INTERVAL_HC
+    4053: None,  # PB_MOVE_DIFF_CH - 无对应消息类
+    4055: "PB_ControlMoveV4CH",  # PB_SYNC_MOVEV4_CH
+    4056: "PB_ControlMoveV4HC",  # PB_SYNC_MOVEV4_HC
+    5001: "PB_GetAccountItemsCH",  # PB_ACTOR_GET_ACCOUNT_ITEM
+    5009: "PB_SendMyViewmodeToSpectatorCH",  # PB_SEND_VIEWMODE_SPECTATOR_CH
+    5010: "PB_SendMyViewmodeToSpectatorHC",  # PB_SEND_VIEWMODE_SPECTATOR_HC
+    5011: "PB_SetBobbingToSpectatorCH",  # PB_SET_BOBBING_SPECTATOR_CH
+    5012: "PB_SetBobbingToSpectatorHC",  # PB_SET_BOBBING_SPECTATOR_HC
+    5056: "PB_TransferRecordHC",  # PB_TRANSFER_RECORD_HC
+    5057: None,  # PB_TRANSFER_RECORD_CH - 无对应消息类
+    5059: None,  # PB_TRANSFER_STATUS_CH - 无对应消息类
+    5060: None,  # PB_TRANSFER_STATUS_HC - 无对应消息类
+    5061: None,  # PB_SYNC_LOVEAMBASSADOR_ICONID_HC - 无对应消息类
+    5062: None,  # PB_SYNC_LOVEAMBASSADOR_ICONID_CH - 无对应消息类
+    5064: None,  # PB_ACTOR_TRANSFER_CH - 无对应消息类
+    5065: None,  # PB_ACTOR_TRANSFER_HC - 无对应消息类
+    5076: "PB_PackGiftNotifyItemChgCH",  # PB_PACKGIFT_NOTIFYITEMCHANGE_HC
+    5081: "PB_VehicleItemIdHC",  # PB_VEHICLE_ALL_ITEMID_HC
+    5082: "PB_VehicleItemIdHC",  # PB_VEHICLE_ONE_ITEMID_HC
+    5100: "PB_BasketBallOperateHC",  # PB_BASKETBALL_OPERATE_HC
+    5101: None,  # PB_BASKETBALL_OPERATE_CH - 无对应消息类
+    5200: "PB_BuyAdShopGoods",  # PB_BUY_AD_SHOP_GOOD_CH
+    5201: None,  # PB_BUY_AD_SHOP_GOOD_HC - 无对应消息类
+    5202: "PB_SyncPlayerPositionHC",  # PB_SYNC_PLAYER_POS_HC
+    5203: "PB_GetAchievementAwardCH",  # PB_ACHIEVEMENT_AWARD_CH
+    5205: "PB_RoomExtraInfoHC",  # PB_SYNC_ROOM_EXTRA_HC
+    5210: None,  # PB_SYNC_PLAYER_POS_CH - 无对应消息类
+    6000: "PB_TriggerTimerDataHC",  # PB_TRIGGER_TIMER_HC
+    6003: None,  # PB_PLAYER_ATTR_SCALE_HC - 无对应消息类
+    6004: None,  # PB_PLAYER_ATTR_SCALE_CH - 无对应消息类
+    6006: None,  # PB_PLAYER_FACE_YAW_HC - 无对应消息类
+    6012: "PB_PreOpenEditFCMUIHC",  # PB_PRE_OPEN_EDIT_FCM_UI
+    6016: None,  # PB_TRIGGER_SOUND_CH - 无对应消息类
+    6017: None,  # PB_PLAYER_JUMP_HC - 无对应消息类
+    6018: None,  # PB_PLAYER_JUMP_CH - 无对应消息类
+    6019: "PB_SpecialSkillCH",  # PB_PLAYER_SPECIAL_SKILL_CH
+    6020: "PB_Horse_SkillCDHC",  # PB_HORSE_SKILLCD_HC
+    6021: "PB_CSPermitData",  # PB_CLOUDSERVER_PERMIT_CH
+    6022: "PB_CSPlayerPermitHC",  # PB_CLOUDSERVER_PERMIT_HC
+    6023: "PB_CSAuthorityHC",  # PB_CLOUDSERVER_AUTHORITY_HC
+    6024: "PB_CSAuthorityData",  # PB_CLOUDSERVER_AUTHORITY_CH
+    6025: "PB_SSTaskHC",  # PB_SS_SYNC_TASK_HC
+    6026: None,  # PB_SS_SYNC_TASK_CH - 无对应消息类
+    6033: "PB_VehicleWorkshopLineCH",  # PB_VEHICLE_WORKSHOP_LINE_CH
+    6034: None,  # PB_CLOUDSERVER_CHANGE_TEAM_CH - 无对应消息类
+    6035: "PB_CloudServerChangeHC",  # PB_CLOUDSERVER_CHANGE_STATE_HC
+    6041: "PB_VehicleAssembleLineUpdateCH",  # PB_VEHICLE_WORKSHOP_LINE_UPDATE_CH
+    6055: None,  # PB_PLAYER_VEHICLE_SLEEP_HC - 无对应消息类
+    6064: "PB_VillagerModifyName",  # PB_VILLAGER_MODIFY_NAME_CH
+    6065: "PB_VillagerCloth",  # PB_VILLAGER_CLOTH_HC
+    6073: "PB_Edu_RolesInfoHC",  # PB_EDU_ROLEINFO_HC
+    6076: "PB_CustomModelPrepareHC",  # PB_CUSTOM_MODEL_PRE_HC
+    6077: "PB_CustomModelPrepareCH",  # PB_CUSTOM_MODEL_PRE_CH
+    6083: None,  # PB_PLAYER_PUSH_ARCH_CH - 无对应消息类
+    6090: "PB_SFActivity_HC",  # PB_SFACTIVITY_HC
+    6092: "PB_PrayTreeInfoHC",  # PB_HOME_PRAY_INFO_HC
+    6093: "PB_PrayTreeStageHC",  # PB_HOME_PRAY_TREE_STATE_HC
+    6094: "PB_PrayTreeReqHC",  # PB_HOME_PRAY_REQ_HC
+    6099: "PB_Open_HomeCloset_HC",  # PB_OPEN_HOMECLOSET_HC
+    6102: "PB_SUMMONPETCH",  # PB_HOME_SUMMONPET_CH
+    6119: None,  # PB_NOTIFY_STARSTATION_ADDED_HC - 无对应消息类
+    6120: None,  # PB_NOTIFY_STARSTATION_REMOVED_HC - 无对应消息类
+    6121: "PB_ChangeStarStationNameStatus",  # PB_NOTIFY_STARSTATION_CHANGENAMESTATUS_HC
+    6122: None,  # PB_STARSTATION_CHANGENAMESTATUS_CH - 无对应消息类
+    6123: "PB_EnterStarStationCabin",  # PB_NOTIFY_ENTER_STARSTATION_CABIN_HC
+    6124: "PB_LeaveStarStationCabin",  # PB_LEAVE_STARSTATION_CABIN_CH
+    6125: None,  # PB_NOTIFY_LEAVE_STARSTATION_CABIN_HC - 无对应消息类
+    6126: None,  # PB_UPDATE_STARSTATION_CABIN_LEVEL_CH - 无对应消息类
+    6127: None,  # PB_NOTIFY_UPDATE_STARSTATION_CABIN_LEVEL_HC - 无对应消息类
+    6128: "PB_UpdateStarStationCabinStatus",  # PB_UPDATE_STARSTATION_CABIN_STATUS_CH
+    6129: None,  # PB_NOTIFY_UPDATE_STARSTATION_CABIN_STATUS_HC - 无对应消息类
+    6130: "PB_UpdateStarStationCabinAdded",  # PB_NOTIFY_UPDATE_STARSTATION_CABIN_ADDED_HC
+    6131: "PB_UpdateStarStationCabinRemoved",  # PB_NOTIFY_UPDATE_STARSTATION_CABIN_REMOVED_HC
+    6132: "PB_AddUnfinishedTransferRecord",  # PB_ADD_UNFINISHED_TRANSFER_RECORD_CH
+    6133: None,  # PB_NOTIFY_ADD_UNFINISHED_TRANSFER_RECORD_HC - 无对应消息类
+    6134: "PB_UpdateUnfinishedTransferRecordStatus",  # PB_NOTIFY_UPDATE_UNFINISHED_TRANSFER_RECORD_STATUS_HC
+    6135: "PB_RemoveUnfinishedTransferRecord",  # PB_REMOVE_UNFINISHED_TRANSFER_RECORD_CH
+    6136: None,  # PB_NOTIFY_REMOVE_UNFINISHED_TRANSFER_RECORD_HC - 无对应消息类
+    6139: None,  # PB_NOTIFY_PLAYER_TRANSFER_BY_STRSTATION_HC - 无对应消息类
+    6140: "PB_ActivateStarStationHC",  # PB_NOTIFY_ACTIVATE_STARSTATION_HC
+    6141: "PB_UpgradeStarStationCabinHC",  # PB_NOTIFY_UPGRADE_STARSTATION_CABIN_HC
+    6142: "PB_UpdateStarStationSignInfoHC",  # PB_NOTIFY_UPDATE_STARSTATION_SIGN_INFO_HC
+    6143: "PB_PlayerTransferByStarStationCH",  # PB_REQUIRE_STARSTATION_TRANSFER_CH
+    6144: None,  # PB_NOTIFY_STARSTATION_TRANSFER_RESULT_HC - 无对应消息类
+    6150: "PB_NotifyUpdateToolModelTextureHC",  # PB_NOTIFY_UPDATE_TOOL_MODEL_TEXTURE_HC
+    6152: None,  # PB_UPDATE_STARSTATION_CABIN_STATUSEND_CH - 无对应消息类
+    6153: None,  # PB_NOTIFY_UPDATE_STARSTATION_CABIN_STATUSEND_HC - 无对应消息类
+    6154: "PB_addStarStationTransferDesc",  # PB_ADD_STARSTATION_TRANSFER_DESC_CH
+    6158: "PB_AchievementSyncHC",  # PB_ACHIEVEMENT_SYNC_HC
+    6159: "PB_AchievementUpdateCH",  # PB_ACHIEVEMENT_UPDATE_CH
+    6167: None,  # PB_HOMELAND_RANCH_FOODER_CH - 无对应消息类
+    6169: "PB_HomeLandRanchFooderStateHC",  # PB_HOMELAND_RANCH_FOODERSTATE_HC
+    6170: None,  # PB_ACHIEVEMENT_INITDATA_HC - 无对应消息类
+    6173: "PB_HomeLandShopCellHC",  # PB_HOMELAND_FARM_SHOP_HC
+    6174: "PB_HomeLandShopCellCH",  # PB_HOMELAND_FARM_SHOP_CH
+    6225: None,  # PB_NOTIFY_UPDATE_TOOL_MODEL_TEXTURE_CH - 无对应消息类
+    6241: "PB_BindPlayerToPhysicsPlat",  # PB_BIND_PLAYER_TO_PHYSICS_PLAT_HC
+    6242: "PB_UnBindPlayerToPhysicsPlat",  # PB_UNBIND_PLAYER_TO_PHYSICS_PLAT_HC
+    6243: "PB_ActorPhysicsComUpdate",  # PB_PHYSICS_COM_UPDATE
+    6244: None,  # PB_PHYSICS_COM_PLAT_LOCAL_POS - 无对应消息类
+    6245: "PB_EffectComParticleUpd",  # PB_EFFECT_COM_PARTICLE_UPDATE
+    6246: "PB_SoundComUpd",  # PB_SOUND_COM_UPDATE
+    6247: "PB_BindPlayerToPhysicsPlat",  # PB_BIND_PLAYER_TO_PHYSICS_PLAT_CH
+    6248: "PB_UnBindPlayerToPhysicsPlat",  # PB_UNBIND_PLAYER_TO_PHYSICS_PLAT_CH
+    6249: "PB_MeteorShowerInfo",  # PB_METEOR_SHOWER_HC
+    6251: "PB_ModBlockColorAnimHC",  # PB_NOTIFY_PLAYER_BLOCK_CHANGE_COLOR_ANIM_HC
+    6255: "PB_EnterLivingwheelHC",  # PB_PLAYER_ENTER_LIVINGWHEEL_HC
+    6256: "PB_LeaveLivingwheelHC",  # PB_PLAYER_LEAVE_LIVINGWHEEL_HC
+    6257: "PB_WorkingLivingwheelCH",  # PB_PLAYER_WORKING_LIVINGWHEEL_CH
+    6260: None,  # PB_CREATE_BLOCK_CH - 无对应消息类
+    6261: None,  # PB_ACTOR_VILLAGER_INFO_HC - 无对应消息类
+    6262: None,  # PB_ACTOR_SANDWORM_SHOW_HC - 无对应消息类
+    6263: None,  # PB_ACTOR_SANDWORM_CAN_MOVE_HC - 无对应消息类
+    6264: "PB_PlayerScaleHC",  # PB_ACTOR_SCASLE_HC
+    6265: None,  # PB_ACTOR_SANDWORM_NIBBLE_PLAYER_HC - 无对应消息类
+    6266: None,  # PB_ACTOR_CREATE_THORNBALL_HC - 无对应消息类
+    6267: None,  # PB_ACTOR_REBOUNDS_ATTACK_UP_HC - 无对应消息类
+    6268: None,  # PB_ACTOR_REBOUNDS_ATTACK_ROUND_HC - 无对应消息类
+    6269: None,  # PB_REMOVE_SAWTOOTH_THORNB_HC - 无对应消息类
+    6270: None,  # PB_CH_NOTICE_ATTACKED_UP_CH - 无对应消息类
+    6271: None,  # PB_CH_NOTICE_ATTACKED_ROUND_CH - 无对应消息类
+    6272: None,  # PB_CH_NOTICE_REMOVE_SAWTOOTH_THORNBA_CH - 无对应消息类
+    6273: None,  # PB_ATTR_SHAPE_SHIFT_RIGHT_CLICK_CH - 无对应消息类
+    6274: None,  # PB_DESTORY_BLOCK_CH - 无对应消息类
+    6275: None,  # PB_WATER_PRESSURE_CH - 无对应消息类
+    6276: None,  # PB_ATTR_SHAPE_SHIFT_SYNC_HC - 无对应消息类
+    6277: None,  # PB_COCONUT_HIT_HC - 无对应消息类
+    6278: None,  # PB_COCONUT_SKIP_NIGHT_HC - 无对应消息类
+    6279: None,  # PB_ACTOR_SHARK_BITE_PLAYER_MOVE_HC - 无对应消息类
+    6280: None,  # PB_CRAB_INFO_SYNC_HC - 无对应消息类
+    6281: None,  # PB_CRAB_CLICKCOUNT_RESET_CH - 无对应消息类
+    6282: None,  # PB_HIPPOCAMPUS_REFRESHMODEL_HC - 无对应消息类
+    6283: None,  # PB_HIPPOCAMPUS_CHANGECOLOR_HC - 无对应消息类
+    6284: "PB_BackpackNumChangeHC",  # PB_BACKPACKGRID_DRUATION_HC
+    6285: None,  # PB_GUNLOGIC_USE_WaterCanoonSkill_CH - 无对应消息类
+    6286: None,  # PB_ACTOR_SNOWMAN_PART_SHOW_HC - 无对应消息类
+    6287: None,  # PB_MOB_PART_SHOW_HC - 无对应消息类
+    6288: None,  # PB_PLAYER_SHAKE_CH - 无对应消息类
+    6289: None,  # PB_ACTOR_DISSOLVE_COMPONENT_OPEN_HC - 无对应消息类
+    6290: None,  # PB_COOKBOOKINFO_HC - 无对应消息类
+    6292: None,  # PB_SETHPVISIBLE_HC - 无对应消息类
+    6296: "PB_SkillplaybodyeffectHC",  # PB_SKILLSTOPBODYEFFECT_HC
+    6300: "PB_SkillplaytoolanimHC",  # PB_SKILLSTOPTOOLANIM_HC
+    6304: "PB_StopweaponanimHC",  # PB_STOPWEAPONANIM_HC
+    6305: "PB_StopweaponanimCH",  # PB_STOPWEAPONANIM_CH
+    6306: "PB_StopweaponmotionHC",  # PB_STOPWEAPONMOTION_HC
+    6307: "PB_StopweaponmotionCH",  # PB_STOPWEAPONMOTION_CH
+    6322: None,  # PB_TELEPORT_SHOWPANEL_HC - 无对应消息类
+    6323: "PB_DynamicProtoHC",  # PB_DYNAMIC_PROTO_HC
+    6324: None,  # PB_DYNAMIC_PROTO_CH - 无对应消息类
+    6330: "PB_StorageBoxPutAllCH",  # PB_STORAGE_BOX_TAKE_OUT_ALL_CH
+    6500: None,  # PB_PHYSICS_INPUT_FRAME - 无对应消息类
+    6501: "PB_PhysicsTimestamp",  # PB_PHYSICS_ASYNC_TIMESTAMP
+    6502: None,  # PB_PHYSICS_SETUP_TIMESTAMP - 无对应消息类
+    6503: None,  # PB_PHYSICS_TIME_DILATION - 无对应消息类
+    6504: "PB_PhysicsReplicatedInput",  # PB_PHYSICS_REPLICATED_INPUT_CH
+    6505: "PB_PhysicsReplicatedInput",  # PB_PHYSICS_REPLICATED_INPUT_HC
+    6506: "PB_PhysicsReplicatedState",  # PB_PHYSICS_REPLICATED_STATE_CH
+    6507: "PB_PhysicsReplicatedState",  # PB_PHYSICS_REPLICATED_STATE_HC
+    6508: "PB_CommonPhysicsReplication",  # PB_PHYSICS_COMMON_REPLICATED
+    7000: "PB_Custom_Msg",  # PB_CUSTOM_MSG
+    7005: None,  # PB_PLAY_EFFECT_SHADER_HC - 无对应消息类
+    7007: None,  # PB_SEND_OBJACTOR_MSG - 无对应消息类
+    7008: "PB_AddBulletholeInfoHC",  # PB_ADD_BULLETHOLE_HC
+    7011: None,  # PB_ACTOR_PLAYANIM_NEW_CH - 无对应消息类
+    7012: "PB_ActorAttrSpeedChangeHC",  # PB_ACTOR_SPEED_CHANGE_HC
+    7018: "PB_ActorDropPickupActorHC",  # PB_ACTOR_DROP_ACTOR_HC
+    7021: "PB_AddBulletholeInfoV2HC",  # PB_ADD_BULLETHOLEV2_HC
+    7024: None,  # PB_ACTOR_SET_ATTR_TOTRACKINGPLAYERS_HC - 无对应消息类
+    7025: "PB_TaskObjectInitDataHC",  # PB_TASK_OBJECTIVE_INITDATA_HC
+    7026: "PB_PlayWeaponMotionData",  # PB_PLAYWEAPONMOTION_HC
+    7027: "PB_PlayWeaponMotionData",  # PB_PLAYWEAPONMOTION_CH
+    7028: "PB_PlayWeaponAnimData",  # PB_PLAYWEAPONANIM_HC
+    7029: "PB_PlayWeaponAnimData",  # PB_PLAYWEAPONANIM_CH
+    7031: "PB_TechTreeInfoChange_HC",  # PB_TECHTREEINFOCHANGE_HC
+    7032: "PB_SetGravityFailure_HC",  # PB_ACTORSETGRAVITYFAILURE_HC
+    7033: "PB_SetInteractActorMecha_HC",  # PB_SETINTERACTACTORMECHA_HC
+    7034: "PB_UnlockItems_HC",  # PB_UNLOCKITEMS_HC
+    7036: "PB_PlayCameraShake_HC",  # PB_PLAY_CAMERA_SHAKE_HC
+    7038: "PB_MechaKineticUint_HC",  # PB_MECHAKINETICUINT_HC
+    7039: "PB_KineticNodeData_HC",  # PB_MECHAKINETICNODEDATA_HC
+    7043: "PB_MechaTunnelAnimPlay_HC",  # PB_MECHA_TUNNEL_ANIM_PLAY_HC
+    7047: "PB_TransferGoodsComp_HC",  # PB_TRANSFER_GOOD_COMP_HC
+    7049: None,  # PB_MECHA_KINETNODELOGIC_DATA_HC - 无对应消息类
+    7050: None,  # PB_MECHA_ADDKINETNODELOGIC_HC - 无对应消息类
+    7058: None,  # PB_SANDBOX_LUA_LOG_DATA_CH - 无对应消息类
+    7059: None,  # PB_SANDBOX_LUA_LOG_DATA_HC - 无对应消息类
+    7113: None,  # PB_ACTOR_SWITCH_PHYSICTYPE_HC - 无对应消息类
+    7118: "PB_LivingTimedXrayEffect_HC",
+    7119: "PB_MineralProspectBlock_HC",
+    10002: None,  # PB_WORLD_SYNC_SAVE_HC - 无对应消息类
+    # PB_MAX_MSG_CODE -> 无对应消息类
+}
+
+
 def build_msgid_to_class_map(message_classes):
     """
     从 proto 文件中解析 ePBMsgCode 枚举，构建消息 ID 到消息类的映射。
@@ -971,18 +1187,30 @@ def build_msgid_to_class_map(message_classes):
     for value in msg_code_enum.items():
         msg_id = value[1]
         enum_name = value[0]
+        
+        # 首先检查手动映射
+        if msg_id in ENUM_TO_CLASS_MANUAL:
+            target_class_name = ENUM_TO_CLASS_MANUAL[msg_id]
+            if target_class_name is None:
+                # 跳过无对应消息类的枚举
+                continue
+            # 在消息类字典中查找
+            for full_name, cls in message_classes.items():
+                short_name = full_name.split(".")[-1]
+                if short_name == target_class_name:
+                    id_to_class[msg_id] = cls
+                    break
+            else:
+                print(f"手动映射失败: {enum_name} -> {target_class_name}")
+            continue
+        
         # 尝试根据枚举名猜测消息类名
-        # 常见模式：枚举名如 PB_HEARTBEAT_CH 对应消息类 PB_HeartBeatCH
-        # 需要去掉前缀 'PB_'，然后转换为驼峰（但 proto 中消息类通常就是这样的名称）
-        # 我们直接尝试用枚举名去掉 'PB_' 作为消息类名，再查找
-        # 注意：有些消息类可能没有直接对应，但大部分是
         class_candidate: str = enum_name[3:]  # 去掉 'PB_'
         if class_candidate.endswith("_CH"):
             class_candidate = "PB_" + to_camel_case(class_candidate[:-3]) + "CH"
         elif class_candidate.endswith("_HC"):
             class_candidate = "PB_" + to_camel_case(class_candidate[:-3]) + "HC"
         # 在消息类字典中查找完整名称（包括包名）
-        # 包名通常是 'game.ch' 或 'game.hc'，我们需要尝试匹配
         for full_name, cls in message_classes.items():
             # 提取类名（最后一个点之后）
             short_name = full_name.split(".")[-1]
@@ -1003,14 +1231,9 @@ def build_msgid_to_class_map(message_classes):
                         id_to_class[msg_id] = cls
                         break
                 else:
-                    # print('找不到对应消息: ' + enum_name)
-                    pass
+                    print('找不到对应消息: ' + enum_name)
             else:
-                # print('未知类型: ' + enum_name)
-                pass
-            # 未找到，可能类名与枚举名不一致，尝试其他匹配（如全部大写转驼峰）
-            # 例如 PB_HEARTBEAT_CH -> HeartBeatCH
-            # 简单处理：忽略
+                print('未知类型: ' + enum_name)
     return id_to_class
 
 
