@@ -40,7 +40,7 @@ def _handle_item(client: MCClient, entityid: int, metadata):
                 basedata=PB_ActorCommon(
                     wid=mini_obj_id,
                     pos=entity.pos.convert().to_vec3().to_mini(),
-                    motion=entity.motion.convert().to_vec3().to_mini(),
+                    motion=Vector3().to_mini(),
                     yaw=entity.angle.to_mini_yaw_int32(),
                     pitch=entity.angle.to_mini_pitch_int32(),
                     flags=0,
