@@ -22,7 +22,7 @@ def parse_done(client: MCClient, chunkdata: dict):
     cx = -chunkdata["x"] - 1
     cz = chunkdata["z"]
     send_air_chunk(client.miniplayer, cx, cz)
-    send_block_updates(client.miniplayer, cx, cz, chunkdata["blocks"], flush_threshold=6000)
+    send_block_updates(client.miniplayer, cx, cz, chunkdata["blocks"], flush_threshold=4096)
 
 
 def stop():
