@@ -5,9 +5,11 @@ from __future__ import annotations
 import mn2mc
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
+from mn2mc.mc.entity import MCEntity, entitytypes
 from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_GameModeChangeHC
-
+from mn2mc.utils.vector import Vector3f
+from mn2mc.utils.angle import Angle
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     """Complete MC login handshake and send game mode to Mini World.
@@ -19,6 +21,8 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
         "minecraft:brand",
         f"Mini World {client.miniplayer.cltversion} | MN2MC {mn2mc.version}",
     )
+    client.entityid = jsondata['entityId']
+    client.entities[client.entityid] = MCEntity(Vector3f(), Angle(0,0), entitytypes.get('player', 0), uin=client.miniplayer.uin)
 
     worldstate = jsondata["worldState"]
     client.dimension = worldstate['dimension']

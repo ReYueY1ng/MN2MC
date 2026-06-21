@@ -52,6 +52,8 @@ class MCClient:
     add_player_count: int
     entities: dict[int, MCEntity]
     registry: registry
+    entityid: int
+    container_ts: float
 
     def __init__(self, options: dict, miniplayer: MiniPlayer) -> None:
         self.client = mcprotocol.createClient(options)
@@ -72,6 +74,8 @@ class MCClient:
         self.running.set()
         self.players = {}
         self.add_player_count = 0
+        self.entityid = 0
+        self.container_ts = 0.0
         self.entities = {}
         self.state = "handshaking"
         self.registry = registry(config.mc["version"])
