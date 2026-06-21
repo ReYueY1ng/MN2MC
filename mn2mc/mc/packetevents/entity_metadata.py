@@ -12,7 +12,7 @@ from mn2mc.mini.proto.common import (
     ePBMsgCode,
     PB_ActorAttInfo, PB_ActorItem,
 )
-from mn2mc.mini.proto.hc import PB_GeneralEnterAOIHC, PB_ActorLeaveAOIHC
+from mn2mc.mini.proto.hc import PB_GeneralEnterAOIHC, PB_ActorLeaveAOIHC, PB_ActorMotionHC
 from mn2mc.config import config
 from mn2mc.utils.angle import Angle
 from mn2mc.utils.vector import Vector3f, Vector3
@@ -40,7 +40,7 @@ def _handle_item(client: MCClient, entityid: int, metadata):
                 basedata=PB_ActorCommon(
                     wid=mini_obj_id,
                     pos=entity.pos.convert().to_vec3().to_mini(),
-                    motion=Vector3().to_mini(),
+                    motion=entity.motion.convert().to_vec3().to_mini(),
                     yaw=entity.angle.to_mini_yaw_int32(),
                     pitch=entity.angle.to_mini_pitch_int32(),
                     flags=0,
@@ -56,12 +56,27 @@ def _handle_item(client: MCClient, entityid: int, metadata):
             )
         ).SerializeToString(),
     )
+    
+    motion = entity.motion.convert()
+    motion.x /= 100
+    motion.y /= 100
+    motion.z /= 100
+    client.miniplayer.send_packet(
+        ePBMsgCode.PB_ACTOR_MOTION_HC,
+        PB_ActorMotionHC(
+            ObjID=mini_obj_id,
+            x=motion.x,
+            y=motion.y,
+            z=motion.z,
+            isChangePos=False,
+        ).SerializeToString(),
+    )
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict):
     entityid = jsondata['entityId']
     entitymetadata = {}
     if entityid not in client.entities:
-        logger.error(f'Entity id {entityid} not found')
+        logger.debug(f'Entity id {entityid} not found')
         return
     for meta in jsondata['metadata']:
         entitymetadata[meta['key']] = meta
