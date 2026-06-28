@@ -9,8 +9,6 @@ from mn2mc.mc.client import MCClient
 from mn2mc.mini.packet import MiniClientPacket, MiniServerPacket, on_event
 from mn2mc.mini.proto import common
 
-players = []
-
 
 class MiniPlayer:
     """Represents a connected Mini World client player.
@@ -53,7 +51,9 @@ class MiniPlayer:
         if self.conn.state == aiorak.ConnectionState.CONNECTED:
             if config.mini["server"]["host_to_room_server"]:
                 self.conn.send(
-                    MiniClientPacket(mn2mc.mini.auth.uin, msg_code, data).encode(),
+                    MiniClientPacket(
+                        mn2mc.mini.auth.uin, msg_code, data, self.uin
+                    ).encode(),
                     reliability,
                     priority=priority,
                 )
@@ -113,3 +113,6 @@ class MiniPlayer:
         except Exception as e:
             logger.exception(f"({self.uin}) Fatal exception occurred: {str(e)}")
             self.kick()
+
+
+players: list[MiniPlayer] = []
