@@ -11,12 +11,21 @@ from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_OpenContainerHC, PB_CloseContainerHC
 
 
-def _send_open_container(client: MCClient, grids: int) -> None:
-    """Send open container packet (separated for Timer usage)."""
+def _do_open_container(client: MCClient) -> None:
+    client._open_pending = False
     client.miniplayer.send_packet(
         ePBMsgCode.PB_OPEN_CONTAINER_HC,
-        PB_OpenContainerHC(BaseIndex=3000, TotalItemGrids=grids).SerializeToString(),
+        PB_OpenContainerHC(BaseIndex=3000, TotalItemGrids=client._pending_grids).SerializeToString(),
     )
+
+
+def _schedule_open(client: MCClient, grids: int) -> None:
+    if getattr(client, '_open_pending', False):
+        client._pending_grids = grids
+        return
+    client._open_pending = True
+    client._pending_grids = grids
+    threading.Timer(0.1, _do_open_container, args=[client]).start()
 
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
@@ -51,25 +60,31 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
             logger.warning(f"Inventory type {inventory_type} was not supported")
 
     curtime = time.time()
-    
+
+    if getattr(client, '_open_pending', False):
+        client._pending_grids = grids
+        return
+
     if client.inventory_type != 'inventory':
         client.miniplayer.send_packet(
             ePBMsgCode.PB_CLOSE_CONTAINER_HC,
-            PB_CloseContainerHC(
-                BaseIndex=3000,
-            ).SerializeToString(),
+            PB_CloseContainerHC(BaseIndex=3000).SerializeToString(),
         )
         client.container_ts = time.time()
-        threading.Timer(0.1, _send_open_container, args=[client, grids]).start()
+        _schedule_open(client, grids)
         return
-    elif client.container_ts + 0.5 > curtime:
+
+    if client.container_ts + 0.5 > curtime:
         logger.info('Open container too quick! Delaying...')
         client.container_ts = time.time()
-        threading.Timer(0.1, _send_open_container, args=[client, grids]).start()
+        _schedule_open(client, grids)
         return
-    
+
     client.container_ts = time.time()
-    _send_open_container(client, grids)
+    client.miniplayer.send_packet(
+        ePBMsgCode.PB_OPEN_CONTAINER_HC,
+        PB_OpenContainerHC(BaseIndex=3000, TotalItemGrids=grids).SerializeToString(),
+    )
 
 
 add_event("open_window", on_recv)
