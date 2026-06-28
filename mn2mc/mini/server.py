@@ -44,9 +44,8 @@ miniserver: aiorak.Server
 
 def broadcast_packet(msgcode: proto.common.ePBMsgCode, data: bytes):
     if config.mini["server"]["host_to_room_server"]:
-        miniserver.broadcast(
-            MiniClientPacket(mn2mc.mini.auth.uin, msgcode, data).encode()
-        )
+        for player in players:
+            player.send_packet(msgcode, data)
     else:
         miniserver.broadcast(MiniServerPacket(msgcode, data).encode())
 
@@ -93,6 +92,7 @@ async def start(host: str = "0.0.0.0", port: int = 19132):
         guid=mn2mc.mini.auth.uin
         if config.mini["server"]["host_to_room_server"]
         else 666,
+        max_connections=mn2mc.config.mini['server']['max_players']
     )
     logger.info(f"Server started at {host}:{port}")
     logger.add(send_log, level="INFO", format="#W[{level}] {message}")

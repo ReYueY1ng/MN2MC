@@ -14,6 +14,7 @@ import mn2mc.mini
 import mn2mc.mini.auth
 import mn2mc.mini.nat
 import mn2mc.mini.wsconn
+import mn2mc.config
 
 CONFIG_URL = "http://openroom.mini1.cn:8080/server/room?"
 AUTH_KEY = "f5711eb1640712de051e5aedc35329c3"
@@ -184,7 +185,7 @@ class MiniRoom:
             "pause": "0",
             "can_trace": "9335",
             "public_type": "0",
-            "max_count": "65535",
+            "max_count": str(mn2mc.config.mini['server']['max_players']),
             "passwd": "",
             "is_empty_night": "0",
         }

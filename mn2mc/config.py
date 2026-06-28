@@ -15,6 +15,7 @@ mini:
     ip: 127.0.0.1
     port: 11155
     host_to_room_server: false # 创建迷你房间，若启用则无法通过 mitm 方式进入
+    max_players: 65535
   send_log_to_chat: false # 发送日志至聊天栏
 
 mc:
@@ -35,6 +36,7 @@ class server(TypedDict):
     ip: str
     port: int
     host_to_room_server: bool
+    max_players: int
 
 
 class auth(TypedDict):
@@ -65,7 +67,7 @@ class ConfigManager:
 
     def __init__(self) -> None:
         self.mini: Mini = {
-            "server": {"ip": "127.0.0.1", "port": 11155, "host_to_room_server": False},
+            "server": {"ip": "127.0.0.1", "port": 11155, "host_to_room_server": False, "max_players": 65535},
             "auth": {"uin": 0, "passwd": "", "api_id": 110, "device_id": ""},
             "send_log_to_chat": False,
         }

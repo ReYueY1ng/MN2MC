@@ -28,6 +28,8 @@ async def start():
         "-coordinator_port",
         str(mn2mc.mini.room.config["proxy"]["port"]),
         "-upnp",
+        "-max_clients",
+        str(mn2mc.config.mini['server']['max_players']),
         start_new_session=True
     )
 
