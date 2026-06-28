@@ -76,7 +76,6 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict):
     entityid = jsondata['entityId']
     entitymetadata = {}
     if entityid not in client.entities:
-        logger.debug(f'Entity id {entityid} not found')
         return
     for meta in jsondata['metadata']:
         entitymetadata[meta['key']] = meta
