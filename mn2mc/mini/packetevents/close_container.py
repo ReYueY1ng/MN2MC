@@ -12,9 +12,9 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
 
     Resets tracked window state and sends close_window to the server.
     """
+    player.mcclient.send("close_window", {"windowId": player.mcclient.window_id})
     player.mcclient.window_id = 0
     player.mcclient.inventory_type = "inventory"
-    player.mcclient.send("close_window", {"windowId": player.mcclient.window_id})
 
 
 add_event(proto.common.ePBMsgCode.PB_CLOSE_CONTAINER_CH, on_recv)
