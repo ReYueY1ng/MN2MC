@@ -14,16 +14,34 @@ from javascript import require
 prismarine_item = require("prismarine-item")(config.mc["version"])
 
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
-    """Update a single window slot in Mini World.
+def _make_backpack_update(
+    inventory_type: str | int, slot: int, itemdata: dict, item
+) -> bytes:
+    if itemdata["itemCount"] == 0:
+        return PB_BackPackGridUpdateHC(
+            ItemInfo=[
+                PB_ItemData(
+                    Index=slotid_mapping.mc_to_mini(inventory_type, slot),
+                    ItemID=0,
+                )
+            ]
+        ).SerializeToString()
+    return PB_BackPackGridUpdateHC(
+        ItemInfo=[
+            PB_ItemData(
+                Index=slotid_mapping.mc_to_mini(inventory_type, slot),
+                ItemID=item_mapping.mc_to_mini(item.type),
+                Num=item.count,
+                Durable=item.durabilityUsed,
+            )
+        ]
+    ).SerializeToString()
 
-    Tracks container sequence for the active window and converts MC item
-    data to Mini World PB_ItemData.
-    """
+
+def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     slot = jsondata["slot"]
     window = jsondata["windowId"]
-    # client.window_id = window
-    if client.window_id == window:  # 防止副手刷新替换掉顺序id
+    if client.window_id == window:
         client.container_sequence = jsondata["stateId"]
     itemdata = jsondata["item"]
     item = prismarine_item.fromNotch(itemdata)
@@ -33,32 +51,17 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     else:
         inventory_type = client.inventory_type
 
-    if itemdata["itemCount"] == 0:
-        client.miniplayer.send_packet(
-            ePBMsgCode.PB_BACKPACK_GRID_UPDATE_HC,
-            PB_BackPackGridUpdateHC(
-                ItemInfo=[
-                    PB_ItemData(
-                        Index=slotid_mapping.mc_to_mini(inventory_type, slot),
-                        ItemID=0,
-                    )
-                ]
-            ).SerializeToString(),
+    data = _make_backpack_update(inventory_type, slot, itemdata, item)
+
+    if window != 0 and getattr(client, "_open_pending", False):
+        client._pending_item_packets.append(
+            (ePBMsgCode.PB_BACKPACK_GRID_UPDATE_HC, data)
         )
-    else:
-        client.miniplayer.send_packet(
-            ePBMsgCode.PB_BACKPACK_GRID_UPDATE_HC,
-            PB_BackPackGridUpdateHC(
-                ItemInfo=[
-                    PB_ItemData(
-                        Index=slotid_mapping.mc_to_mini(inventory_type, slot),
-                        ItemID=item_mapping.mc_to_mini(item.type),
-                        Num=item.count,
-                        Durable=item.durabilityUsed,
-                    )
-                ]
-            ).SerializeToString(),
-        )
+        return
+
+    client.miniplayer.send_packet(
+        ePBMsgCode.PB_BACKPACK_GRID_UPDATE_HC, data
+    )
 
 
 add_event("set_slot", on_recv)

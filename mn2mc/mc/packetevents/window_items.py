@@ -15,10 +15,6 @@ prismarine_item = require("prismarine-item")(config.mc["version"])
 
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
-    """Translate a full window_items payload into Mini World backpack updates.
-
-    Maps MC slot IDs and item IDs, including the carried cursor item.
-    """
     window = jsondata["windowId"]
     client.container_sequence = jsondata["stateId"]
     items = jsondata["items"]
@@ -67,9 +63,16 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
             )
         )
 
+    data = PB_BackPackGridUpdateHC(ItemInfo=itemlist).SerializeToString()
+
+    if window != 0 and getattr(client, "_open_pending", False):
+        client._pending_item_packets.append(
+            (ePBMsgCode.PB_BACKPACK_GRID_UPDATE_HC, data)
+        )
+        return
+
     client.miniplayer.send_packet(
-        ePBMsgCode.PB_BACKPACK_GRID_UPDATE_HC,
-        PB_BackPackGridUpdateHC(ItemInfo=itemlist).SerializeToString(),
+        ePBMsgCode.PB_BACKPACK_GRID_UPDATE_HC, data
     )
 
 
