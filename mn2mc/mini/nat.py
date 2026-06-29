@@ -15,8 +15,6 @@ async def start():
         "127.0.0.1",
         "-target_port",
         str(config.mini["server"]["port"]),
-        "-max_client",
-        "40",
         "-nat_ip",
         mn2mc.mini.room.config["punch"]["ip"],
         "-nat_port",
