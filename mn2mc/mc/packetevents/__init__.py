@@ -2,6 +2,7 @@
 
 from importlib import import_module, reload, invalidate_caches
 from pathlib import Path
+from mn2mc.config import config
 
 for f in Path(__file__).parent.glob("*.py"):
     module_name = f.stem
@@ -20,3 +21,13 @@ def reloadevents():
             else:
                 import_module(f".{module_name}", __package__)
         del f, module_name
+
+    chunk_name = "map_chunk"
+    if config.mc["use_new_chunk_parser"]:
+        chunk_name = "parsed_chunk"
+    if hasattr(globals()['chunk'], chunk_name):
+        reload(getattr(globals()['chunk'], chunk_name))
+    else:
+        import_module(f".chunk.{chunk_name}", __package__)
+
+    del chunk_name
