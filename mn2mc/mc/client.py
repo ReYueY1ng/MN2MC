@@ -120,6 +120,7 @@ class MCClient:
         self.running.clear()
         if self.miniplayer.conn.state == aiorak.ConnectionState.CONNECTED:
             logger.info(f"({self.miniplayer.name}) Connection lost: {end}")
+            self.miniplayer.kick()
 
     def on_error(self, err):
         logger.error(f"({self.miniplayer.name}) Error occurred: {err}")
