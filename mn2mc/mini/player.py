@@ -113,4 +113,4 @@ class MiniPlayer:
 
 
 players: list[MiniPlayer] = []
-_players_lock = threading.Lock()
+_players_lock = threading.RLock()
