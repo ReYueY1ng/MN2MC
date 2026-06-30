@@ -20,3 +20,4 @@ class MCEntity:
     type: int
     motion: Vector3f = field(default_factory=Vector3f)
     uin: Optional[int] = None
+    buffs: dict[int, dict] = field(default_factory=dict)
