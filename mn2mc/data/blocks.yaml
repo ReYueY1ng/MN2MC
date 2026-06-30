@@ -285,7 +285,7 @@
 284: 132  # netherrack - 硫黄晶砂
 285: 109  # soul_sand - 砂土
 286: 109  # soul_soil - 砂土
-287: 104  # basalt - 岩石
+287: 206  # basalt - 岩石
 288: 505  # polished_basalt - 碎石块
 289: 934  # soul_torch - 典雅壁灯
 290: 934  # soul_wall_torch - 典雅壁灯
@@ -329,7 +329,7 @@
 328: 504  # chiseled_stone_bricks - 花纹岩石砖
 329: 421  # packed_mud - 土砖
 330: 421  # mud_bricks - 土砖
-331: 104  # infested_stone - 岩石
+331: 734  # infested_stone - 岩石
 332: 502  # infested_cobblestone - 裂纹石砖
 333: 501  # infested_stone_bricks - 精制石砖
 334: 503  # infested_mossy_stone_bricks - 青石砖
@@ -980,7 +980,7 @@
 979: 112  # large_amethyst_bud - 黑晶石
 980: 112  # medium_amethyst_bud - 黑晶石
 981: 112  # small_amethyst_bud - 黑晶石
-982: 104  # tuff - 岩石
+982: 11304  # tuff - 岩石
 983: 506  # tuff_slab - 青石薄板
 984: 529  # tuff_stairs - 石质楼梯
 985: 502  # tuff_wall - 裂纹石砖
@@ -997,12 +997,12 @@
 996: 505  # calcite - 碎石块
 997: 1206  # tinted_glass - 透明硬质玻璃块
 998: 115  # powder_snow - 松软的雪
-999: 104  # sculk_sensor - 岩石
-1000: 104  # calibrated_sculk_sensor - 岩石
-1001: 104  # sculk - 岩石
+999: 999  # sculk_sensor - 岩石
+1000: 206  # calibrated_sculk_sensor - 岩石
+1001: 206  # sculk - 岩石
 1002: 232  # sculk_vein - 气根
-1003: 104  # sculk_catalyst - 岩石
-1004: 104  # sculk_shrieker - 岩石
+1003: 206  # sculk_catalyst - 岩石
+1004: 206  # sculk_shrieker - 岩石
 1005: 456  # copper_block - 黄铜块
 1006: 456  # exposed_copper - 黄铜块
 1007: 456  # weathered_copper - 黄铜块
@@ -1101,8 +1101,8 @@
 1100: 526  # waxed_exposed_lightning_rod - 铸铁栅栏
 1101: 526  # waxed_weathered_lightning_rod - 铸铁栅栏
 1102: 526  # waxed_oxidized_lightning_rod - 铸铁栅栏
-1103: 104  # pointed_dripstone - 岩石
-1104: 104  # dripstone_block - 岩石
+1103: 728  # pointed_dripstone - 岩石
+1104: 1104  # dripstone_block - 岩石
 1105: 232  # cave_vines - 气根
 1106: 232  # cave_vines_plant - 气根
 1107: 247  # spore_blossom - 漂浮的花瓣
@@ -1119,7 +1119,7 @@
 1118: 232  # hanging_roots - 气根
 1119: 101  # rooted_dirt - 土块
 1120: 101  # mud - 土块
-1121: 104  # deepslate - 岩石
+1121: 11321  # deepslate - 岩石
 1122: 502  # cobbled_deepslate - 裂纹石砖
 1123: 529  # cobbled_deepslate_stairs - 石质楼梯
 1124: 509  # cobbled_deepslate_slab - 石质薄板
@@ -1139,7 +1139,7 @@
 1138: 504  # chiseled_deepslate - 花纹岩石砖
 1139: 502  # cracked_deepslate_bricks - 裂纹石砖
 1140: 502  # cracked_deepslate_tiles - 裂纹石砖
-1141: 104  # infested_deepslate - 岩石
+1141: 1141  # infested_deepslate - 岩石
 1142: 505  # smooth_basalt - 碎石块
 1143: 449  # raw_iron_block - 星瞳石块
 1144: 449  # raw_copper_block - 星瞳石块
