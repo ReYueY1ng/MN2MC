@@ -1,0 +1,42 @@
+# MC effect ID → Mini World buff ID mapping
+# 0 = unmapped (no matching Mini World buff)
+0: 4     # Speed → 疾跑1级 (移动速度+25%)
+1: 8     # Slowness → 迟缓1级 (移动速度-25%)
+2: 7     # Haste → 疯狂挖掘1级 (挖掘速度+25%)
+3: 9     # Mining Fatigue → 挖掘疲劳1级 (挖掘速度-25%)
+4: 17    # Strength → 强力攻击1级 (近战伤害+25%)
+5: 50    # Instant Health → 快速生命恢复1级 (5秒恢复15点)
+6: 33    # Instant Damage → 着火0级 (每1秒3点伤害)
+7: 6     # Jump Boost → 跳高高1级 (跳跃高度提高)
+8: 38    # Nausea → 晕头转向1级
+9: 3     # Regeneration → 缓慢生命恢复1级 (每4秒恢复5点)
+10: 26   # Resistance → 近战防御1级 (近战伤害-25%)
+11: 29   # Fire Resistance → 燃烧抗性1级 (火焰伤害-25%)
+12: 37   # Water Breathing → 水下呼吸1级
+13: 0       # Invisibility → 无匹配
+14: 0       # Blindness → 无匹配
+15: 16   # Night Vision → 夜视1级 (视野亮度+20%)
+16: 36   # Hunger → 食物中毒1级 (饥饿加速25%)
+17: 0       # Weakness → 无匹配
+18: 34   # Poison → 中毒1级 (每1秒5点伤害)
+19: 35   # Wither → 暗1级 (每2秒10点伤害)
+20: 85   # Health Boost → 生命上限1级
+21: 10   # Absorption → 吸收伤害1级 (2点吸收生命)
+22: 82   # Saturation → 体力恢复1级
+23: 0       # Glowing → 无匹配
+24: 42   # Levitation → 泡泡1级
+25: 14   # Luck → 挖掘幸运1级 (特殊掉落+1%)
+26: 0       # Bad Luck → 无匹配
+27: 32   # Slow Falling → 摔落抗性1级 (摔落伤害-25%)
+28: 0       # Conduit Power → 无匹配
+29: 5    # Dolphin's Grace → 速泳1级 (游泳速度+25%)
+30: 0       # Bad Omen → 无匹配
+31: 0       # Hero of the Village → 无匹配
+32: 0       # Darkness → 无匹配
+33: 0       # Trial Omen → 无匹配
+34: 0       # Raid Omen → 无匹配
+35: 0       # Wind Charged → 无匹配
+36: 0       # Weaving → 无匹配
+37: 0       # Oozing → 无匹配
+38: 0       # Infested → 无匹配
+39: 0       # Breath of the Nautilus → 无匹配
