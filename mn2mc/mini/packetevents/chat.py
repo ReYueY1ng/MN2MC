@@ -42,8 +42,8 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
             player.send_msg("[color=#aaeeee]github.com/ReYueY1ng/MN2MC")
             return
 
-        # Only the host player can execute admin commands
-        is_host = player.uin == mn2mc.mini.auth.uin
+        # Check admin permission: whitelist
+        is_admin = player.uin in config.mini["admin_uins"] if config.mini["admin_uins"] else False
 
         match args[0]:
             case "version":
@@ -51,7 +51,7 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                     f"[color=#aaeeee]MN2MC {mn2mc.version}\nPowered by YueY1ng", False
                 )
             case "reload" | "respawn":
-                if not is_host:
+                if not is_admin:
                     player.send_msg("#RPermission denied", False)
                     return
                 # Cooldown check

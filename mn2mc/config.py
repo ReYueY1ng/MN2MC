@@ -19,6 +19,7 @@ mini:
     host_to_room_server: false # 创建迷你房间，若启用则无法通过 mitm 方式进入
     max_players: 65535
   send_log_to_chat: false # 发送日志至聊天栏
+  admin_uins: [] # 允许执行 /mn2mc reload 等命令的玩家 UIN 列表，留空则仅房主可执行
 
 mc:
   ip: 127.0.0.1
@@ -52,6 +53,7 @@ class Mini(TypedDict):
     server: server
     auth: auth
     send_log_to_chat: bool
+    admin_uins: list[int]
 
 
 class MC(TypedDict):
@@ -72,6 +74,7 @@ class ConfigManager:
             "server": {"ip": "127.0.0.1", "port": 11155, "host_to_room_server": False, "max_players": 65535},
             "auth": {"uin": 0, "passwd": "", "api_id": 110, "device_id": ""},
             "send_log_to_chat": False,
+            "admin_uins": [],
         }
         self.mc: MC = {
             "ip": "127.0.0.1",
@@ -143,6 +146,11 @@ class ConfigManager:
                 self.mini["send_log_to_chat"] = mini_section["send_log_to_chat"]
             else:
                 logger.warning("Config missing or invalid mini.send_log_to_chat; using default")
+
+            if "admin_uins" in mini_section and isinstance(mini_section["admin_uins"], list):
+                self.mini["admin_uins"] = [u for u in mini_section["admin_uins"] if isinstance(u, int)]
+            else:
+                logger.warning("Config missing or invalid mini.admin_uins; using default")
         else:
             logger.warning("Config missing or invalid mini section; using defaults")
 
