@@ -59,13 +59,16 @@ class MCClient:
     _pending_item_packets: list[tuple[int, bytes]]
 
     def __init__(self, options: dict, miniplayer: MiniPlayer) -> None:
+        self.running = threading.Event()
+        self.running.set()
+        self.username = options["username"]
+        self.miniplayer = miniplayer
+        self.state = "handshaking"
         self.client = mcprotocol.createClient(options)
         self.client.on("error", self.on_error)
         self.client.on("end", self.on_end)
         self.client.on("disconnect", self.on_disconnect)
         self.client.on("connect", self.on_connect)
-        self.username = options["username"]
-        self.miniplayer = miniplayer
         self.on_events = []
         self.position = Vector3f()
         self.angle = Angle(0, 0)
@@ -73,8 +76,6 @@ class MCClient:
         self.container_sequence = 0
         self.inventory_type = "inventory"
         self.window_id = 0
-        self.running = threading.Event()
-        self.running.set()
         self.players = {}
         self.add_player_count = 0
         self.entityid = 0
@@ -83,7 +84,6 @@ class MCClient:
         self._pending_grids = 0
         self._pending_item_packets = []
         self.entities = {}
-        self.state = "handshaking"
         self.registry = registry(config.mc["version"])
         self._dimension = DIMENSION_OVERWORLD
         logger.info(
@@ -113,7 +113,7 @@ class MCClient:
     def on_disconnect(self, packet, _):
         logger.debug(packet)
         logger.warning(
-            f"({self.miniplayer.name}) Disconnected from server: {packet['reason']['value']['extra']['value']['value'][0]['text']['value']}"
+            f"({self.miniplayer.name}) Disconnected from server: {packet['reason']}"
         )
 
     def on_end(self, end):
