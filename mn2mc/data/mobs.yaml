@@ -55,7 +55,7 @@
 111: 3292  # sheep - 绵羊
 112: 3917  # shulker - 虚空使教士
 114: 3520  # silverfish - 山臊小怪
-115: 40001  # skeleton - 骷罗
+115: 3105  # skeleton - 野人投矛手
 116: 3814  # skeleton_horse - 小角鹿
 117: 3110  # slime - 萌眼叮叮
 119: 3400  # sniffer - 嘟嘟鸟
@@ -78,7 +78,7 @@
 146: 3132  # wither_skeleton - 混乱弓手
 148: 3276  # wolf - 狗
 149: 3924  # zoglin - 野人百夫长
-150: 3102  # zombie - 野萌宝
+150: 3101  # zombie - 野人战士
 151: 3440  # zombie_horse - 迅捷陆行鸟
 152: 3938  # zombie_nautilus - 铁穹钳击兵
 153: 3209  # zombie_villager - 沙漠小女孩村民
