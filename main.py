@@ -1,14 +1,17 @@
-import signal
-import javascript
 import asyncio
-from loguru import logger
+import signal
+
+import javascript
 from javascript import require
-import mn2mc.mini.server as server
+from loguru import logger
+
 import mn2mc.config as config
+import mn2mc.mini.server as server
 import mn2mc.utils.protobuf_parser as protobuf_parser
 
 
 def prepare_dependencies():
+    global current_loop
     logger.info("Preparing Node.js dependencies...")
     mcprotocol = require("minecraft-protocol")
     prismarineChat = require("prismarine-chat")
@@ -18,6 +21,10 @@ def prepare_dependencies():
     msgpackr = require("msgpackr")
     prismarineItem = require("prismarine-item")
     prismarineRegistry = require("prismarine-registry")
+
+    javascript.globalThis.stop_mn2mc = create_stop_task
+    javascript.globalThis.logger = logger
+    current_loop = asyncio.get_running_loop()
     javascript.eval_js("""
         global.mcprotocol = mcprotocol
         global.prismarineChat = prismarineChat
@@ -27,10 +34,15 @@ def prepare_dependencies():
         global.msgpackr = msgpackr
         global.prismarineItem = prismarineItem
         global.prismarineRegistry = prismarineRegistry
+
+        process.on('uncaughtException', (err) => {
+            logger.error('Uncaught javascript Exception:\\n' + err.stack)
+        })
     """)
 
 
 stop_task: asyncio.Task | None = None
+current_loop: asyncio.AbstractEventLoop
 
 
 async def stop():
@@ -38,11 +50,16 @@ async def stop():
     await server.stop()
 
 
+def create_stop_task():
+    global stop_task
+    if not stop_task:
+        stop_task = current_loop.create_task(stop())
+
+
 def signal_handler(sig, frame):
     global stop_task
     logger.info(f"Received signal {sig}")
-    if not stop_task:
-        stop_task = asyncio.get_running_loop().create_task(stop())
+    create_stop_task()
 
 
 @logger.catch
@@ -63,9 +80,8 @@ async def main():
     except (KeyboardInterrupt, asyncio.CancelledError):
         pass
     finally:
-        if not stop_task:
-            stop_task = asyncio.get_running_loop().create_task(stop())
-        await stop_task
+        create_stop_task()
+        await stop_task  #ty:ignore[invalid-await]
 
 
 if __name__ == "__main__":
