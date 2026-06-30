@@ -1,3 +1,5 @@
+import threading
+
 import aiorak
 from loguru import logger
 
@@ -26,15 +28,8 @@ class MiniPlayer:
     def __init__(self, conn: aiorak.Connection, uin: int) -> None:
         self.conn = conn
         self.uin = uin
-        players.append(self)
-
-    def __del__(self) -> None:
-        if self.conn.state == aiorak.ConnectionState.CONNECTED:
-            self.kick()
-        if hasattr(self, "mcclient"):
-            self.mcclient.running.clear()
-            self.mcclient.end()
-            self.mcclient.remove()
+        with _players_lock:
+            players.append(self)
 
     def __repr__(self) -> str:
         return f"<MiniPlayer {self.name} ({self.uin}): {self.conn}>"
@@ -96,10 +91,12 @@ class MiniPlayer:
         if hasattr(self, "mcclient"):
             self.mcclient.running.clear()
             self.mcclient.end()
-        try:
-            players.remove(self)
-        except ValueError:
-            pass
+            self.mcclient.remove()
+        with _players_lock:
+            try:
+                players.remove(self)
+            except ValueError:
+                pass
 
     async def handler(self) -> None:
         """Main packet handling loop for the Mini World client connection."""
@@ -116,3 +113,4 @@ class MiniPlayer:
 
 
 players: list[MiniPlayer] = []
+_players_lock = threading.Lock()

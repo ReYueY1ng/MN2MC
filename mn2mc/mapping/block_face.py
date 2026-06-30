@@ -1,4 +1,5 @@
 from typing import Optional
+
 mini_block_face = {
     # "方块ID": "可否被变向（0没有方向无法变向，1四向，2六、八向，3特殊处理）"
     0: 0,
@@ -2931,7 +2932,7 @@ mini_block_face = {
 def get_block_face(blockid: int, properties: Optional[dict]):
     if not properties:
         return 0
-    
+
     face = mini_block_face[blockid]
     match face:
         case 0:

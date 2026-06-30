@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
-from mn2mc.mini.proto.common import ePBMsgCode
+
 # from mn2mc.mini.proto.hc import PB_
 
 

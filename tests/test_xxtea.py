@@ -1,6 +1,7 @@
 """Tests for mn2mc.utils.xxtea — XXTEA encryption, compression, and packing utilities."""
 
 import pytest
+
 from mn2mc.utils import xxtea
 
 

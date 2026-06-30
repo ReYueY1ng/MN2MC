@@ -1,12 +1,13 @@
 """Handle MC remove_entity_effect — remove status effects from Mini World entities."""
 
 from __future__ import annotations
-from mn2mc.constants import MINI_OBJ_ID_BASE
 
 from loguru import logger
+
+from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
-from mn2mc.mini.proto.common import ePBMsgCode, PB_ActorBuff
+from mn2mc.mini.proto.common import PB_ActorBuff, ePBMsgCode
 from mn2mc.mini.proto.hc import PB_ActorBuffChangeHC
 
 

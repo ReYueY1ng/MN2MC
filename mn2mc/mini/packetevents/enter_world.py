@@ -1,23 +1,23 @@
 """Handle Mini World enter world and initialize the MC client connection."""
 
 from __future__ import annotations
-from mn2mc.mini.proto.hc import PB_PlayerAttrChangeHC
 
 import asyncio
 import time
 
+from google.protobuf import json_format
 from loguru import logger
 
 import mn2mc
 import mn2mc.config as config
 import mn2mc.mini.proto as proto
 import mn2mc.mini.proto.common as common
-from mn2mc.utils.vector import Vector3f
 from mn2mc.mc.client import MCClient
 from mn2mc.mini.packet import MiniClientPacket, add_event
 from mn2mc.mini.player import MiniPlayer
 from mn2mc.mini.proto.common import ePBMsgCode
-from google.protobuf import json_format
+from mn2mc.mini.proto.hc import PB_PlayerAttrChangeHC
+from mn2mc.utils.vector import Vector3f
 
 player_permit = proto.hc.PB_PlayerPermitHC()
 json_format.Parse(
@@ -40,7 +40,6 @@ global_bin = common.PB_GlobalBin(
 
 room_info = proto.hc.PB_Custom_Msg(
     msgname="MULTII_NOR_ROOM_INFO_CHANGED_TOCLIENT",
-    # content="\u000b\u0000\u0000\u0000XcanTraceZhostGameTk\\8000273640665001778395651c9f5c2406bca37d6c1c46b699b3dd275\\\fhostPasswordP\\\rmapCanRecruit\\\fmaxPlayerNum\\\u0011maxPlayerSetLimitZpublicType\\\u000froomConnectModeTtagsI`\u001dw\"abcde\u0002f\u0016g\u001c(h\u0010i\u0011j@",
     content='\u000b\u0000\u0000\u0000XcanTraceZhostGameTk\\80002736406650017783978936d2f27c7bf9bfcd9c64dd8a59ded8704\\\fhostPasswordP\\\rmapCanRecruit\\\fmaxPlayerNum\\\u0011maxPlayerSetLimitZpublicType\\\u000froomConnectModeTtagsI`\u001dw"abcde\u0002f\u001c(g\u001c(h\u0010i\u0011j@',
     ziplen=201,
     unziplen=0,

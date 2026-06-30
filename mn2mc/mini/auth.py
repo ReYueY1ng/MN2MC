@@ -69,7 +69,12 @@ class MiniAuth:
                 LOGIN_URL % (msg, msgsign), headers=mn2mc.mini.HEADERS
             ) as response:
                 text = await response.text()
-                data = json.loads(text)
+                try:
+                    data = json.loads(text)
+                except json.JSONDecodeError:
+                    raise MiniAuthenticationError(
+                        f"Login failed: invalid JSON response: {text[:200]}"
+                    )
                 if data["code"] == 0:
                     self.uin = int(config.mini["auth"]["uin"])
                     self.api_id = config.mini["auth"]["api_id"]

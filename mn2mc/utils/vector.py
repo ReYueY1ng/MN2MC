@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
+
 from mn2mc.mini.proto.common import PB_Vector3, PB_Vector3f
 
 

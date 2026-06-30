@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
+from javascript import require
+
 import mn2mc.config as config
-import mn2mc.mapping.slotid as slotid_mapping
 import mn2mc.mapping.items as item_mapping
+import mn2mc.mapping.slotid as slotid_mapping
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
-from mn2mc.mini.proto.common import ePBMsgCode, PB_ItemData
+from mn2mc.mini.proto.common import PB_ItemData, ePBMsgCode
 from mn2mc.mini.proto.hc import PB_BackPackGridUpdateHC
-from javascript import require
 
 prismarine_item = require("prismarine-item")(config.mc["version"])
 
@@ -66,9 +67,11 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     data = PB_BackPackGridUpdateHC(ItemInfo=itemlist).SerializeToString()
 
     if window != 0 and getattr(client, "_open_pending", False):
-        client._pending_item_packets.append(
-            (ePBMsgCode.PB_BACKPACK_GRID_UPDATE_HC, data)
-        )
+        with client._lock:
+            if len(client._pending_item_packets) < client.MAX_PENDING_ITEMS:
+                client._pending_item_packets.append(
+                    (ePBMsgCode.PB_BACKPACK_GRID_UPDATE_HC, data)
+                )
         return
 
     client.miniplayer.send_packet(

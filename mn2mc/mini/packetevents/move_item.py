@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import mn2mc.mini.proto as proto
 import mn2mc.mapping.slotid as slotid_mapping
-from mn2mc.mini.player import MiniPlayer
+import mn2mc.mini.proto as proto
 from mn2mc.mini.packet import MiniClientPacket, add_event
+from mn2mc.mini.player import MiniPlayer
 
 
 async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:

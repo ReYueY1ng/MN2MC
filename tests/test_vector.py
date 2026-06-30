@@ -1,7 +1,8 @@
 import sys
 import types
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 
 # Mock the proto package chain before importing vector
 # This avoids the circular import / missing ch_ver2.py issue

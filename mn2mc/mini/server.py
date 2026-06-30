@@ -10,9 +10,9 @@ import mn2mc.mini.proto as proto
 import mn2mc.mini.room
 import mn2mc.mini.wsconn
 from mn2mc.mc.packet import load_all_event as mc_load_all_event
-from mn2mc.mini.packet import MiniServerPacket, MiniClientPacket
+from mn2mc.mini.packet import MiniServerPacket
 from mn2mc.mini.packet import load_all_event as mini_load_all_event
-from mn2mc.mini.player import MiniPlayer, players
+from mn2mc.mini.player import MiniPlayer, _players_lock, players
 
 default_extra_info = {
     "room_extra": {
@@ -44,8 +44,9 @@ miniserver: aiorak.Server
 
 def broadcast_packet(msgcode: proto.common.ePBMsgCode, data: bytes):
     if config.mini["server"]["host_to_room_server"]:
-        for player in players:
-            player.send_packet(msgcode, data)
+        with _players_lock:
+            for player in players:
+                player.send_packet(msgcode, data)
     else:
         miniserver.broadcast(MiniServerPacket(msgcode, data).encode())
 
@@ -68,14 +69,18 @@ async def handler(conn: aiorak.Connection):
     )
 
     if config.mini["server"]["host_to_room_server"]:
-        await mn2mc.mini.room.room_update(len(players))
+        with _players_lock:
+            player_count = len(players)
+        await mn2mc.mini.room.room_update(player_count)
 
     await player.handler()
     player.kick()
     logger.info(f"{uin} {conn.remote_address} disconnected")
 
     if config.mini["server"]["host_to_room_server"]:
-        await mn2mc.mini.room.room_update(len(players) - 1)
+        with _players_lock:
+            player_count = len(players) - 1
+        await mn2mc.mini.room.room_update(player_count)
 
 
 async def start(host: str = "0.0.0.0", port: int = 19132):
@@ -101,8 +106,9 @@ async def start(host: str = "0.0.0.0", port: int = 19132):
 
 
 async def stop():
-    for player in players.copy():
-        player.kick()
+    with _players_lock:
+        for player in players.copy():
+            player.kick()
     if miniserver:
         await miniserver.close()
     if config.mini["server"]["host_to_room_server"] and mn2mc.mini.room.room_token:

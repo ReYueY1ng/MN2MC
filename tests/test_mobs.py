@@ -1,6 +1,5 @@
 """Tests for mn2mc.mapping.mobs — mob ID mapping between MC and Mini World."""
 
-import pytest
 from mn2mc.mapping import mobs
 
 
@@ -45,8 +44,8 @@ class TestMobMappingData:
         assert mobs.mc_to_mini_mapping[11] == 3418
 
     def test_mapping_count_expected(self):
-        """Should have 33 mob mappings (matching mobs.json)."""
-        assert len(mobs.mc_to_mini_mapping) == 33
+        """Should have 85 mob mappings (matching mobs.yaml)."""
+        assert len(mobs.mc_to_mini_mapping) == 85
 
 
 class TestMobMiniToMcMapping:

@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
+from javascript import require
+
 import mn2mc.config as config
-import mn2mc.mapping.slotid as slotid_mapping
 import mn2mc.mapping.items as item_mapping
+import mn2mc.mapping.slotid as slotid_mapping
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
-from mn2mc.mini.proto.common import ePBMsgCode, PB_ItemData
+from mn2mc.mini.proto.common import PB_ItemData, ePBMsgCode
 from mn2mc.mini.proto.hc import PB_BackPackGridUpdateHC
-from javascript import require
 
 prismarine_item = require("prismarine-item")(config.mc["version"])
 

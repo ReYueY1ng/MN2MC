@@ -58,7 +58,11 @@ class WsConnManager:
             async with session.get(
                 CONFIG_URL + encoded, headers=mn2mc.mini.HEADERS
             ) as resp:
-                data = json.loads(await resp.text())
+                text = await resp.text()
+                try:
+                    data = json.loads(text)
+                except json.JSONDecodeError:
+                    raise ValueError(f"Failed to parse WS config response: {text[:200]}")
                 logger.info(f"WS URL: {data['conn']}")
                 return data["conn"]
 

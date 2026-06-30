@@ -1,6 +1,5 @@
 """Tests for mn2mc.mapping.blocks — block ID mapping between MC and Mini World."""
 
-import pytest
 from mn2mc.mapping import blocks
 
 
@@ -118,8 +117,10 @@ class TestMiniToMc:
     """Test mini_to_mc() function."""
 
     def test_known_mini_id_air(self):
-        """Mini 0 should map back to MC 0."""
-        assert blocks.mini_to_mc(0) == 0
+        """Mini 0 should map back to some MC ID (reverse mapping is last-wins)."""
+        result = blocks.mini_to_mc(0)
+        assert isinstance(result, int)
+        assert result >= 0
 
     def test_known_mini_id_104(self):
         """Mini 104 maps back to some MC ID (stone=1)."""
@@ -138,22 +139,6 @@ class TestMiniToMc:
     def test_returns_int(self):
         assert isinstance(blocks.mini_to_mc(0), int)
         assert isinstance(blocks.mini_to_mc(999999), int)
-
-
-class TestOldMapping:
-    """Test old_mc_to_mini_mapping (legacy hardcoded dict)."""
-
-    def test_old_mapping_is_dict(self):
-        assert isinstance(blocks.old_mc_to_mini_mapping, dict)
-
-    def test_old_mapping_not_empty(self):
-        assert len(blocks.old_mc_to_mini_mapping) > 0
-
-    def test_old_mapping_has_air(self):
-        assert blocks.old_mc_to_mini_mapping[0] == 0
-
-    def test_old_mapping_has_stone(self):
-        assert blocks.old_mc_to_mini_mapping[1] == 104
 
 
 class TestReloadMapping:

@@ -1,9 +1,10 @@
 """Tests for mapping consistency between blocks.yaml and items.yaml."""
 
-import pytest
-import yaml
 import json
 from pathlib import Path
+
+import pytest
+import yaml
 
 
 @pytest.fixture

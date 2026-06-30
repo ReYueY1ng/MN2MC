@@ -1,20 +1,20 @@
-import random
+import asyncio
 import hashlib
 import json
+import random
 import time
 import urllib.parse
-import asyncio
 from typing import TYPE_CHECKING
 
 import aiohttp
 from loguru import logger
 
 import mn2mc
+import mn2mc.config
 import mn2mc.mini
 import mn2mc.mini.auth
 import mn2mc.mini.nat
 import mn2mc.mini.wsconn
-import mn2mc.config
 
 CONFIG_URL = "http://openroom.mini1.cn:8080/server/room?"
 AUTH_KEY = "f5711eb1640712de051e5aedc35329c3"
@@ -98,7 +98,10 @@ class MiniRoom:
                 CONFIG_URL + encoded_params, headers=mn2mc.mini.HEADERS
             ) as response:
                 data = await response.text()
-                jsondata = json.loads(data)
+                try:
+                    jsondata = json.loads(data)
+                except json.JSONDecodeError:
+                    raise Exception(f"Failed to parse room config response: {data[:200]}")
                 if jsondata["result"] == 0:
                     self.config = jsondata["config"]
                     return self.config
@@ -151,7 +154,10 @@ class MiniRoom:
                 self.room_url + encoded, headers=mn2mc.mini.HEADERS
             ) as response:
                 data = await response.text()
-                jsondata = json.loads(data)
+                try:
+                    jsondata = json.loads(data)
+                except json.JSONDecodeError:
+                    raise Exception(f"Failed to parse create room response: {data[:200]}")
                 if jsondata["result"] == 0:
                     logger.info("Room created. Now you can search the room by uin.")
                     await mn2mc.mini.nat.start()

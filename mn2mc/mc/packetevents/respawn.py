@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+from javascript import require
+
+import mn2mc.config as config
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_GameModeChangeHC
-import mn2mc.config as config
-from javascript import require
 
 registry = require("prismarine-registry")(config.mc["version"])
 

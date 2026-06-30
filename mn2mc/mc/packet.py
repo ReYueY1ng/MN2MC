@@ -3,8 +3,7 @@ import importlib
 from loguru import logger
 
 import mn2mc.config as config
-from mn2mc.events import add_event, del_event, reset_events
-from mn2mc.events import events
+from mn2mc.events import add_event, del_event, events, reset_events  # noqa: F401
 
 # NOTE: on_event is kept as a sync wrapper here because mc/client.py calls it
 # synchronously from on_packet (JS bridge callback). The shared events.on_event

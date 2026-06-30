@@ -8,11 +8,13 @@ import mn2mc.mapping.mobs as mob_mapping
 import mn2mc.mini.skin as skin
 from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
-from mn2mc.mc.packet import add_event
 from mn2mc.mc.entity import MCEntity
+from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import (
+    PB_ActorAttInfo,
     PB_ActorCommon,
     PB_ActorInfo,
+    PB_ActorItem,
     PB_ActorMob,
     PB_ActorRoleInfo,
     PB_BodyDir,
@@ -21,16 +23,15 @@ from mn2mc.mini.proto.common import (
     PB_RoleData,
     PB_RoleInfo,
     ePBMsgCode,
-    PB_ActorAttInfo,
-    PB_ActorItem,
 )
 from mn2mc.mini.proto.hc import (
     PB_ActorEnterAOIHC,
+    PB_ActorLeaveAOIHC,
+    PB_ActorMotionHC,
     PB_GeneralEnterAOIHC,
-    PB_ActorLeaveAOIHC, PB_ActorMotionHC,
 )
 from mn2mc.utils.angle import Angle
-from mn2mc.utils.vector import Vector3f, Vector3
+from mn2mc.utils.vector import Vector3, Vector3f
 
 # Entity types that should be ignored (not spawned in Mini World).
 _IGNORED_ENTITY_TYPES = frozenset(

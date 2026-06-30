@@ -1,7 +1,6 @@
 import re
 from typing import Dict, List
 
-
 # Minecraft 标准颜色代码与迷你世界代码的映射表
 MINECRAFT_TO_MINIWORLD: Dict[str, str] = {
     # 基础颜色映射

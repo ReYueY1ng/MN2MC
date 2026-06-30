@@ -1,6 +1,8 @@
-from typing import TYPE_CHECKING, TypedDict
-import yaml
 from pathlib import Path
+from typing import TYPE_CHECKING, TypedDict
+
+import yaml
+from loguru import logger
 
 # Default config as a string — used only for initial file generation and as documentation.
 _default_file = """\
@@ -88,11 +90,99 @@ class ConfigManager:
         if path.exists():
             with path.open() as f:
                 data = yaml.safe_load(f)
-                self.mini = data["mini"]
-                self.mc = data["mc"]
-                self.debug = data["debug"]
+                if isinstance(data, dict):
+                    self._validate_and_merge(data)
         else:
             self.save(path)
+
+    def _validate_and_merge(self, data: dict) -> None:
+        if not isinstance(data, dict):
+            return
+
+        mini_section = data.get("mini")
+        if isinstance(mini_section, dict):
+            server_section = mini_section.get("server")
+            if isinstance(server_section, dict):
+                if "ip" in server_section and isinstance(server_section["ip"], str):
+                    self.mini["server"]["ip"] = server_section["ip"]
+                else:
+                    logger.warning("Config missing or invalid mini.server.ip; using default")
+                if "port" in server_section and isinstance(server_section["port"], int):
+                    self.mini["server"]["port"] = server_section["port"]
+                else:
+                    logger.warning("Config missing or invalid mini.server.port; using default")
+                if "host_to_room_server" in server_section and isinstance(server_section["host_to_room_server"], bool):
+                    self.mini["server"]["host_to_room_server"] = server_section["host_to_room_server"]
+                else:
+                    logger.warning("Config missing or invalid mini.server.host_to_room_server; using default")
+                if "max_players" in server_section and isinstance(server_section["max_players"], int):
+                    self.mini["server"]["max_players"] = server_section["max_players"]
+                else:
+                    logger.warning("Config missing or invalid mini.server.max_players; using default")
+
+            auth_section = mini_section.get("auth")
+            if isinstance(auth_section, dict):
+                if "uin" in auth_section and isinstance(auth_section["uin"], int):
+                    self.mini["auth"]["uin"] = auth_section["uin"]
+                else:
+                    logger.warning("Config missing or invalid mini.auth.uin; using default")
+                if "passwd" in auth_section and isinstance(auth_section["passwd"], str):
+                    self.mini["auth"]["passwd"] = auth_section["passwd"]
+                else:
+                    logger.warning("Config missing or invalid mini.auth.passwd; using default")
+                if "api_id" in auth_section and isinstance(auth_section["api_id"], int):
+                    self.mini["auth"]["api_id"] = auth_section["api_id"]
+                else:
+                    logger.warning("Config missing or invalid mini.auth.api_id; using default")
+                if "device_id" in auth_section and isinstance(auth_section["device_id"], str):
+                    self.mini["auth"]["device_id"] = auth_section["device_id"]
+                else:
+                    logger.warning("Config missing or invalid mini.auth.device_id; using default")
+
+            if "send_log_to_chat" in mini_section and isinstance(mini_section["send_log_to_chat"], bool):
+                self.mini["send_log_to_chat"] = mini_section["send_log_to_chat"]
+            else:
+                logger.warning("Config missing or invalid mini.send_log_to_chat; using default")
+        else:
+            logger.warning("Config missing or invalid mini section; using defaults")
+
+        mc_section = data.get("mc")
+        if isinstance(mc_section, dict):
+            if "ip" in mc_section and isinstance(mc_section["ip"], str):
+                self.mc["ip"] = mc_section["ip"]
+            else:
+                logger.warning("Config missing or invalid mc.ip; using default")
+            if "port" in mc_section and isinstance(mc_section["port"], int):
+                self.mc["port"] = mc_section["port"]
+            else:
+                logger.warning("Config missing or invalid mc.port; using default")
+            if "username" in mc_section and isinstance(mc_section["username"], str):
+                self.mc["username"] = mc_section["username"]
+            else:
+                logger.warning("Config missing or invalid mc.username; using default")
+            if "version" in mc_section and isinstance(mc_section["version"], str):
+                self.mc["version"] = mc_section["version"]
+            else:
+                logger.warning("Config missing or invalid mc.version; using default")
+            if "chunk_parse_thread" in mc_section and isinstance(mc_section["chunk_parse_thread"], int):
+                self.mc["chunk_parse_thread"] = mc_section["chunk_parse_thread"]
+            else:
+                logger.warning("Config missing or invalid mc.chunk_parse_thread; using default")
+            if "use_new_chunk_parser" in mc_section and isinstance(mc_section["use_new_chunk_parser"], bool):
+                self.mc["use_new_chunk_parser"] = mc_section["use_new_chunk_parser"]
+            else:
+                logger.warning("Config missing or invalid mc.use_new_chunk_parser; using default")
+            if "log_message" in mc_section and isinstance(mc_section["log_message"], bool):
+                self.mc["log_message"] = mc_section["log_message"]
+            else:
+                logger.warning("Config missing or invalid mc.log_message; using default")
+        else:
+            logger.warning("Config missing or invalid mc section; using defaults")
+
+        if "debug" in data and isinstance(data["debug"], bool):
+            self.debug = data["debug"]
+        else:
+            logger.warning("Config missing or invalid debug; using default")
 
     def save(self, path: Path | None = None) -> None:
         """Serialize the current config state to YAML.

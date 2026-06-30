@@ -367,3 +367,5 @@ resources/
 tools/raknet_proxy
 .omo/
 archive/
+ruffcheck
+tycheck

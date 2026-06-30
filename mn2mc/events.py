@@ -33,6 +33,10 @@ class EventManager:
     def del_event(self, event_key: int | str, index: int) -> None:
         """Remove an event handler by index.
 
+        Uses a sentinel ``None`` instead of ``list.remove()`` to preserve
+        indices returned by ``add_event()``. The dispatch loop in
+        ``on_event()`` skips ``None`` entries.
+
         Args:
             event_key: Event identifier.
             index: Handler index returned by add_event.

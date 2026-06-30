@@ -1,10 +1,24 @@
 import asyncio
+import atexit
 
 import mn2mc.config as config
 import mn2mc.mini.auth
 import mn2mc.mini.room
 
 _process: asyncio.subprocess.Process | None = None
+
+
+def _cleanup():
+    global _process
+    if _process is not None:
+        try:
+            _process.terminate()
+        except Exception:
+            pass
+        _process = None
+
+
+atexit.register(_cleanup)
 
 
 async def start():

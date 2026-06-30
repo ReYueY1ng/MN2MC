@@ -13,17 +13,18 @@ import mn2mc.utils.protobuf_parser as protobuf_parser
 def prepare_dependencies():
     global current_loop
     logger.info("Preparing Node.js dependencies...")
-    mcprotocol = require("minecraft-protocol")
-    prismarineChat = require("prismarine-chat")
-    prismarineBlock = require("prismarine-block")
-    prismarineChunk = require("prismarine-chunk")
-    Vec3 = require("vec3")
-    msgpackr = require("msgpackr")
-    prismarineItem = require("prismarine-item")
-    prismarineRegistry = require("prismarine-registry")
 
+    javascript.globalThis.mcprotocol = require("minecraft-protocol")
+    javascript.globalThis.prismarineChat = require("prismarine-chat")
+    javascript.globalThis.prismarineBlock = require("prismarine-block")
+    javascript.globalThis.prismarineChunk = require("prismarine-chunk")
+    javascript.globalThis.Vec3 = require("vec3")
+    javascript.globalThis.msgpackr = require("msgpackr")
+    javascript.globalThis.prismarineItem = require("prismarine-item")
+    javascript.globalThis.prismarineRegistry = require("prismarine-registry")
     javascript.globalThis.stop_mn2mc = create_stop_task
     javascript.globalThis.logger = logger
+
     current_loop = asyncio.get_running_loop()
     javascript.eval_js("""
         global.mcprotocol = mcprotocol

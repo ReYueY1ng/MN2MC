@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-import mn2mc.mini.proto as proto
-import mn2mc.mapping.slotid as slotid_mapping
-import mn2mc.mapping.items as item_mapping
-import mn2mc.config as config
-from mn2mc.mini.player import MiniPlayer
-from mn2mc.mini.packet import MiniClientPacket, add_event
 from javascript import require
+
+import mn2mc.config as config
+import mn2mc.mapping.items as item_mapping
+import mn2mc.mapping.slotid as slotid_mapping
+import mn2mc.mini.proto as proto
+from mn2mc.mini.packet import MiniClientPacket, add_event
+from mn2mc.mini.player import MiniPlayer
 
 prismarine_item = require("prismarine-item")(config.mc["version"])
 

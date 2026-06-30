@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-from loguru import logger
+from javascript import require
+
+import mn2mc.config as config
+import mn2mc.mapping.block_face as block_face_mapping
+import mn2mc.mapping.blocks as block_mapping
+import mn2mc.utils.mini_block as mini_block
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_BlockUpdateHC
 from mn2mc.utils.vector import Vector3
-import mn2mc.utils.mini_block as mini_block
-import mn2mc.mapping.blocks as block_mapping
-import mn2mc.mapping.block_face as block_face_mapping
-import mn2mc.config as config
-from javascript import require
 
 prismarine_block = require("prismarine-block")(config.mc["version"])
 

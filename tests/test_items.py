@@ -1,6 +1,5 @@
 """Tests for mn2mc.mapping.items — item ID mapping between MC and Mini World."""
 
-import pytest
 from mn2mc.mapping import items
 
 
@@ -93,11 +92,11 @@ class TestItemMiniToMc:
         assert result >= 0
 
     def test_unknown_mini_id_returns_default(self):
-        """Unknown Mini item ID should return 28 (dirt)."""
-        assert items.mini_to_mc(999999) == 28
+        """Unknown Mini item ID should return 0 (no item)."""
+        assert items.mini_to_mc(999999) == 0
 
     def test_negative_id_returns_default(self):
-        assert items.mini_to_mc(-1) == 28
+        assert items.mini_to_mc(-1) == 0
 
     def test_returns_int(self):
         assert isinstance(items.mini_to_mc(0), int)

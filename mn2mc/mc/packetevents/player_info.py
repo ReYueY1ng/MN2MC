@@ -5,7 +5,6 @@ from __future__ import annotations
 import mn2mc.mini.skin as skin
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
-from mn2mc.mini.proto.hc import PB_ActorLeaveAOIHC
 from mn2mc.mini.proto.common import (
     PB_ActorInfo,
     PB_ActorRoleInfo,
@@ -16,7 +15,7 @@ from mn2mc.mini.proto.common import (
     PB_RoleInfo,
     ePBMsgCode,
 )
-from mn2mc.mini.proto.hc import PB_ActorEnterAOIHC
+from mn2mc.mini.proto.hc import PB_ActorEnterAOIHC, PB_ActorLeaveAOIHC
 
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:

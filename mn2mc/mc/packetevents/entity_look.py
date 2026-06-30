@@ -6,8 +6,8 @@ from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import (
-    ePBMsgCode,
     PB_MoveMotion,
+    ePBMsgCode,
 )
 from mn2mc.mini.proto.hc import PB_ActorMoveHC
 from mn2mc.utils.angle import Angle

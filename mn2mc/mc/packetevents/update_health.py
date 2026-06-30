@@ -1,13 +1,11 @@
 """Handle MC update_health and synchronize health/food to Mini World."""
 
 from __future__ import annotations
-from loguru import logger
 
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
-from mn2mc.mini.proto.hc import PB_PlayerSetAttrHC, PB_PlayerAttrChangeHC
-
+from mn2mc.mini.proto.hc import PB_PlayerAttrChangeHC
 
 # MC health 0-20 → Mini HP 0-100 (default MaxHP = 100)
 # MC food 0-20 → Mini FoodLevel 0-100

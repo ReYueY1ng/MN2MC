@@ -1,30 +1,28 @@
 from __future__ import annotations
-import javascript
-import time
-
-import zlib
-import ormsgpack
-import threading
 
 import json
+import threading
+import time
+import zlib
+from typing import TYPE_CHECKING
 
 import aiorak
+import javascript
 import minebase
+import ormsgpack
 from javascript import require
 from loguru import logger
 
 import mn2mc.config as config
 import mn2mc.utils.color_converter as color_converter
 from mn2mc.constants import DIMENSION_OVERWORLD
-from mn2mc.mc.packet import on_event, events
 from mn2mc.mc.entity import MCEntity
-from mn2mc.utils.vector import Vector3f
+from mn2mc.mc.packet import events, on_event
 from mn2mc.utils.angle import Angle
+from mn2mc.utils.vector import Vector3f
 
-try:
+if TYPE_CHECKING:
     from mn2mc.mini.player import MiniPlayer
-except ImportError:
-    pass
 
 prismarinechat = require("prismarine-chat")(config.mc["version"])
 minedata = minebase.load_version(config.mc["version"])
@@ -33,9 +31,10 @@ mcprotocol = require("minecraft-protocol")
 vec3 = require("vec3")
 ChunkManager = require("./chunk.js")
 registry = require("prismarine-registry")
-    
+
 
 class MCClient:
+    MAX_PENDING_ITEMS = 1000
     _dimension: int
     client: mcprotocol.Client
     miniplayer: MiniPlayer
@@ -57,8 +56,11 @@ class MCClient:
     _open_pending: bool
     _pending_grids: int
     _pending_item_packets: list[tuple[int, bytes]]
+    _open_timer: threading.Timer | None
+    _lock: threading.Lock
 
     def __init__(self, options: dict, miniplayer: MiniPlayer) -> None:
+        self._lock = threading.Lock()
         self.running = threading.Event()
         self.running.set()
         self.username = options["username"]
@@ -83,6 +85,7 @@ class MCClient:
         self._open_pending = False
         self._pending_grids = 0
         self._pending_item_packets = []
+        self._open_timer = None
         self.entities = {}
         self.registry = registry(config.mc["version"])
         self._dimension = DIMENSION_OVERWORLD
@@ -118,6 +121,8 @@ class MCClient:
 
     def on_end(self, end):
         self.running.clear()
+        with self._lock:
+            self._pending_item_packets.clear()
         if self.miniplayer.conn.state == aiorak.ConnectionState.CONNECTED:
             logger.info(f"({self.miniplayer.name}) Connection lost: {end}")
             self.miniplayer.kick()
@@ -129,15 +134,20 @@ class MCClient:
         self.miniplayer.send_msg("Connected to server")
 
     def on_player_chat(self, e):
-        if "formattedMessage" in e:
-            content = json.loads(e["formattedMessage"])
-        elif "unsignedContent" in e and e["unsignedContent"]:
-            content = json.loads(e["unsignedContent"])
-        elif "plainMessage" in e:
-            content = {"text": e["plainMessage"]}
-        else:
-            logger.error("Cannot find available content!")
-            logger.debug(e)
+        try:
+            if "formattedMessage" in e:
+                content = json.loads(e["formattedMessage"])
+            elif "unsignedContent" in e and e["unsignedContent"]:
+                content = json.loads(e["unsignedContent"])
+            elif "plainMessage" in e:
+                content = {"text": e["plainMessage"]}
+            else:
+                logger.error("Cannot find available content!")
+                logger.debug(e)
+                return
+        except json.JSONDecodeError:
+            logger.exception(f"({self.miniplayer.name}) Failed to parse chat content")
+            return
         chat = prismarinechat(content)
         if config.mc['log_message']:
             logger.debug(f"[Chat] {chat.toAnsi()}")
@@ -172,7 +182,11 @@ class MCClient:
                 self.miniplayer.send_msg(f"[{name}] {msg}")
 
     def on_server_chat(self, e):
-        chatjson = json.loads(e["formattedMessage"])
+        try:
+            chatjson = json.loads(e["formattedMessage"])
+        except json.JSONDecodeError:
+            logger.exception(f"({self.miniplayer.name}) Failed to parse server chat")
+            return
         chat = prismarinechat(chatjson)
         for msg in color_converter.convert_minecraft_to_miniworld(chat.toMotd()).split(
             "\n"
@@ -193,6 +207,9 @@ class MCClient:
         self.client.end()
 
     def remove(self):
+        if self._open_timer:
+            self._open_timer.cancel()
+            self._open_timer = None
         if hasattr(self, "chunkmgr"):
             self.chunkmgr.running = False
         self.end()

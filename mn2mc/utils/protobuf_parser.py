@@ -13,18 +13,18 @@
     - protoc (Protobuf 编译器) 用于动态编译 .proto 文件
 """
 
-from loguru import logger
-
 import argparse
-import sys
-import subprocess
-import tempfile
 import importlib.util
-import struct
 import json
 import re
-import blackboxprotobuf
+import struct
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
+
+import blackboxprotobuf
+from loguru import logger
 
 ignored_msg_code = [6501, 4047, 11]
 
@@ -1187,7 +1187,7 @@ def build_msgid_to_class_map(message_classes):
     for value in msg_code_enum.items():
         msg_id = value[1]
         enum_name = value[0]
-        
+
         # 首先检查手动映射
         if msg_id in ENUM_TO_CLASS_MANUAL:
             target_class_name = ENUM_TO_CLASS_MANUAL[msg_id]
@@ -1203,7 +1203,7 @@ def build_msgid_to_class_map(message_classes):
             else:
                 print(f"手动映射失败: {enum_name} -> {target_class_name}")
             continue
-        
+
         # 尝试根据枚举名猜测消息类名
         class_candidate: str = enum_name[3:]  # 去掉 'PB_'
         if class_candidate.endswith("_CH"):

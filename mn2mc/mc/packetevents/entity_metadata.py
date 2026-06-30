@@ -1,22 +1,22 @@
 from __future__ import annotations
 
-from loguru import logger
+from javascript import require
 
 import mn2mc.mapping.items as item_mapping
+from mn2mc.config import config
 from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
-from mn2mc.mc.packet import add_event
 from mn2mc.mc.entity import entitytypes
+from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import (
+    PB_ActorAttInfo,
     PB_ActorCommon,
+    PB_ActorItem,
     ePBMsgCode,
-    PB_ActorAttInfo, PB_ActorItem,
 )
-from mn2mc.mini.proto.hc import PB_GeneralEnterAOIHC, PB_ActorLeaveAOIHC, PB_ActorMotionHC
-from mn2mc.config import config
-from mn2mc.utils.angle import Angle
-from mn2mc.utils.vector import Vector3f, Vector3
-from javascript import require
+from mn2mc.mini.proto.hc import PB_ActorLeaveAOIHC, PB_ActorMotionHC, PB_GeneralEnterAOIHC
+from mn2mc.utils.vector import Vector3
+
 prismarine_item = require("prismarine-item")(config.mc["version"])
 
 def _handle_item(client: MCClient, entityid: int, metadata):
@@ -56,7 +56,7 @@ def _handle_item(client: MCClient, entityid: int, metadata):
             )
         ).SerializeToString(),
     )
-    
+
     motion = entity.motion.convert()
     motion.x /= 100
     motion.y /= 100

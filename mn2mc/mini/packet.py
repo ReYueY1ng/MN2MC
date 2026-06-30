@@ -2,7 +2,7 @@ import importlib
 import struct
 from typing import Optional
 
-from mn2mc.events import add_event, del_event, on_event, reset_events
+from mn2mc.events import add_event, del_event, on_event, reset_events  # noqa: F401
 
 PLACEHOLDER = b"\x90\x00\x02\x9a"
 
@@ -23,15 +23,13 @@ class MiniClientPacket:
         uinordata: int | bytes | None,
         msgcode: Optional[int] = None,
         data: Optional[bytes] = None,
-        touin: Optional[int] = None,
+        touin: int = struct.unpack(">I", PLACEHOLDER)[0],
     ) -> None:
         if isinstance(uinordata, int):
             if not isinstance(msgcode, int):
                 raise TypeError("msgcode must be int")
             elif not isinstance(data, bytes):
                 raise TypeError("data must be bytes")
-            elif not isinstance(touin, int):
-                raise TypeError("touin must be int")
             self.uin = uinordata
             self.msgcode = msgcode
             self.data = data
@@ -48,9 +46,13 @@ touin: {self.touin}
 """
 
     def decode(self, data: bytes) -> None:
+        if len(data) < 13:
+            raise ValueError(f"Packet too short: {len(data)} bytes, need at least 13")
         self.uin = struct.unpack(">I", data[1:5])[0]
         self.touin = struct.unpack(">I", data[5:9])[0]
         self.msgcode, length = struct.unpack("<HH", data[9:13])
+        if len(data) < 13 + length:
+            raise ValueError(f"Packet data truncated: have {len(data)} bytes, need {13 + length}")
         self.data = struct.unpack_from(f"{length}s", data, 13)[0]
 
     def encode(self) -> bytes:

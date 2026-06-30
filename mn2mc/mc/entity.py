@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import minebase
 from dataclasses import dataclass, field
 from typing import Optional
+
+import minebase
 
 from mn2mc.config import config
 from mn2mc.utils.angle import Angle

@@ -5,14 +5,15 @@ General entity attribute updates are logged and skipped.
 """
 
 from __future__ import annotations
-from mn2mc.constants import MINI_OBJ_ID_BASE
 
 from typing import Any
 
 from loguru import logger
+
+from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
-from mn2mc.mini.proto.common import ePBMsgCode, PB_Vector3f
+from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import (
     PB_ActorAttrChangeHC,
     PB_ActorAttrSpeedChangeHC,

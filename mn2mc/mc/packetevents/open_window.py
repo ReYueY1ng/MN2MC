@@ -1,23 +1,28 @@
 """Handle MC open_window and notify Mini World of container properties."""
 
 from __future__ import annotations
+
 import threading
 import time
 
 from loguru import logger
+
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
-from mn2mc.mini.proto.hc import PB_OpenContainerHC, PB_CloseContainerHC
+from mn2mc.mini.proto.hc import PB_CloseContainerHC, PB_OpenContainerHC
 
 
 def _flush_pending_items(client: MCClient) -> None:
-    for msgcode, data in client._pending_item_packets:
+    with client._lock:
+        items = list(client._pending_item_packets)
+        client._pending_item_packets.clear()
+    for msgcode, data in items:
         client.miniplayer.send_packet(msgcode, data)
-    client._pending_item_packets.clear()
 
 
 def _do_open_container(client: MCClient) -> None:
+    client._open_timer = None
     client._open_pending = False
     client.miniplayer.send_packet(
         ePBMsgCode.PB_OPEN_CONTAINER_HC,
@@ -34,7 +39,8 @@ def _schedule_open(client: MCClient, grids: int) -> None:
         return
     client._open_pending = True
     client._pending_grids = grids
-    threading.Timer(0.1, _do_open_container, args=[client]).start()
+    client._open_timer = threading.Timer(0.1, _do_open_container, args=[client])
+    client._open_timer.start()
 
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:

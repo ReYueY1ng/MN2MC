@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import mn2mc
 from mn2mc.mc.client import MCClient
-from mn2mc.mc.packet import add_event
 from mn2mc.mc.entity import MCEntity, entitytypes
+from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_GameModeChangeHC
-from mn2mc.utils.vector import Vector3f
 from mn2mc.utils.angle import Angle
+from mn2mc.utils.vector import Vector3f
+
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     """Complete MC login handshake and send game mode to Mini World.

@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import mn2mc.mini.proto as proto
-from mn2mc.mini.player import MiniPlayer
 from mn2mc.mini.packet import MiniClientPacket, add_event
-from mn2mc.utils.vector import Vector3
+from mn2mc.mini.player import MiniPlayer
 from mn2mc.utils.angle import Angle
+from mn2mc.utils.vector import Vector3
 
 
 async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:

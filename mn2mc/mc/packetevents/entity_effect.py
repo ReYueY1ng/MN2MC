@@ -1,17 +1,15 @@
 """Handle MC entity_effect — apply status effects to Mini World entities."""
 
 from __future__ import annotations
-from mn2mc.constants import MINI_OBJ_ID_BASE
 
 from loguru import logger
+
+from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mapping import effects as eff_map
 from mn2mc.mc.client import MCClient
-from mn2mc.mc.entity import MCEntity
 from mn2mc.mc.packet import add_event
-from mn2mc.mini.proto.common import ePBMsgCode, PB_ActorBuff
+from mn2mc.mini.proto.common import PB_ActorBuff, ePBMsgCode
 from mn2mc.mini.proto.hc import PB_ActorBuffChangeHC
-from mn2mc.utils.vector import Vector3f
-from mn2mc.utils.angle import Angle
 
 _next_buff_instance = 1
 
@@ -50,7 +48,7 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     if buff_id == 0:
         logger.warning("unmapped MC effect {} on entity {}", effect_id, entityid)
         return
-    
+
     if amplifier > 3:
         logger.warning(f"effect {effect_id} (->buff {buff_id}) lv{amplifier} may not be supported")
 

@@ -16,4 +16,4 @@ def mini_to_mc(id: int) -> int:
     if id in mini_to_mc_mapping:
         return mini_to_mc_mapping[id]
     else:
-        return 28  # 土块
+        return 0  # 无对应物品

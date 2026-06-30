@@ -1,9 +1,9 @@
 """Load block/item/mob ID mapping data from YAML files."""
 
-import yaml
 from pathlib import Path
 from typing import Dict
 
+import yaml
 from loguru import logger
 
 _DATA_DIR = Path(__file__).parent

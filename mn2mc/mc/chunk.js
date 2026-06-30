@@ -1,6 +1,8 @@
 const { performance } = require('perf_hooks')
 const zlib = require('zlib')
 
+const MAX_PARSED_CACHE = 100
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -91,8 +93,19 @@ class ChunkManager {
             console.error(`Failed to decode chunk data (${jsondata.x}, ${jsondata.z})`)
             return
         }
+        if (this.cacheParsedChunks.length >= MAX_PARSED_CACHE) return
         let blocks = []
+        const sections = chunk.sections
+        const hasSectionAPI = Array.isArray(sections)
         for (let y = 0; y < 256; y++) {
+            if (hasSectionAPI) {
+                const sectionIdx = Math.floor((y - this.minY) / 16)
+                const section = sections[sectionIdx]
+                if (section && typeof section.blockCount === 'number' && section.blockCount === 0) {
+                    y += 15  // skip remaining rows in this empty section
+                    continue
+                }
+            }
             for (let x = 0; x < 16; x++) {
                 for (let z = 0; z < 16; z++) {
                     let block = chunk.getBlock(Vec3(x, y, z))

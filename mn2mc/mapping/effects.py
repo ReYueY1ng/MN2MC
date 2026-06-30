@@ -12,8 +12,8 @@ Mini World buffs use sequential IDs for levels:
   - etc.
 """
 
-from pathlib import Path
 import csv
+from pathlib import Path
 from typing import Optional
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,7 +44,6 @@ def _load_buffdef_csv() -> dict[int, dict]:
     """Load Mini World buff definitions from buffdef.csv for level lookup."""
     # The CSV can be at multiple locations; try standard paths
     csv_paths = [
-        Path("/run/media/yuey1ng/F25A9F0C5A9ECD2B/mini/dump/script_decompiled/csvdef/utf8/buffdef.csv"),
         DATA_DIR / "buffdef.csv",
     ]
 

@@ -1,5 +1,6 @@
+
 import pytest
-import math
+
 from mn2mc.utils.angle import Angle
 
 

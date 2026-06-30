@@ -1,7 +1,8 @@
 """Auto-import and hot-reload Minecraft packet event handlers."""
 
-from importlib import import_module, reload, invalidate_caches
+from importlib import import_module, invalidate_caches, reload
 from pathlib import Path
+
 from mn2mc.config import config
 
 for f in Path(__file__).parent.glob("*.py"):

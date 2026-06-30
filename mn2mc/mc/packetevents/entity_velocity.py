@@ -19,7 +19,7 @@ def on_recv(client: MCClient, jsondata: dict, _metadata: dict) -> None:
 
     Ignores untracked entities.
     """
-    # 注意：原版 node-minecraft-protocol 的 lpVec3 实现有问题（#1494），velocity 会变乱，需要手动 patch: 
+    # 注意：原版 node-minecraft-protocol 的 lpVec3 实现有问题（#1494），velocity 会变乱，需要手动 patch:
     # https://github.com/atiweb/node-minecraft-protocol/blob/64c8cee434a24a08a050ef73c471075b160a3f64/src/datatypes/lpVec3.js
     entityid = jsondata["entityId"]
     vel = Vector3f.from_dict(jsondata["velocity"])
@@ -35,7 +35,7 @@ def on_recv(client: MCClient, jsondata: dict, _metadata: dict) -> None:
         client.entities[entityid].motion = vel
     else:
         return
-    
+
     vel = vel.convert()
     client.miniplayer.send_packet(
         ePBMsgCode.PB_ACTOR_MOTION_HC,

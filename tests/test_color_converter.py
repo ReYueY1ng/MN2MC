@@ -1,9 +1,7 @@
-import pytest
 from mn2mc.utils.color_converter import (
+    STYLE_CODES,
     convert_minecraft_to_miniworld,
     process_string,
-    MINECRAFT_TO_MINIWORLD,
-    STYLE_CODES,
 )
 
 

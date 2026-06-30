@@ -1,8 +1,10 @@
 """Tests for mn2mc.mini.packet — MiniClientPacket and MiniServerPacket encode/decode."""
 
 import struct
+
 import pytest
-from mn2mc.mini.packet import MiniClientPacket, MiniServerPacket, PLACEHOLDER
+
+from mn2mc.mini.packet import PLACEHOLDER, MiniClientPacket, MiniServerPacket
 
 
 class TestMiniClientPacketEncodeDecode:
@@ -259,10 +261,9 @@ class TestMiniServerPacketInit:
         assert "42" in s
 
     def test_msgcode_zero_not_set(self):
-        """Known quirk: msgcode=0 is falsy, so __init__ skips setting it."""
+        """msgcode=0 is accepted and stored correctly."""
         pkt = MiniServerPacket(0, b"data")
-        # Bug: 'if msgcode:' skips assignment when msgcode==0
-        assert not hasattr(pkt, "msgcode")
+        assert pkt.msgcode == 0
 
 
 class TestMiniServerPacketIsinstance:

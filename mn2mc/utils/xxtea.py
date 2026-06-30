@@ -19,18 +19,18 @@ def unpack(data):
 
 def encrypt(data):
     """Encrypt data using XXTEA with the shared key."""
-    return xxtea.encrypt(pack(data), xxtea_key, False)
+    return xxtea.encrypt(pack(data), xxtea_key, False)  # ty:ignore[unresolved-attribute]
 
 def encrypt_zip(data):
     """Compress data with zlib, then encrypt using XXTEA."""
     if isinstance(data, str):
         data = data.encode()
-    return xxtea.encrypt(pack(zlib.compress(data)), xxtea_key, False)
+    return xxtea.encrypt(pack(zlib.compress(data)), xxtea_key, False)  # ty:ignore[unresolved-attribute]
 
 def decrypt(data):
     """Decrypt XXTEA-encrypted data and unpack the length prefix."""
-    return unpack(xxtea.decrypt(data, xxtea_key, False))
+    return unpack(xxtea.decrypt(data, xxtea_key, False))  # ty:ignore[unresolved-attribute]
 
 def decrypt_unzip(data):
     """Decrypt XXTEA-encrypted data, unpack, and decompress with zlib."""
-    return zlib.decompress(unpack(xxtea.decrypt(data, xxtea_key, False)))
+    return zlib.decompress(unpack(xxtea.decrypt(data, xxtea_key, False)))  # ty:ignore[unresolved-attribute]
