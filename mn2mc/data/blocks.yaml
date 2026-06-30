@@ -520,7 +520,7 @@
 519: 520  # bamboo_stairs - 楼梯
 520: 520  # bamboo_mosaic_stairs - 楼梯
 521: 412  # slime_block - 硅石块
-522: 0  # barrier - 空气
+522: 1001  # barrier - 空气墙
 523: 0  # light - 空气
 524: 526  # iron_trapdoor - 铸铁栅栏
 525: 502  # prismarine - 裂纹石砖
@@ -663,7 +663,7 @@
 662: 313  # pitcher_plant - 月季
 663: 227  # beetroots - 紫苏
 664: 99  # dirt_path - 混凝土
-665: 0  # end_gateway - 空气
+665: 9  # end_gateway - 加速移动方块
 666: 10  # repeating_command_block - 星能块
 667: 10  # chain_command_block - 星能块
 668: 123  # frosted_ice - 自然冰
@@ -671,7 +671,7 @@
 670: 132  # nether_wart_block - 硫黄晶砂
 671: 683  # red_nether_bricks - 龙纹石块
 672: 447  # bone_block - 神秘化石
-673: 0  # structure_void - 空气
+673: 1081  # structure_void - 空气墙-不挡物理
 674: 505  # observer - 碎石块
 675: 1180  # shulker_box - 大型储物箱（横）
 676: 1180  # white_shulker_box - 大型储物箱（横）
