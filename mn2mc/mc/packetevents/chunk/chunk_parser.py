@@ -10,6 +10,8 @@ import queue
 import threading
 from typing import TYPE_CHECKING
 
+from aiorak import Priority
+
 import mn2mc
 import mn2mc.config as config
 import mn2mc.mapping.block_face as block_face_mapping
@@ -49,7 +51,7 @@ def send_air_chunk(miniplayer: MiniPlayer, x: int, z: int):
             ChunkBlob=PB_ChunkBlob(UnzipLen=805308264, BlobLen=554, BlobDetail=air),
         ),
     ).SerializeToString()
-    miniplayer.send_packet(ePBMsgCode.PB_SYNC_CHUNK_DATA_HC, minichunk)
+    miniplayer.send_packet(ePBMsgCode.PB_SYNC_CHUNK_DATA_HC, minichunk, priority=Priority.LOW)
 
 
 def send_blocks(
@@ -96,9 +98,7 @@ def send_block_updates(
     for block in blocks:
         if block[3] != 0:
             blockid = block_mapping.mc_to_mini(block[3])
-            encoded, quotient = mini_block.encode_block(
-                blockid, 15 - block[0], block[1], block[2]
-            )
+            encoded, quotient = mini_block.encode_block(blockid, 15 - block[0], block[1], block[2])
             converted_blocks.append(encoded)
             blocksex.append(quotient)
             if len(block) == 5:
@@ -135,6 +135,4 @@ def create_worker_threads(process_func, chunkqueue, thread_count=None):
                 return
 
     for i in range(thread_count):
-        threading.Thread(
-            target=_parse_thread, name=f"Chunk parser {i}", daemon=True
-        ).start()
+        threading.Thread(target=_parse_thread, name=f"Chunk parser {i}", daemon=True).start()

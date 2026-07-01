@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import re
 import time
 
 from google.protobuf import json_format
@@ -148,6 +149,21 @@ def _build_world_desc() -> common.PB_WorldDesc:
     )
 
 
+def _sanitize_mc_username(name: str) -> str:
+    """Sanitize a Mini World player name to meet MC username requirements.
+
+    MC Java usernames must match ``^[a-zA-Z0-9_]{2,16}$``.
+    Non-ASCII characters are transliterated to underscores, then the result
+    is padded or truncated to meet the length requirement.
+    """
+    sanitized = re.sub(r"[^a-zA-Z0-9_]", "_", name)
+    if len(sanitized) < 2:
+        sanitized = sanitized.ljust(2, "_")
+    elif len(sanitized) > 16:
+        sanitized = sanitized[:16]
+    return sanitized
+
+
 async def _send_init_packets(player: MiniPlayer) -> None:
     """Send additional initialization packets after enter world response."""
     # 进世界
@@ -206,16 +222,25 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
     logger.info(f"{player.name} ({player.uin}) joined")
     await _send_init_packets(player)
     await asyncio.sleep(1)
+
+    # Build MC username candidates with fallback chain
+    if config.mc["username"]:
+        username_candidates = [config.mc["username"]]
+    else:
+        username_candidates = [player.name, _sanitize_mc_username(player.name), str(player.uin)]
+    # Deduplicate while preserving order
+    seen: set[str] = set()
+    username_candidates = [u for u in username_candidates if not (u in seen or seen.add(u))]
+
     player.mcclient = MCClient(
         options={
             "version": config.mc["version"],
-            "username": config.mc["username"]
-            if config.mc["username"] != ""
-            else player.name,
+            "username": username_candidates[0],
             "host": config.mc["ip"],
             "port": config.mc["port"],
         },
         miniplayer=player,
+        _username_candidates=username_candidates[1:],
     )
 
 

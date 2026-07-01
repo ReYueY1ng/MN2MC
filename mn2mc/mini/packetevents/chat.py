@@ -11,6 +11,7 @@ import mn2mc
 import mn2mc.config as config
 import mn2mc.mini.auth
 import mn2mc.mini.proto as proto
+import mn2mc.mini.skin as skin_store
 import mn2mc.utils.protobuf_parser as protobuf_parser
 from mn2mc.mc.packet import reset_events as mc_reset_events
 from mn2mc.mini.packet import (
@@ -89,6 +90,38 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                     logger.info("Reloaded!")
                 elif args[0] == "respawn":
                     player.mcclient.send("client_command", {"actionId": 0})
+            case "skin":
+                if not is_admin:
+                    player.send_msg("#RPermission denied", False)
+                    return
+                sub = args[1:] if len(args) > 1 else []
+                if not sub:
+                    player.send_msg("Usage: /mn2mc skin list | /mn2mc skin set <name> <id> | /mn2mc skin remove <name>", False)
+                elif sub[0] == "list":
+                    mappings = skin_store.list_skins()
+                    if not mappings:
+                        player.send_msg("#YNo stored skins", False)
+                    else:
+                        lines = [f"#W{name}: #Y{skin_id}" for name, skin_id in sorted(mappings.items())]
+                        for line in lines:
+                            player.send_msg(line, False)
+                elif sub[0] == "set" and len(sub) >= 3:
+                    try:
+                        sid = int(sub[2])
+                        if sid < 1 or sid > len(skin_store.skins):
+                            player.send_msg(f"#RSkin ID must be 1-{len(skin_store.skins)}", False)
+                        else:
+                            skin_store.set_skin(sub[1], sid)
+                            player.send_msg(f"#GSet skin #{sid} for {sub[1]}", False)
+                    except ValueError:
+                        player.send_msg("#RSkin ID must be a number", False)
+                elif sub[0] == "remove" and len(sub) >= 2:
+                    if skin_store.remove_skin(sub[1]):
+                        player.send_msg(f"#GRemoved skin for {sub[1]}", False)
+                    else:
+                        player.send_msg(f"#YNo stored skin for {sub[1]}", False)
+                else:
+                    player.send_msg("Usage: /mn2mc skin list | /mn2mc skin set <name> <id> | /mn2mc skin remove <name>", False)
     else:
         player.mcclient.chat(chat_ch.Content)
 

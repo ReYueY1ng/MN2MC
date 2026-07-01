@@ -62,6 +62,15 @@ def send_log(msg: str):
 async def handler(conn: aiorak.Connection):
     uin = conn.remote_guid
     logger.info(f"{uin} {conn.remote_address} connected")
+
+    # UIN whitelist check
+    whitelist = config.mini.get("whitelist_uins", [])
+    if whitelist and uin not in whitelist:
+        logger.warning(f"{uin} not in whitelist, kicking")
+        player = MiniPlayer(conn, uin)
+        player.kick()
+        return
+
     player = MiniPlayer(conn, uin)
 
     player.send_packet(

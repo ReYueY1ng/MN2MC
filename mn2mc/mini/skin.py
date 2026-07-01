@@ -563,3 +563,69 @@ skins = [
 
 def random_skin() -> int:
     return random.randint(1, len(skins))
+
+
+import json
+import threading
+from pathlib import Path
+
+_skinstore: dict[str, int] = {}
+_skinstore_lock = threading.Lock()
+_skinstore_path = Path("skins.json")
+
+
+def _skinstore_load() -> None:
+    global _skinstore
+    if _skinstore_path.exists():
+        try:
+            with _skinstore_path.open() as f:
+                _skinstore = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            _skinstore = {}
+
+
+def _skinstore_save() -> None:
+    _skinstore_path.parent.mkdir(parents=True, exist_ok=True)
+    with _skinstore_path.open("w") as f:
+        json.dump(_skinstore, f, indent=2, sort_keys=True)
+
+
+def get_skin(name: str) -> int:
+    """Get a player's skin by MC player name.
+
+    Returns the stored skin ID, or generates+stores a random one if unknown.
+    """
+    with _skinstore_lock:
+        if name in _skinstore:
+            return _skinstore[name]
+        sid = random_skin()
+        _skinstore[name] = sid
+        _skinstore_save()
+        return sid
+
+
+def set_skin(name: str, skin_id: int) -> None:
+    """Set a fixed skin for a player."""
+    with _skinstore_lock:
+        _skinstore[name] = skin_id
+        _skinstore_save()
+
+
+def remove_skin(name: str) -> bool:
+    """Remove a player from skin storage. Returns True if existed."""
+    with _skinstore_lock:
+        if name in _skinstore:
+            del _skinstore[name]
+            _skinstore_save()
+            return True
+        return False
+
+
+def list_skins() -> dict[str, int]:
+    """Return a copy of all stored skin mappings."""
+    with _skinstore_lock:
+        return dict(_skinstore)
+
+
+# Load on import
+_skinstore_load()

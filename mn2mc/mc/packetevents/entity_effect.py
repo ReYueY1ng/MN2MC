@@ -41,6 +41,9 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     duration = jsondata.get("duration", 0)   # ticks
     if duration == -1:
         duration = 21474836
+    if amplifier < 0:
+        logger.warning(f'Effect {effect_id} amplifier {amplifier} value out of range')
+        return
     # flags: 0x01=show_particles, 0x02=show_icon, 0x04=ambient
 
     # Look up Mini World BuffID

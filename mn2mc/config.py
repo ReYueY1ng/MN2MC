@@ -20,6 +20,7 @@ mini:
     max_players: 65535
   send_log_to_chat: false # 发送日志至聊天栏
   admin_uins: [] # 允许执行 /mn2mc reload 等命令的玩家 UIN 列表，留空则仅房主可执行
+  whitelist_uins: [] # 允许进入代理的玩家 UIN 列表，留空则允许所有玩家
 
 mc:
   ip: 127.0.0.1
@@ -54,6 +55,7 @@ class Mini(TypedDict):
     auth: auth
     send_log_to_chat: bool
     admin_uins: list[int]
+    whitelist_uins: list[int]
 
 
 class MC(TypedDict):
@@ -75,6 +77,7 @@ class ConfigManager:
             "auth": {"uin": 0, "passwd": "", "api_id": 110, "device_id": ""},
             "send_log_to_chat": False,
             "admin_uins": [],
+            "whitelist_uins": [],
         }
         self.mc: MC = {
             "ip": "127.0.0.1",
@@ -151,6 +154,11 @@ class ConfigManager:
                 self.mini["admin_uins"] = [u for u in mini_section["admin_uins"] if isinstance(u, int)]
             else:
                 logger.warning("Config missing or invalid mini.admin_uins; using default")
+
+            if "whitelist_uins" in mini_section and isinstance(mini_section["whitelist_uins"], list):
+                self.mini["whitelist_uins"] = [u for u in mini_section["whitelist_uins"] if isinstance(u, int)]
+            else:
+                logger.warning("Config missing or invalid mini.whitelist_uins; using default")
         else:
             logger.warning("Config missing or invalid mini section; using defaults")
 

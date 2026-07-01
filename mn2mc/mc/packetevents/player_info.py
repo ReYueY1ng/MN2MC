@@ -50,7 +50,7 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
                                 Info=PB_RoleInfo(
                                     Model=1,
                                     NickName=client.players[uuid]["name"],
-                                    SkinID=skin.random_skin(),
+                                    SkinID=skin.get_skin(client.players[uuid]["name"]),
                                 ),
                                 Player=PB_PlayerInfo(
                                     RoleData=PB_RoleData(

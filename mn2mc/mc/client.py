@@ -58,14 +58,51 @@ class MCClient:
     _pending_item_packets: list[tuple[int, bytes]]
     _open_timer: threading.Timer | None
     _lock: threading.Lock
+    _connected: bool
+    _username_candidates: list[str]
+    _username_index: int
+    _base_options: dict
 
-    def __init__(self, options: dict, miniplayer: MiniPlayer) -> None:
+    def __init__(
+        self,
+        options: dict,
+        miniplayer: MiniPlayer,
+        _username_candidates: list[str] | None = None,
+    ) -> None:
         self._lock = threading.Lock()
         self.running = threading.Event()
         self.running.set()
+        self._connected = False
+        self._username_candidates = _username_candidates or []
+        self._username_index = 0
+        self._base_options = options
         self.username = options["username"]
         self.miniplayer = miniplayer
         self.state = "handshaking"
+        self.position = Vector3f()
+        self.angle = Angle(0, 0)
+        self.block_sequence = 0
+        self.container_sequence = 0
+        self.inventory_type = "inventory"
+        self.window_id = 0
+        self.players = {}
+        self.add_player_count = 0
+        self.entityid = 0
+        self.container_ts = 0.0
+        self._open_pending = False
+        self._pending_grids = 0
+        self._pending_item_packets = []
+        self._open_timer = None
+        self.entities = {}
+        self.registry = registry(config.mc["version"])
+        self._dimension = DIMENSION_OVERWORLD
+        logger.info(
+            f"({miniplayer.name}) Connecting to {options['host']}:{options['port']}"
+        )
+        self._setup_connection(options)
+
+    def _setup_connection(self, options: dict) -> None:
+        """Create MC client connection and bind event handlers."""
         self.client = mcprotocol.createClient(options)
         self.client.on("error", self.on_error)
         self.client.on("end", self.on_end)
@@ -89,13 +126,9 @@ class MCClient:
         self.entities = {}
         self.registry = registry(config.mc["version"])
         self._dimension = DIMENSION_OVERWORLD
-        logger.info(
-            f"({miniplayer.name}) Connecting to {options['host']}:{options['port']}"
-        )
         self.client.on("playerChat", self.on_player_chat)
         self.client.on("systemChat", self.on_server_chat)
         self.client.on("state", self.on_state_change)
-        # self.client.on("packet", self.on_packet)
         self.load_events()
         if config.mc["use_new_chunk_parser"]:
             self.chunkmgr = ChunkManager(config.mc["version"], self, self.client, self.registry)
@@ -120,6 +153,14 @@ class MCClient:
         )
 
     def on_end(self, end):
+        if not self._connected and self._username_index < len(self._username_candidates):
+            next_username = self._username_candidates[self._username_index]
+            self._username_index += 1
+            logger.info(
+                f"({self.miniplayer.name}) MC login rejected, retrying with username: {next_username}"
+            )
+            self._setup_connection({**self._base_options, "username": next_username})
+            return
         self.running.clear()
         with self._lock:
             self._pending_item_packets.clear()
@@ -131,6 +172,7 @@ class MCClient:
         logger.error(f"({self.miniplayer.name}) Error occurred: {err}")
 
     def on_connect(self):
+        self._connected = True
         self.miniplayer.send_msg("Connected to server")
 
     def on_player_chat(self, e):
