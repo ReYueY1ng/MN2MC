@@ -1,4 +1,4 @@
-import mn2mc.mini.proto.common as proto__common__pb2
+import mn2mc.mini.proto.common as _proto_common_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -176,7 +176,7 @@ class PB_ActorEnterAOIHC(_message.Message):
     def __init__(self, ObjID: _Optional[int] = ..., ActorType: _Optional[int] = ..., ActorInfo: _Optional[_Union[_proto_common_pb2.PB_ActorInfo, _Mapping]] = ..., Spectator_Mode: _Optional[int] = ..., Spectator_Type: _Optional[int] = ..., HookID: _Optional[int] = ..., PlayMode: _Optional[int] = ..., PlayOperate: _Optional[int] = ..., childUUID: _Optional[int] = ..., TeamID: _Optional[int] = ..., ActorCompData: _Optional[_Union[_proto_common_pb2.PB_ActorCompData, _Mapping]] = ..., hitBoundW: _Optional[int] = ..., hitBoundH: _Optional[int] = ..., BoundW: _Optional[int] = ..., BoundH: _Optional[int] = ..., laserPointerPos: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ...) -> None: ...
 
 class PB_GeneralEnterAOIHC(_message.Message):
-    __slots__ = ("ObjID", "MapId", "effectList", "soundList", "ActorMob", "ActorItem", "ActorNpc", "ActorAquaticMob", "ActorFlyBlock", "ActorProjectile", "ActorFlyMob", "ActorGhost", "ActorThornBall", "ActorFishhook", "ActorPipeline", "ActorSnowHare", "ActorObj", "ActorCompData", "ActorBlockStruct", "ActorBlockStructWormTab", "ActorBlockAwaken")
+    __slots__ = ("ObjID", "MapId", "effectList", "soundList", "ActorMob", "ActorItem", "ActorNpc", "ActorAquaticMob", "ActorFlyBlock", "ActorProjectile", "ActorFlyMob", "ActorGhost", "ActorThornBall", "ActorFishhook", "ActorPipeline", "ActorSnowHare", "ActorObj", "ActorCompData", "ActorBlockStruct", "ActorBlockStructWormTab", "ActorBlockAwaken", "ActorEmitterProjectile")
     OBJID_FIELD_NUMBER: _ClassVar[int]
     MAPID_FIELD_NUMBER: _ClassVar[int]
     EFFECTLIST_FIELD_NUMBER: _ClassVar[int]
@@ -198,6 +198,7 @@ class PB_GeneralEnterAOIHC(_message.Message):
     ACTORBLOCKSTRUCT_FIELD_NUMBER: _ClassVar[int]
     ACTORBLOCKSTRUCTWORMTAB_FIELD_NUMBER: _ClassVar[int]
     ACTORBLOCKAWAKEN_FIELD_NUMBER: _ClassVar[int]
+    ACTOREMITTERPROJECTILE_FIELD_NUMBER: _ClassVar[int]
     ObjID: int
     MapId: int
     effectList: _containers.RepeatedCompositeFieldContainer[_proto_common_pb2.PB_AOIBodyEffectBrief]
@@ -219,7 +220,8 @@ class PB_GeneralEnterAOIHC(_message.Message):
     ActorBlockStruct: _proto_common_pb2.PB_ActorBlockStruct
     ActorBlockStructWormTab: _proto_common_pb2.PB_ActorBlockStructWormTab
     ActorBlockAwaken: _proto_common_pb2.PB_ActorBlockAwaken
-    def __init__(self, ObjID: _Optional[int] = ..., MapId: _Optional[int] = ..., effectList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_AOIBodyEffectBrief, _Mapping]]] = ..., soundList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_AOIEffectTriggerSound, _Mapping]]] = ..., ActorMob: _Optional[_Union[_proto_common_pb2.PB_ActorMob, _Mapping]] = ..., ActorItem: _Optional[_Union[_proto_common_pb2.PB_ActorItem, _Mapping]] = ..., ActorNpc: _Optional[_Union[_proto_common_pb2.PB_ActorMob, _Mapping]] = ..., ActorAquaticMob: _Optional[_Union[_proto_common_pb2.PB_ActorAquaticMob, _Mapping]] = ..., ActorFlyBlock: _Optional[_Union[_proto_common_pb2.PB_ActorFlyBlock, _Mapping]] = ..., ActorProjectile: _Optional[_Union[_proto_common_pb2.PB_ActorProjectile, _Mapping]] = ..., ActorFlyMob: _Optional[_Union[_proto_common_pb2.PB_ActorFlyMob, _Mapping]] = ..., ActorGhost: _Optional[_Union[_proto_common_pb2.PB_ActorGhost, _Mapping]] = ..., ActorThornBall: _Optional[_Union[_proto_common_pb2.PB_ActorThornBall, _Mapping]] = ..., ActorFishhook: _Optional[_Union[_proto_common_pb2.PB_ActorFishhook, _Mapping]] = ..., ActorPipeline: _Optional[_Union[_proto_common_pb2.PB_ActorPipeline, _Mapping]] = ..., ActorSnowHare: _Optional[_Union[_proto_common_pb2.PB_ActorSnowHare, _Mapping]] = ..., ActorObj: _Optional[_Union[_proto_common_pb2.PB_ActorObj, _Mapping]] = ..., ActorCompData: _Optional[_Union[_proto_common_pb2.PB_ActorCompData, _Mapping]] = ..., ActorBlockStruct: _Optional[_Union[_proto_common_pb2.PB_ActorBlockStruct, _Mapping]] = ..., ActorBlockStructWormTab: _Optional[_Union[_proto_common_pb2.PB_ActorBlockStructWormTab, _Mapping]] = ..., ActorBlockAwaken: _Optional[_Union[_proto_common_pb2.PB_ActorBlockAwaken, _Mapping]] = ...) -> None: ...
+    ActorEmitterProjectile: _proto_common_pb2.PB_ActorEmitterProjectile
+    def __init__(self, ObjID: _Optional[int] = ..., MapId: _Optional[int] = ..., effectList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_AOIBodyEffectBrief, _Mapping]]] = ..., soundList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_AOIEffectTriggerSound, _Mapping]]] = ..., ActorMob: _Optional[_Union[_proto_common_pb2.PB_ActorMob, _Mapping]] = ..., ActorItem: _Optional[_Union[_proto_common_pb2.PB_ActorItem, _Mapping]] = ..., ActorNpc: _Optional[_Union[_proto_common_pb2.PB_ActorMob, _Mapping]] = ..., ActorAquaticMob: _Optional[_Union[_proto_common_pb2.PB_ActorAquaticMob, _Mapping]] = ..., ActorFlyBlock: _Optional[_Union[_proto_common_pb2.PB_ActorFlyBlock, _Mapping]] = ..., ActorProjectile: _Optional[_Union[_proto_common_pb2.PB_ActorProjectile, _Mapping]] = ..., ActorFlyMob: _Optional[_Union[_proto_common_pb2.PB_ActorFlyMob, _Mapping]] = ..., ActorGhost: _Optional[_Union[_proto_common_pb2.PB_ActorGhost, _Mapping]] = ..., ActorThornBall: _Optional[_Union[_proto_common_pb2.PB_ActorThornBall, _Mapping]] = ..., ActorFishhook: _Optional[_Union[_proto_common_pb2.PB_ActorFishhook, _Mapping]] = ..., ActorPipeline: _Optional[_Union[_proto_common_pb2.PB_ActorPipeline, _Mapping]] = ..., ActorSnowHare: _Optional[_Union[_proto_common_pb2.PB_ActorSnowHare, _Mapping]] = ..., ActorObj: _Optional[_Union[_proto_common_pb2.PB_ActorObj, _Mapping]] = ..., ActorCompData: _Optional[_Union[_proto_common_pb2.PB_ActorCompData, _Mapping]] = ..., ActorBlockStruct: _Optional[_Union[_proto_common_pb2.PB_ActorBlockStruct, _Mapping]] = ..., ActorBlockStructWormTab: _Optional[_Union[_proto_common_pb2.PB_ActorBlockStructWormTab, _Mapping]] = ..., ActorBlockAwaken: _Optional[_Union[_proto_common_pb2.PB_ActorBlockAwaken, _Mapping]] = ..., ActorEmitterProjectile: _Optional[_Union[_proto_common_pb2.PB_ActorEmitterProjectile, _Mapping]] = ...) -> None: ...
 
 class PB_BlockStructUpdateHC(_message.Message):
     __slots__ = ("objid", "blockstructdata")
@@ -756,7 +758,7 @@ class PB_OxygenComp(_message.Message):
     def __init__(self, bopen: _Optional[bool] = ..., maxval: _Optional[float] = ..., userate: _Optional[float] = ..., recoverval: _Optional[float] = ...) -> None: ...
 
 class PB_PlayerAttrChangeHC(_message.Message):
-    __slots__ = ("HP", "Oxygen", "Exp", "FoodLevel", "Strength", "MaxHP", "OverflowHP", "MaxStrength", "OverflowStrength", "Armor", "Perseverance", "StarDebuffTime", "StarDebuffStage", "Scale", "IronHp", "oxygenComp")
+    __slots__ = ("HP", "Oxygen", "Exp", "FoodLevel", "Strength", "MaxHP", "OverflowHP", "MaxStrength", "OverflowStrength", "Armor", "Perseverance", "StarDebuffTime", "StarDebuffStage", "Scale", "IronHp", "oxygenComp", "Mana", "MaxMana")
     HP_FIELD_NUMBER: _ClassVar[int]
     OXYGEN_FIELD_NUMBER: _ClassVar[int]
     EXP_FIELD_NUMBER: _ClassVar[int]
@@ -773,6 +775,8 @@ class PB_PlayerAttrChangeHC(_message.Message):
     SCALE_FIELD_NUMBER: _ClassVar[int]
     IRONHP_FIELD_NUMBER: _ClassVar[int]
     OXYGENCOMP_FIELD_NUMBER: _ClassVar[int]
+    MANA_FIELD_NUMBER: _ClassVar[int]
+    MAXMANA_FIELD_NUMBER: _ClassVar[int]
     HP: float
     Oxygen: float
     Exp: int
@@ -789,7 +793,9 @@ class PB_PlayerAttrChangeHC(_message.Message):
     Scale: _proto_common_pb2.PB_Vector3f
     IronHp: float
     oxygenComp: PB_OxygenComp
-    def __init__(self, HP: _Optional[float] = ..., Oxygen: _Optional[float] = ..., Exp: _Optional[int] = ..., FoodLevel: _Optional[int] = ..., Strength: _Optional[float] = ..., MaxHP: _Optional[float] = ..., OverflowHP: _Optional[float] = ..., MaxStrength: _Optional[float] = ..., OverflowStrength: _Optional[float] = ..., Armor: _Optional[float] = ..., Perseverance: _Optional[float] = ..., StarDebuffTime: _Optional[int] = ..., StarDebuffStage: _Optional[int] = ..., Scale: _Optional[_Union[_proto_common_pb2.PB_Vector3f, _Mapping]] = ..., IronHp: _Optional[float] = ..., oxygenComp: _Optional[_Union[PB_OxygenComp, _Mapping]] = ...) -> None: ...
+    Mana: float
+    MaxMana: float
+    def __init__(self, HP: _Optional[float] = ..., Oxygen: _Optional[float] = ..., Exp: _Optional[int] = ..., FoodLevel: _Optional[int] = ..., Strength: _Optional[float] = ..., MaxHP: _Optional[float] = ..., OverflowHP: _Optional[float] = ..., MaxStrength: _Optional[float] = ..., OverflowStrength: _Optional[float] = ..., Armor: _Optional[float] = ..., Perseverance: _Optional[float] = ..., StarDebuffTime: _Optional[int] = ..., StarDebuffStage: _Optional[int] = ..., Scale: _Optional[_Union[_proto_common_pb2.PB_Vector3f, _Mapping]] = ..., IronHp: _Optional[float] = ..., oxygenComp: _Optional[_Union[PB_OxygenComp, _Mapping]] = ..., Mana: _Optional[float] = ..., MaxMana: _Optional[float] = ...) -> None: ...
 
 class PB_MobBodyChangeHC(_message.Message):
     __slots__ = ("ObjId", "BodyColor", "Sheared")
@@ -4012,6 +4018,12 @@ class PB_UpdateLaserPointerHC(_message.Message):
     uin: int
     def __init__(self, enable: _Optional[bool] = ..., pos: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ..., uin: _Optional[int] = ...) -> None: ...
 
+class PB_EmitterRayHC(_message.Message):
+    __slots__ = ("rays",)
+    RAYS_FIELD_NUMBER: _ClassVar[int]
+    rays: _containers.RepeatedCompositeFieldContainer[_proto_common_pb2.PB_EmitterRay]
+    def __init__(self, rays: _Optional[_Iterable[_Union[_proto_common_pb2.PB_EmitterRay, _Mapping]]] = ...) -> None: ...
+
 class PB_UpdateNewTameDataHC(_message.Message):
     __slots__ = ("targetId", "ownerUin", "follow")
     TARGETID_FIELD_NUMBER: _ClassVar[int]
@@ -4167,6 +4179,18 @@ class PB_PlayerPlayDigBlockEffect_HC(_message.Message):
     y: int
     z: int
     def __init__(self, uin: _Optional[int] = ..., blockId: _Optional[int] = ..., x: _Optional[int] = ..., y: _Optional[int] = ..., z: _Optional[int] = ...) -> None: ...
+
+class PB_TimelineCmdHC(_message.Message):
+    __slots__ = ("cmd", "timelineId", "reverse", "playToEnd")
+    CMD_FIELD_NUMBER: _ClassVar[int]
+    TIMELINEID_FIELD_NUMBER: _ClassVar[int]
+    REVERSE_FIELD_NUMBER: _ClassVar[int]
+    PLAYTOEND_FIELD_NUMBER: _ClassVar[int]
+    cmd: int
+    timelineId: str
+    reverse: bool
+    playToEnd: bool
+    def __init__(self, cmd: _Optional[int] = ..., timelineId: _Optional[str] = ..., reverse: _Optional[bool] = ..., playToEnd: _Optional[bool] = ...) -> None: ...
 
 class PB_LivingTimedXrayEffect_HC(_message.Message):
     __slots__ = ("objid", "duration")

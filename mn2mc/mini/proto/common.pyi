@@ -129,6 +129,7 @@ class ePBMsgCode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     PB_TRAIN_FOLLOW_OP_CH: _ClassVar[ePBMsgCode]
     PB_TRAIN_FOLLOW_OP_HC: _ClassVar[ePBMsgCode]
     PB_TRAIN_REFINABLE_TAKE_RESULT_CH: _ClassVar[ePBMsgCode]
+    PB_SPELL_ENHANCE_OPERATE_CH: _ClassVar[ePBMsgCode]
     PB_ACTOR_ATTR_CHANGE_HC: _ClassVar[ePBMsgCode]
     PB_ACTOR_BUFF_CHANGE_HC: _ClassVar[ePBMsgCode]
     PB_ACTOR_REVIVE_CH: _ClassVar[ePBMsgCode]
@@ -615,6 +616,7 @@ class ePBMsgCode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     PB_CUSTOM_PBC_HC: _ClassVar[ePBMsgCode]
     PB_UPDATE_LASER_POINTER_HC: _ClassVar[ePBMsgCode]
     PB_UPDATE_LASER_POINTER_CH: _ClassVar[ePBMsgCode]
+    PB_EMITTER_RAY_HC: _ClassVar[ePBMsgCode]
     PB_PHYSICS_INPUT_FRAME: _ClassVar[ePBMsgCode]
     PB_PHYSICS_ASYNC_TIMESTAMP: _ClassVar[ePBMsgCode]
     PB_PHYSICS_SETUP_TIMESTAMP: _ClassVar[ePBMsgCode]
@@ -697,6 +699,8 @@ class ePBMsgCode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     PB_PLAYER_PLAY_HAND_ANIM_HC: _ClassVar[ePBMsgCode]
     PB_PLAYER_PLAY_DIG_BLOCK_EFFECT_HC: _ClassVar[ePBMsgCode]
     PB_ACTOR_PLAYANIM_FINISH_CH: _ClassVar[ePBMsgCode]
+    PB_TIMELINE_CMD_HC: _ClassVar[ePBMsgCode]
+    PB_TIMELINE_REPORT_CH: _ClassVar[ePBMsgCode]
     PB_LIVING_TIMERXRAYEFFECT_HC: _ClassVar[ePBMsgCode]
     PB_BLOCK_MINERALPROSPECT_HC: _ClassVar[ePBMsgCode]
     PB_WORLD_SYNC_SAVE_HC: _ClassVar[ePBMsgCode]
@@ -880,6 +884,7 @@ PB_LIVING_INTERACT_NEW_NEWGROW_HC: ePBMsgCode
 PB_TRAIN_FOLLOW_OP_CH: ePBMsgCode
 PB_TRAIN_FOLLOW_OP_HC: ePBMsgCode
 PB_TRAIN_REFINABLE_TAKE_RESULT_CH: ePBMsgCode
+PB_SPELL_ENHANCE_OPERATE_CH: ePBMsgCode
 PB_ACTOR_ATTR_CHANGE_HC: ePBMsgCode
 PB_ACTOR_BUFF_CHANGE_HC: ePBMsgCode
 PB_ACTOR_REVIVE_CH: ePBMsgCode
@@ -1366,6 +1371,7 @@ PB_CUSTOM_PBC_CH: ePBMsgCode
 PB_CUSTOM_PBC_HC: ePBMsgCode
 PB_UPDATE_LASER_POINTER_HC: ePBMsgCode
 PB_UPDATE_LASER_POINTER_CH: ePBMsgCode
+PB_EMITTER_RAY_HC: ePBMsgCode
 PB_PHYSICS_INPUT_FRAME: ePBMsgCode
 PB_PHYSICS_ASYNC_TIMESTAMP: ePBMsgCode
 PB_PHYSICS_SETUP_TIMESTAMP: ePBMsgCode
@@ -1448,6 +1454,8 @@ PB_PLAYER_USE_ITEM_CH: ePBMsgCode
 PB_PLAYER_PLAY_HAND_ANIM_HC: ePBMsgCode
 PB_PLAYER_PLAY_DIG_BLOCK_EFFECT_HC: ePBMsgCode
 PB_ACTOR_PLAYANIM_FINISH_CH: ePBMsgCode
+PB_TIMELINE_CMD_HC: ePBMsgCode
+PB_TIMELINE_REPORT_CH: ePBMsgCode
 PB_LIVING_TIMERXRAYEFFECT_HC: ePBMsgCode
 PB_BLOCK_MINERALPROSPECT_HC: ePBMsgCode
 PB_WORLD_SYNC_SAVE_HC: ePBMsgCode
@@ -1638,14 +1646,20 @@ class PB_ItemGridEffects(_message.Message):
     def __init__(self, effectname: _Optional[str] = ..., effecscale: _Optional[float] = ..., v3fScale: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., rot: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., offset: _Optional[_Union[PB_Vector3f, _Mapping]] = ...) -> None: ...
 
 class PB_ItemGridData(_message.Message):
-    __slots__ = ("Item", "Arm", "ItemSpecial")
+    __slots__ = ("Item", "Arm", "ItemSpecial", "spellID", "spellEnhance", "spellEnhanceN")
     ITEM_FIELD_NUMBER: _ClassVar[int]
     ARM_FIELD_NUMBER: _ClassVar[int]
     ITEMSPECIAL_FIELD_NUMBER: _ClassVar[int]
+    SPELLID_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCE_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCEN_FIELD_NUMBER: _ClassVar[int]
     Item: PB_Item
     Arm: PB_Arm
     ItemSpecial: PB_ItemSpecial
-    def __init__(self, Item: _Optional[_Union[PB_Item, _Mapping]] = ..., Arm: _Optional[_Union[PB_Arm, _Mapping]] = ..., ItemSpecial: _Optional[_Union[PB_ItemSpecial, _Mapping]] = ...) -> None: ...
+    spellID: int
+    spellEnhance: _containers.RepeatedScalarFieldContainer[bool]
+    spellEnhanceN: int
+    def __init__(self, Item: _Optional[_Union[PB_Item, _Mapping]] = ..., Arm: _Optional[_Union[PB_Arm, _Mapping]] = ..., ItemSpecial: _Optional[_Union[PB_ItemSpecial, _Mapping]] = ..., spellID: _Optional[int] = ..., spellEnhance: _Optional[_Iterable[bool]] = ..., spellEnhanceN: _Optional[int] = ...) -> None: ...
 
 class PB_ItemGrid(_message.Message):
     __slots__ = ("Dir", "FallDistance", "SpecialFlag", "Type", "ItemGridData", "grideffects")
@@ -1828,7 +1842,7 @@ class PB_ActorBuffList(_message.Message):
     def __init__(self, Buffs: _Optional[_Iterable[_Union[PB_ActorBuff, _Mapping]]] = ..., RelBuffAttrs: _Optional[_Iterable[_Union[PB_BuffAttr, _Mapping]]] = ..., AbsBuffAttrs: _Optional[_Iterable[_Union[PB_BuffAttr, _Mapping]]] = ...) -> None: ...
 
 class PB_RoleData(_message.Message):
-    __slots__ = ("Uin", "OWID", "HP", "Oxygen", "FoodLevel", "FoodSatLevel", "UsedStamina", "Exp", "Level", "LastLoginTime", "LoginNum", "FallDist", "Flags", "LiveTicks", "RideActorID", "Pos", "Dir", "Package", "Buff", "CarringActorID", "STRENGTH", "ENABLE_STRENGTH", "max_strength", "Armor", "Perseverance", "MaxHP", "StrengthFoodShowState", "StarDebuffStage", "StarDebuffTime", "CanThrow")
+    __slots__ = ("Uin", "OWID", "HP", "Oxygen", "FoodLevel", "FoodSatLevel", "UsedStamina", "Exp", "Level", "LastLoginTime", "LoginNum", "FallDist", "Flags", "LiveTicks", "RideActorID", "Pos", "Dir", "Package", "Buff", "CarringActorID", "STRENGTH", "ENABLE_STRENGTH", "max_strength", "Armor", "Perseverance", "MaxHP", "StrengthFoodShowState", "StarDebuffStage", "StarDebuffTime", "CanThrow", "Mana", "MaxMana")
     UIN_FIELD_NUMBER: _ClassVar[int]
     OWID_FIELD_NUMBER: _ClassVar[int]
     HP_FIELD_NUMBER: _ClassVar[int]
@@ -1859,6 +1873,8 @@ class PB_RoleData(_message.Message):
     STARDEBUFFSTAGE_FIELD_NUMBER: _ClassVar[int]
     STARDEBUFFTIME_FIELD_NUMBER: _ClassVar[int]
     CANTHROW_FIELD_NUMBER: _ClassVar[int]
+    MANA_FIELD_NUMBER: _ClassVar[int]
+    MAXMANA_FIELD_NUMBER: _ClassVar[int]
     Uin: int
     OWID: int
     HP: float
@@ -1889,7 +1905,9 @@ class PB_RoleData(_message.Message):
     StarDebuffStage: int
     StarDebuffTime: int
     CanThrow: bool
-    def __init__(self, Uin: _Optional[int] = ..., OWID: _Optional[int] = ..., HP: _Optional[float] = ..., Oxygen: _Optional[int] = ..., FoodLevel: _Optional[int] = ..., FoodSatLevel: _Optional[int] = ..., UsedStamina: _Optional[int] = ..., Exp: _Optional[int] = ..., Level: _Optional[int] = ..., LastLoginTime: _Optional[int] = ..., LoginNum: _Optional[int] = ..., FallDist: _Optional[float] = ..., Flags: _Optional[int] = ..., LiveTicks: _Optional[int] = ..., RideActorID: _Optional[int] = ..., Pos: _Optional[_Union[PB_Pos, _Mapping]] = ..., Dir: _Optional[_Union[PB_BodyDir, _Mapping]] = ..., Package: _Optional[_Union[PB_RolePackage, _Mapping]] = ..., Buff: _Optional[_Union[PB_ActorBuffList, _Mapping]] = ..., CarringActorID: _Optional[int] = ..., STRENGTH: _Optional[float] = ..., ENABLE_STRENGTH: _Optional[bool] = ..., max_strength: _Optional[float] = ..., Armor: _Optional[float] = ..., Perseverance: _Optional[float] = ..., MaxHP: _Optional[float] = ..., StrengthFoodShowState: _Optional[int] = ..., StarDebuffStage: _Optional[int] = ..., StarDebuffTime: _Optional[int] = ..., CanThrow: _Optional[bool] = ...) -> None: ...
+    Mana: float
+    MaxMana: float
+    def __init__(self, Uin: _Optional[int] = ..., OWID: _Optional[int] = ..., HP: _Optional[float] = ..., Oxygen: _Optional[int] = ..., FoodLevel: _Optional[int] = ..., FoodSatLevel: _Optional[int] = ..., UsedStamina: _Optional[int] = ..., Exp: _Optional[int] = ..., Level: _Optional[int] = ..., LastLoginTime: _Optional[int] = ..., LoginNum: _Optional[int] = ..., FallDist: _Optional[float] = ..., Flags: _Optional[int] = ..., LiveTicks: _Optional[int] = ..., RideActorID: _Optional[int] = ..., Pos: _Optional[_Union[PB_Pos, _Mapping]] = ..., Dir: _Optional[_Union[PB_BodyDir, _Mapping]] = ..., Package: _Optional[_Union[PB_RolePackage, _Mapping]] = ..., Buff: _Optional[_Union[PB_ActorBuffList, _Mapping]] = ..., CarringActorID: _Optional[int] = ..., STRENGTH: _Optional[float] = ..., ENABLE_STRENGTH: _Optional[bool] = ..., max_strength: _Optional[float] = ..., Armor: _Optional[float] = ..., Perseverance: _Optional[float] = ..., MaxHP: _Optional[float] = ..., StrengthFoodShowState: _Optional[int] = ..., StarDebuffStage: _Optional[int] = ..., StarDebuffTime: _Optional[int] = ..., CanThrow: _Optional[bool] = ..., Mana: _Optional[float] = ..., MaxMana: _Optional[float] = ...) -> None: ...
 
 class PB_BodyEffectBrief(_message.Message):
     __slots__ = ("effectID", "effectScale", "effectClass", "effectTime", "v3fScale", "rot", "offset", "effectName")
@@ -2228,7 +2246,7 @@ class PB_AttribMod(_message.Message):
     def __init__(self, attr: _Optional[int] = ..., val: _Optional[int] = ...) -> None: ...
 
 class PB_ItemIndexGrid(_message.Message):
-    __slots__ = ("index", "itemid", "num", "durable", "enchants", "userdata", "userdata_str", "sid_str", "userdataEx", "runes", "effects", "toughness", "datacomponents", "iteminsid", "lock")
+    __slots__ = ("index", "itemid", "num", "durable", "enchants", "userdata", "userdata_str", "sid_str", "userdataEx", "runes", "effects", "toughness", "datacomponents", "iteminsid", "lock", "spellID", "spellEnhance", "spellEnhanceN")
     INDEX_FIELD_NUMBER: _ClassVar[int]
     ITEMID_FIELD_NUMBER: _ClassVar[int]
     NUM_FIELD_NUMBER: _ClassVar[int]
@@ -2244,6 +2262,9 @@ class PB_ItemIndexGrid(_message.Message):
     DATACOMPONENTS_FIELD_NUMBER: _ClassVar[int]
     ITEMINSID_FIELD_NUMBER: _ClassVar[int]
     LOCK_FIELD_NUMBER: _ClassVar[int]
+    SPELLID_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCE_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCEN_FIELD_NUMBER: _ClassVar[int]
     index: int
     itemid: int
     num: int
@@ -2259,10 +2280,13 @@ class PB_ItemIndexGrid(_message.Message):
     datacomponents: _containers.RepeatedCompositeFieldContainer[PB_ItemDataComponent]
     iteminsid: int
     lock: bool
-    def __init__(self, index: _Optional[int] = ..., itemid: _Optional[int] = ..., num: _Optional[int] = ..., durable: _Optional[int] = ..., enchants: _Optional[_Iterable[int]] = ..., userdata: _Optional[int] = ..., userdata_str: _Optional[str] = ..., sid_str: _Optional[str] = ..., userdataEx: _Optional[int] = ..., runes: _Optional[_Iterable[_Union[PB_ItemRune, _Mapping]]] = ..., effects: _Optional[_Iterable[_Union[PB_ItemGridEffects, _Mapping]]] = ..., toughness: _Optional[int] = ..., datacomponents: _Optional[_Iterable[_Union[PB_ItemDataComponent, _Mapping]]] = ..., iteminsid: _Optional[int] = ..., lock: _Optional[bool] = ...) -> None: ...
+    spellID: int
+    spellEnhance: _containers.RepeatedScalarFieldContainer[bool]
+    spellEnhanceN: int
+    def __init__(self, index: _Optional[int] = ..., itemid: _Optional[int] = ..., num: _Optional[int] = ..., durable: _Optional[int] = ..., enchants: _Optional[_Iterable[int]] = ..., userdata: _Optional[int] = ..., userdata_str: _Optional[str] = ..., sid_str: _Optional[str] = ..., userdataEx: _Optional[int] = ..., runes: _Optional[_Iterable[_Union[PB_ItemRune, _Mapping]]] = ..., effects: _Optional[_Iterable[_Union[PB_ItemGridEffects, _Mapping]]] = ..., toughness: _Optional[int] = ..., datacomponents: _Optional[_Iterable[_Union[PB_ItemDataComponent, _Mapping]]] = ..., iteminsid: _Optional[int] = ..., lock: _Optional[bool] = ..., spellID: _Optional[int] = ..., spellEnhance: _Optional[_Iterable[bool]] = ..., spellEnhanceN: _Optional[int] = ...) -> None: ...
 
 class PB_ActorItem(_message.Message):
-    __slots__ = ("basedata", "itemid", "num", "durable", "delayticks", "enchants", "userdatastr", "serverid", "runes", "toughness", "datacomponents", "iteminsid", "beltPosition")
+    __slots__ = ("basedata", "itemid", "num", "durable", "delayticks", "enchants", "userdatastr", "serverid", "runes", "toughness", "datacomponents", "iteminsid", "beltPosition", "spellEnhance", "spellEnhanceN")
     BASEDATA_FIELD_NUMBER: _ClassVar[int]
     ITEMID_FIELD_NUMBER: _ClassVar[int]
     NUM_FIELD_NUMBER: _ClassVar[int]
@@ -2276,6 +2300,8 @@ class PB_ActorItem(_message.Message):
     DATACOMPONENTS_FIELD_NUMBER: _ClassVar[int]
     ITEMINSID_FIELD_NUMBER: _ClassVar[int]
     BELTPOSITION_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCE_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCEN_FIELD_NUMBER: _ClassVar[int]
     basedata: PB_ActorCommon
     itemid: int
     num: int
@@ -2289,7 +2315,9 @@ class PB_ActorItem(_message.Message):
     datacomponents: _containers.RepeatedCompositeFieldContainer[PB_ItemDataComponent]
     iteminsid: int
     beltPosition: _containers.RepeatedScalarFieldContainer[int]
-    def __init__(self, basedata: _Optional[_Union[PB_ActorCommon, _Mapping]] = ..., itemid: _Optional[int] = ..., num: _Optional[int] = ..., durable: _Optional[int] = ..., delayticks: _Optional[int] = ..., enchants: _Optional[_Iterable[int]] = ..., userdatastr: _Optional[str] = ..., serverid: _Optional[str] = ..., runes: _Optional[_Iterable[_Union[PB_ItemRune, _Mapping]]] = ..., toughness: _Optional[int] = ..., datacomponents: _Optional[_Iterable[_Union[PB_ItemDataComponent, _Mapping]]] = ..., iteminsid: _Optional[int] = ..., beltPosition: _Optional[_Iterable[int]] = ...) -> None: ...
+    spellEnhance: _containers.RepeatedScalarFieldContainer[bool]
+    spellEnhanceN: int
+    def __init__(self, basedata: _Optional[_Union[PB_ActorCommon, _Mapping]] = ..., itemid: _Optional[int] = ..., num: _Optional[int] = ..., durable: _Optional[int] = ..., delayticks: _Optional[int] = ..., enchants: _Optional[_Iterable[int]] = ..., userdatastr: _Optional[str] = ..., serverid: _Optional[str] = ..., runes: _Optional[_Iterable[_Union[PB_ItemRune, _Mapping]]] = ..., toughness: _Optional[int] = ..., datacomponents: _Optional[_Iterable[_Union[PB_ItemDataComponent, _Mapping]]] = ..., iteminsid: _Optional[int] = ..., beltPosition: _Optional[_Iterable[int]] = ..., spellEnhance: _Optional[_Iterable[bool]] = ..., spellEnhanceN: _Optional[int] = ...) -> None: ...
 
 class PB_ActorFlyBlock(_message.Message):
     __slots__ = ("basedata", "blockid", "blockdata", "maxdist", "dropitem", "startblock")
@@ -2308,7 +2336,7 @@ class PB_ActorFlyBlock(_message.Message):
     def __init__(self, basedata: _Optional[_Union[PB_ActorCommon, _Mapping]] = ..., blockid: _Optional[int] = ..., blockdata: _Optional[int] = ..., maxdist: _Optional[int] = ..., dropitem: _Optional[bool] = ..., startblock: _Optional[_Union[PB_Vector3, _Mapping]] = ...) -> None: ...
 
 class PB_ActorProjectile(_message.Message):
-    __slots__ = ("basedata", "shooter", "itemid", "durable", "enchants", "color", "blockid", "blockpos", "rotatequat", "runes", "prerotatequat", "inground")
+    __slots__ = ("basedata", "shooter", "itemid", "durable", "enchants", "color", "blockid", "blockpos", "rotatequat", "runes", "prerotatequat", "inground", "spellid", "spellEnhance", "spellEnhanceN")
     BASEDATA_FIELD_NUMBER: _ClassVar[int]
     SHOOTER_FIELD_NUMBER: _ClassVar[int]
     ITEMID_FIELD_NUMBER: _ClassVar[int]
@@ -2321,6 +2349,9 @@ class PB_ActorProjectile(_message.Message):
     RUNES_FIELD_NUMBER: _ClassVar[int]
     PREROTATEQUAT_FIELD_NUMBER: _ClassVar[int]
     INGROUND_FIELD_NUMBER: _ClassVar[int]
+    SPELLID_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCE_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCEN_FIELD_NUMBER: _ClassVar[int]
     basedata: PB_ActorCommon
     shooter: int
     itemid: int
@@ -2333,7 +2364,10 @@ class PB_ActorProjectile(_message.Message):
     runes: _containers.RepeatedCompositeFieldContainer[PB_ItemRune]
     prerotatequat: _containers.RepeatedScalarFieldContainer[int]
     inground: bool
-    def __init__(self, basedata: _Optional[_Union[PB_ActorCommon, _Mapping]] = ..., shooter: _Optional[int] = ..., itemid: _Optional[int] = ..., durable: _Optional[int] = ..., enchants: _Optional[_Iterable[int]] = ..., color: _Optional[int] = ..., blockid: _Optional[int] = ..., blockpos: _Optional[_Union[PB_Vector3, _Mapping]] = ..., rotatequat: _Optional[_Iterable[int]] = ..., runes: _Optional[_Iterable[_Union[PB_ItemRune, _Mapping]]] = ..., prerotatequat: _Optional[_Iterable[int]] = ..., inground: _Optional[bool] = ...) -> None: ...
+    spellid: int
+    spellEnhance: _containers.RepeatedScalarFieldContainer[bool]
+    spellEnhanceN: int
+    def __init__(self, basedata: _Optional[_Union[PB_ActorCommon, _Mapping]] = ..., shooter: _Optional[int] = ..., itemid: _Optional[int] = ..., durable: _Optional[int] = ..., enchants: _Optional[_Iterable[int]] = ..., color: _Optional[int] = ..., blockid: _Optional[int] = ..., blockpos: _Optional[_Union[PB_Vector3, _Mapping]] = ..., rotatequat: _Optional[_Iterable[int]] = ..., runes: _Optional[_Iterable[_Union[PB_ItemRune, _Mapping]]] = ..., prerotatequat: _Optional[_Iterable[int]] = ..., inground: _Optional[bool] = ..., spellid: _Optional[int] = ..., spellEnhance: _Optional[_Iterable[bool]] = ..., spellEnhanceN: _Optional[int] = ...) -> None: ...
 
 class PB_ActorThornBall(_message.Message):
     __slots__ = ("ActorProjectile", "impactActor", "isDrop")
@@ -2577,6 +2611,64 @@ class PB_ActorObj(_message.Message):
     PB_HeredityVec: _containers.RepeatedScalarFieldContainer[int]
     def __init__(self, basedata: _Optional[_Union[PB_ActorCommon, _Mapping]] = ..., modelpath: _Optional[str] = ..., modeltype: _Optional[int] = ..., extradata: _Optional[int] = ..., scale: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., interacted: _Optional[bool] = ..., modelcomponent: _Optional[str] = ..., roll: _Optional[float] = ..., physicsCom: _Optional[_Union[PB_ActorPhysicsCom, _Mapping]] = ..., effectComPtclInfo: _Optional[_Union[PB_EffectComParticleInfo, _Mapping]] = ..., nodeid: _Optional[int] = ..., isparent: _Optional[bool] = ..., parentwid: _Optional[int] = ..., children: _Optional[str] = ..., script: _Optional[str] = ..., soundComInfo: _Optional[_Union[PB_SoundComInfo, _Mapping]] = ..., PB_HeredityVec: _Optional[_Iterable[int]] = ...) -> None: ...
 
+class PB_ActorEmitterProjectile(_message.Message):
+    __slots__ = ("actorObj", "emitterGroupId", "emitterIndex", "elapsedTime", "lifeTime", "shooterObjId", "targetObjId", "dynamicEmitterParamsJson")
+    ACTOROBJ_FIELD_NUMBER: _ClassVar[int]
+    EMITTERGROUPID_FIELD_NUMBER: _ClassVar[int]
+    EMITTERINDEX_FIELD_NUMBER: _ClassVar[int]
+    ELAPSEDTIME_FIELD_NUMBER: _ClassVar[int]
+    LIFETIME_FIELD_NUMBER: _ClassVar[int]
+    SHOOTEROBJID_FIELD_NUMBER: _ClassVar[int]
+    TARGETOBJID_FIELD_NUMBER: _ClassVar[int]
+    DYNAMICEMITTERPARAMSJSON_FIELD_NUMBER: _ClassVar[int]
+    actorObj: PB_ActorObj
+    emitterGroupId: int
+    emitterIndex: int
+    elapsedTime: float
+    lifeTime: float
+    shooterObjId: int
+    targetObjId: int
+    dynamicEmitterParamsJson: str
+    def __init__(self, actorObj: _Optional[_Union[PB_ActorObj, _Mapping]] = ..., emitterGroupId: _Optional[int] = ..., emitterIndex: _Optional[int] = ..., elapsedTime: _Optional[float] = ..., lifeTime: _Optional[float] = ..., shooterObjId: _Optional[int] = ..., targetObjId: _Optional[int] = ..., dynamicEmitterParamsJson: _Optional[str] = ...) -> None: ...
+
+class PB_EmitterRay(_message.Message):
+    __slots__ = ("rayObjId", "emitterGroupId", "emitterIndex", "shooterObjId", "targetObjId", "worldOrigin", "worldEnd", "localOriginOffset", "localDirection", "range", "elapsedTime", "lifeTime", "rayWidth", "color", "materialId", "stop", "dynamicEmitterParamsJson")
+    RAYOBJID_FIELD_NUMBER: _ClassVar[int]
+    EMITTERGROUPID_FIELD_NUMBER: _ClassVar[int]
+    EMITTERINDEX_FIELD_NUMBER: _ClassVar[int]
+    SHOOTEROBJID_FIELD_NUMBER: _ClassVar[int]
+    TARGETOBJID_FIELD_NUMBER: _ClassVar[int]
+    WORLDORIGIN_FIELD_NUMBER: _ClassVar[int]
+    WORLDEND_FIELD_NUMBER: _ClassVar[int]
+    LOCALORIGINOFFSET_FIELD_NUMBER: _ClassVar[int]
+    LOCALDIRECTION_FIELD_NUMBER: _ClassVar[int]
+    RANGE_FIELD_NUMBER: _ClassVar[int]
+    ELAPSEDTIME_FIELD_NUMBER: _ClassVar[int]
+    LIFETIME_FIELD_NUMBER: _ClassVar[int]
+    RAYWIDTH_FIELD_NUMBER: _ClassVar[int]
+    COLOR_FIELD_NUMBER: _ClassVar[int]
+    MATERIALID_FIELD_NUMBER: _ClassVar[int]
+    STOP_FIELD_NUMBER: _ClassVar[int]
+    DYNAMICEMITTERPARAMSJSON_FIELD_NUMBER: _ClassVar[int]
+    rayObjId: int
+    emitterGroupId: int
+    emitterIndex: int
+    shooterObjId: int
+    targetObjId: int
+    worldOrigin: PB_Vector3
+    worldEnd: PB_Vector3
+    localOriginOffset: PB_Vector3
+    localDirection: PB_Vector3f
+    range: float
+    elapsedTime: float
+    lifeTime: float
+    rayWidth: float
+    color: int
+    materialId: int
+    stop: bool
+    dynamicEmitterParamsJson: str
+    def __init__(self, rayObjId: _Optional[int] = ..., emitterGroupId: _Optional[int] = ..., emitterIndex: _Optional[int] = ..., shooterObjId: _Optional[int] = ..., targetObjId: _Optional[int] = ..., worldOrigin: _Optional[_Union[PB_Vector3, _Mapping]] = ..., worldEnd: _Optional[_Union[PB_Vector3, _Mapping]] = ..., localOriginOffset: _Optional[_Union[PB_Vector3, _Mapping]] = ..., localDirection: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., range: _Optional[float] = ..., elapsedTime: _Optional[float] = ..., lifeTime: _Optional[float] = ..., rayWidth: _Optional[float] = ..., color: _Optional[int] = ..., materialId: _Optional[int] = ..., stop: _Optional[bool] = ..., dynamicEmitterParamsJson: _Optional[str] = ...) -> None: ...
+
 class PB_ActorObjArray(_message.Message):
     __slots__ = ("child",)
     CHILD_FIELD_NUMBER: _ClassVar[int]
@@ -2766,7 +2858,7 @@ class PB_MoveMotion(_message.Message):
     def __init__(self, Position: _Optional[_Union[PB_Vector3, _Mapping]] = ..., Yaw: _Optional[int] = ..., Pitch: _Optional[int] = ..., MapID: _Optional[int] = ..., ChangeFlags: _Optional[int] = ...) -> None: ...
 
 class PB_ItemData(_message.Message):
-    __slots__ = ("Index", "ItemID", "Durable", "Num", "UserData", "Enchs", "UserDataStr", "Runes", "grideffects", "Toughness", "datacomponents", "iteminsid", "lock")
+    __slots__ = ("Index", "ItemID", "Durable", "Num", "UserData", "Enchs", "UserDataStr", "Runes", "grideffects", "Toughness", "datacomponents", "iteminsid", "lock", "spellID", "spellEnhance", "spellEnhanceN")
     INDEX_FIELD_NUMBER: _ClassVar[int]
     ITEMID_FIELD_NUMBER: _ClassVar[int]
     DURABLE_FIELD_NUMBER: _ClassVar[int]
@@ -2780,6 +2872,9 @@ class PB_ItemData(_message.Message):
     DATACOMPONENTS_FIELD_NUMBER: _ClassVar[int]
     ITEMINSID_FIELD_NUMBER: _ClassVar[int]
     LOCK_FIELD_NUMBER: _ClassVar[int]
+    SPELLID_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCE_FIELD_NUMBER: _ClassVar[int]
+    SPELLENHANCEN_FIELD_NUMBER: _ClassVar[int]
     Index: int
     ItemID: int
     Durable: int
@@ -2793,10 +2888,13 @@ class PB_ItemData(_message.Message):
     datacomponents: _containers.RepeatedCompositeFieldContainer[PB_ItemDataComponent]
     iteminsid: int
     lock: bool
-    def __init__(self, Index: _Optional[int] = ..., ItemID: _Optional[int] = ..., Durable: _Optional[int] = ..., Num: _Optional[int] = ..., UserData: _Optional[int] = ..., Enchs: _Optional[_Iterable[int]] = ..., UserDataStr: _Optional[str] = ..., Runes: _Optional[_Iterable[_Union[PB_ItemRune, _Mapping]]] = ..., grideffects: _Optional[_Iterable[_Union[PB_ItemGridEffects, _Mapping]]] = ..., Toughness: _Optional[int] = ..., datacomponents: _Optional[_Iterable[_Union[PB_ItemDataComponent, _Mapping]]] = ..., iteminsid: _Optional[int] = ..., lock: _Optional[bool] = ...) -> None: ...
+    spellID: int
+    spellEnhance: _containers.RepeatedScalarFieldContainer[bool]
+    spellEnhanceN: int
+    def __init__(self, Index: _Optional[int] = ..., ItemID: _Optional[int] = ..., Durable: _Optional[int] = ..., Num: _Optional[int] = ..., UserData: _Optional[int] = ..., Enchs: _Optional[_Iterable[int]] = ..., UserDataStr: _Optional[str] = ..., Runes: _Optional[_Iterable[_Union[PB_ItemRune, _Mapping]]] = ..., grideffects: _Optional[_Iterable[_Union[PB_ItemGridEffects, _Mapping]]] = ..., Toughness: _Optional[int] = ..., datacomponents: _Optional[_Iterable[_Union[PB_ItemDataComponent, _Mapping]]] = ..., iteminsid: _Optional[int] = ..., lock: _Optional[bool] = ..., spellID: _Optional[int] = ..., spellEnhance: _Optional[_Iterable[bool]] = ..., spellEnhanceN: _Optional[int] = ...) -> None: ...
 
 class PB_PlayerBriefInfo(_message.Message):
-    __slots__ = ("Uin", "MapID", "HP", "NickName", "PlayerIndex", "TeamID", "CGVars", "InSpectator", "Pos", "VipInfo", "CustomJson", "SkinID", "FrameID", "CustomModel", "AcctountSkinID", "Strength", "MaxHP", "OverflowHP", "MaxStrength", "OverflowStrength", "Armor", "Perseverance", "exposePosToOther", "IronHp", "isAIPlayer", "JoinFromSrc")
+    __slots__ = ("Uin", "MapID", "HP", "NickName", "PlayerIndex", "TeamID", "CGVars", "InSpectator", "Pos", "VipInfo", "CustomJson", "SkinID", "FrameID", "CustomModel", "AcctountSkinID", "Strength", "MaxHP", "OverflowHP", "MaxStrength", "OverflowStrength", "Armor", "Perseverance", "exposePosToOther", "IronHp", "isAIPlayer", "JoinFromSrc", "Mana", "MaxMana")
     UIN_FIELD_NUMBER: _ClassVar[int]
     MAPID_FIELD_NUMBER: _ClassVar[int]
     HP_FIELD_NUMBER: _ClassVar[int]
@@ -2823,6 +2921,8 @@ class PB_PlayerBriefInfo(_message.Message):
     IRONHP_FIELD_NUMBER: _ClassVar[int]
     ISAIPLAYER_FIELD_NUMBER: _ClassVar[int]
     JOINFROMSRC_FIELD_NUMBER: _ClassVar[int]
+    MANA_FIELD_NUMBER: _ClassVar[int]
+    MAXMANA_FIELD_NUMBER: _ClassVar[int]
     Uin: int
     MapID: int
     HP: float
@@ -2849,7 +2949,9 @@ class PB_PlayerBriefInfo(_message.Message):
     IronHp: float
     isAIPlayer: bool
     JoinFromSrc: str
-    def __init__(self, Uin: _Optional[int] = ..., MapID: _Optional[int] = ..., HP: _Optional[float] = ..., NickName: _Optional[str] = ..., PlayerIndex: _Optional[int] = ..., TeamID: _Optional[int] = ..., CGVars: _Optional[_Iterable[int]] = ..., InSpectator: _Optional[int] = ..., Pos: _Optional[_Union[PB_Vector3, _Mapping]] = ..., VipInfo: _Optional[_Union[PB_PlayerVipInfo, _Mapping]] = ..., CustomJson: _Optional[str] = ..., SkinID: _Optional[int] = ..., FrameID: _Optional[int] = ..., CustomModel: _Optional[str] = ..., AcctountSkinID: _Optional[int] = ..., Strength: _Optional[float] = ..., MaxHP: _Optional[float] = ..., OverflowHP: _Optional[float] = ..., MaxStrength: _Optional[float] = ..., OverflowStrength: _Optional[float] = ..., Armor: _Optional[float] = ..., Perseverance: _Optional[float] = ..., exposePosToOther: _Optional[float] = ..., IronHp: _Optional[float] = ..., isAIPlayer: _Optional[bool] = ..., JoinFromSrc: _Optional[str] = ...) -> None: ...
+    Mana: float
+    MaxMana: float
+    def __init__(self, Uin: _Optional[int] = ..., MapID: _Optional[int] = ..., HP: _Optional[float] = ..., NickName: _Optional[str] = ..., PlayerIndex: _Optional[int] = ..., TeamID: _Optional[int] = ..., CGVars: _Optional[_Iterable[int]] = ..., InSpectator: _Optional[int] = ..., Pos: _Optional[_Union[PB_Vector3, _Mapping]] = ..., VipInfo: _Optional[_Union[PB_PlayerVipInfo, _Mapping]] = ..., CustomJson: _Optional[str] = ..., SkinID: _Optional[int] = ..., FrameID: _Optional[int] = ..., CustomModel: _Optional[str] = ..., AcctountSkinID: _Optional[int] = ..., Strength: _Optional[float] = ..., MaxHP: _Optional[float] = ..., OverflowHP: _Optional[float] = ..., MaxStrength: _Optional[float] = ..., OverflowStrength: _Optional[float] = ..., Armor: _Optional[float] = ..., Perseverance: _Optional[float] = ..., exposePosToOther: _Optional[float] = ..., IronHp: _Optional[float] = ..., isAIPlayer: _Optional[bool] = ..., JoinFromSrc: _Optional[str] = ..., Mana: _Optional[float] = ..., MaxMana: _Optional[float] = ...) -> None: ...
 
 class PB_EffectParticle(_message.Message):
     __slots__ = ("Name", "Age", "Color", "Yaw", "Pitch", "Pos", "ziprespath", "isPersistent")

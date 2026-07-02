@@ -149,12 +149,16 @@ class PB_AccumulatorHC(_message.Message):
     def __init__(self, uin: _Optional[int] = ..., progress: _Optional[float] = ...) -> None: ...
 
 class PB_SkillplaytoolanimHC(_message.Message):
-    __slots__ = ("objid", "animid")
+    __slots__ = ("objid", "animid", "switchMode", "resetSwitchMode")
     OBJID_FIELD_NUMBER: _ClassVar[int]
     ANIMID_FIELD_NUMBER: _ClassVar[int]
+    SWITCHMODE_FIELD_NUMBER: _ClassVar[int]
+    RESETSWITCHMODE_FIELD_NUMBER: _ClassVar[int]
     objid: int
     animid: int
-    def __init__(self, objid: _Optional[int] = ..., animid: _Optional[int] = ...) -> None: ...
+    switchMode: int
+    resetSwitchMode: int
+    def __init__(self, objid: _Optional[int] = ..., animid: _Optional[int] = ..., switchMode: _Optional[int] = ..., resetSwitchMode: _Optional[int] = ...) -> None: ...
 
 class PB_SkillsetchargemoveHC(_message.Message):
     __slots__ = ("uin", "chargemove")

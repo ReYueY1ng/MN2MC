@@ -1,4 +1,4 @@
-import mn2mc.mini.proto.common as proto__common__pb2
+import mn2mc.mini.proto.common as _proto_common_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -1354,7 +1354,7 @@ class PB_PlayerResetDeformationCH(_message.Message):
     def __init__(self, ActorID: _Optional[int] = ..., IsShapeShift: _Optional[bool] = ...) -> None: ...
 
 class PB_PlayerBaseAttrCH(_message.Message):
-    __slots__ = ("CurHP", "MaxHP", "CurFoodLv", "MaxFoodLv", "BaseSpeed", "AttackPunch", "AttackRange", "DefensePunch", "DefenseRange", "CurExp", "CurSexp", "CurLevel", "OverflowHP", "CurStrength", "MaxStrength", "OverflowStrength")
+    __slots__ = ("CurHP", "MaxHP", "CurFoodLv", "MaxFoodLv", "BaseSpeed", "AttackPunch", "AttackRange", "DefensePunch", "DefenseRange", "CurExp", "CurSexp", "CurLevel", "OverflowHP", "CurStrength", "MaxStrength", "OverflowStrength", "CurMana", "MaxMana")
     CURHP_FIELD_NUMBER: _ClassVar[int]
     MAXHP_FIELD_NUMBER: _ClassVar[int]
     CURFOODLV_FIELD_NUMBER: _ClassVar[int]
@@ -1371,6 +1371,8 @@ class PB_PlayerBaseAttrCH(_message.Message):
     CURSTRENGTH_FIELD_NUMBER: _ClassVar[int]
     MAXSTRENGTH_FIELD_NUMBER: _ClassVar[int]
     OVERFLOWSTRENGTH_FIELD_NUMBER: _ClassVar[int]
+    CURMANA_FIELD_NUMBER: _ClassVar[int]
+    MAXMANA_FIELD_NUMBER: _ClassVar[int]
     CurHP: float
     MaxHP: float
     CurFoodLv: float
@@ -1387,7 +1389,9 @@ class PB_PlayerBaseAttrCH(_message.Message):
     CurStrength: float
     MaxStrength: float
     OverflowStrength: float
-    def __init__(self, CurHP: _Optional[float] = ..., MaxHP: _Optional[float] = ..., CurFoodLv: _Optional[float] = ..., MaxFoodLv: _Optional[float] = ..., BaseSpeed: _Optional[float] = ..., AttackPunch: _Optional[float] = ..., AttackRange: _Optional[float] = ..., DefensePunch: _Optional[float] = ..., DefenseRange: _Optional[float] = ..., CurExp: _Optional[int] = ..., CurSexp: _Optional[int] = ..., CurLevel: _Optional[int] = ..., OverflowHP: _Optional[float] = ..., CurStrength: _Optional[float] = ..., MaxStrength: _Optional[float] = ..., OverflowStrength: _Optional[float] = ...) -> None: ...
+    CurMana: float
+    MaxMana: float
+    def __init__(self, CurHP: _Optional[float] = ..., MaxHP: _Optional[float] = ..., CurFoodLv: _Optional[float] = ..., MaxFoodLv: _Optional[float] = ..., BaseSpeed: _Optional[float] = ..., AttackPunch: _Optional[float] = ..., AttackRange: _Optional[float] = ..., DefensePunch: _Optional[float] = ..., DefenseRange: _Optional[float] = ..., CurExp: _Optional[int] = ..., CurSexp: _Optional[int] = ..., CurLevel: _Optional[int] = ..., OverflowHP: _Optional[float] = ..., CurStrength: _Optional[float] = ..., MaxStrength: _Optional[float] = ..., OverflowStrength: _Optional[float] = ..., CurMana: _Optional[float] = ..., MaxMana: _Optional[float] = ...) -> None: ...
 
 class PB_PlayerArchEntityCH(_message.Message):
     __slots__ = ("UserData",)
@@ -2507,6 +2511,14 @@ class PB_ActorPlayAnimFinishCH(_message.Message):
     msgtype: int
     def __init__(self, animid: _Optional[int] = ..., msgtype: _Optional[int] = ...) -> None: ...
 
+class PB_TimelineReportCH(_message.Message):
+    __slots__ = ("status", "timelineId")
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    TIMELINEID_FIELD_NUMBER: _ClassVar[int]
+    status: int
+    timelineId: str
+    def __init__(self, status: _Optional[int] = ..., timelineId: _Optional[str] = ...) -> None: ...
+
 class PB_RefinableTakeResultCH(_message.Message):
     __slots__ = ("mapid", "blockPos", "taketype")
     MAPID_FIELD_NUMBER: _ClassVar[int]
@@ -2516,3 +2528,15 @@ class PB_RefinableTakeResultCH(_message.Message):
     blockPos: _proto_common_pb2.PB_Vector3
     taketype: int
     def __init__(self, mapid: _Optional[int] = ..., blockPos: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ..., taketype: _Optional[int] = ...) -> None: ...
+
+class PB_SpellEnhanceOperateCH(_message.Message):
+    __slots__ = ("gridIndex", "slotIndex", "countNow", "opType")
+    GRIDINDEX_FIELD_NUMBER: _ClassVar[int]
+    SLOTINDEX_FIELD_NUMBER: _ClassVar[int]
+    COUNTNOW_FIELD_NUMBER: _ClassVar[int]
+    OPTYPE_FIELD_NUMBER: _ClassVar[int]
+    gridIndex: int
+    slotIndex: int
+    countNow: int
+    opType: int
+    def __init__(self, gridIndex: _Optional[int] = ..., slotIndex: _Optional[int] = ..., countNow: _Optional[int] = ..., opType: _Optional[int] = ...) -> None: ...
