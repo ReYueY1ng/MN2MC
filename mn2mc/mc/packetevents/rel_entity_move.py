@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import (
@@ -19,16 +18,11 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     Ignores missing or self entities and preserves stored yaw/pitch.
     """
     entityid = jsondata["entityId"]
-    if entityid not in client.entities:
-        return
     if entityid == -1:
         return
-    for _, player in client.players.items():
-        if "entityid" in player and player["entityid"] == entityid:
-            objid = player["uin"]
-            break
-    else:
-        objid = MINI_OBJ_ID_BASE + entityid
+    objid = client.resolve_objid(entityid)
+    if objid is None:
+        return
     pos3f = client.entities[entityid].pos
     pos3f.x += jsondata["dX"] / (1 << 12)
     pos3f.y += jsondata["dY"] / (1 << 12)

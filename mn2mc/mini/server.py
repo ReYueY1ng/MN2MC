@@ -43,7 +43,7 @@ miniserver: aiorak.Server
 
 
 def broadcast_packet(msgcode: proto.common.ePBMsgCode, data: bytes):
-    if config.mini["server"]["host_to_room_server"]:
+    if config.mini.server.host_to_room_server:
         with _players_lock:
             for player in players:
                 player.send_packet(msgcode, data)
@@ -52,7 +52,7 @@ def broadcast_packet(msgcode: proto.common.ePBMsgCode, data: bytes):
 
 
 def send_log(msg: str):
-    if config.mini["send_log_to_chat"]:
+    if config.mini.send_log_to_chat:
         broadcast_packet(
             proto.common.ePBMsgCode.PB_CHAT_HC,
             proto.hc.PB_ChatHC(ChatType=1, Uin=0, Content=msg[:-1]).SerializeToString(),
@@ -64,7 +64,7 @@ async def handler(conn: aiorak.Connection):
     logger.info(f"{uin} {conn.remote_address} connected")
 
     # UIN whitelist check
-    whitelist = config.mini.get("whitelist_uins", [])
+    whitelist = config.mini.whitelist_uins
     if whitelist and uin not in whitelist:
         logger.warning(f"{uin} not in whitelist, kicking")
         player = MiniPlayer(conn, uin)
@@ -77,7 +77,7 @@ async def handler(conn: aiorak.Connection):
         proto.common.ePBMsgCode.PB_SYNC_ROOM_EXTRA_HC, room_extra_info_bytes
     )
 
-    if config.mini["server"]["host_to_room_server"]:
+    if config.mini.server.host_to_room_server:
         with _players_lock:
             player_count = len(players)
         await mn2mc.mini.room.room_update(player_count)
@@ -86,7 +86,7 @@ async def handler(conn: aiorak.Connection):
     player.kick()
     logger.info(f"{uin} {conn.remote_address} disconnected")
 
-    if config.mini["server"]["host_to_room_server"]:
+    if config.mini.server.host_to_room_server:
         with _players_lock:
             player_count = len(players) - 1
         await mn2mc.mini.room.room_update(player_count)
@@ -94,7 +94,7 @@ async def handler(conn: aiorak.Connection):
 
 async def start(host: str = "0.0.0.0", port: int = 19132):
     global miniserver
-    if config.mini["server"]["host_to_room_server"]:
+    if config.mini.server.host_to_room_server:
         await mn2mc.mini.wsconn.fetch_s2()
         await mn2mc.mini.room.create_room()
     logger.info("Loading events...")
@@ -104,9 +104,9 @@ async def start(host: str = "0.0.0.0", port: int = 19132):
         (host, port),
         handler,
         guid=mn2mc.mini.auth.uin
-        if config.mini["server"]["host_to_room_server"]
+        if config.mini.server.host_to_room_server
         else 666,
-        max_connections=mn2mc.config.mini['server']['max_players']
+        max_connections=config.mini.server.max_players
     )
     logger.info(f"Server started at {host}:{port}")
     logger.add(send_log, level="INFO", format="#W[{level}] {message}")
@@ -115,11 +115,12 @@ async def start(host: str = "0.0.0.0", port: int = 19132):
 
 
 async def stop():
+    global miniserver
     with _players_lock:
         for player in players.copy():
             player.kick()
-    if miniserver:
+    if "miniserver" in globals():
         await miniserver.close()
-    if config.mini["server"]["host_to_room_server"] and mn2mc.mini.room.room_token:
+    if config.mini.server.host_to_room_server and mn2mc.mini.room.room_token:
         await mn2mc.mini.room.close_room()
     mn2mc.running = False

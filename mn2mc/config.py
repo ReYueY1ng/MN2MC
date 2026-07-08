@@ -1,8 +1,9 @@
 from pathlib import Path
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, Literal
 
 import yaml
 from loguru import logger
+from pydantic import BaseModel, Field
 
 # Default config as a string — used only for initial file generation and as documentation.
 _default_file = """\
@@ -36,59 +37,49 @@ debug: false
 """
 
 
-class server(TypedDict):
-    ip: str
-    port: int
-    host_to_room_server: bool
-    max_players: int
+class ServerConfig(BaseModel):
+    ip: str = "127.0.0.1"
+    port: int = Field(default=11155, ge=1, le=65535)
+    host_to_room_server: bool = False
+    max_players: int = Field(default=40, ge=1, le=65535)
 
 
-class auth(TypedDict):
-    uin: int
-    passwd: str
-    api_id: int
-    device_id: str
+class AuthConfig(BaseModel):
+    uin: int = Field(default=0, ge=0)
+    passwd: str = ""
+    api_id: int = Field(default=110, ge=0)
+    device_id: str = "MN2MCDefault"
 
 
-class Mini(TypedDict):
-    server: server
-    auth: auth
-    send_log_to_chat: bool
-    admin_uins: list[int]
-    whitelist_uins: list[int]
+class MiniConfig(BaseModel):
+    server: ServerConfig = ServerConfig()
+    auth: AuthConfig = AuthConfig()
+    send_log_to_chat: bool = False
+    admin_uins: list[int] = []
+    whitelist_uins: list[int] = []
 
 
-class MC(TypedDict):
-    ip: str
-    port: int
-    username: str
-    version: str
-    chunk_parse_thread: int
-    use_new_chunk_parser: bool
-    log_message: bool
+class MCConfig(BaseModel):
+    ip: str = "127.0.0.1"
+    port: int = Field(default=25565, ge=1, le=65535)
+    username: str = ""
+    version: Literal["1.21.11"] = "1.21.11"
+    chunk_parse_thread: int = Field(default=4, ge=1, le=32)
+    use_new_chunk_parser: bool = True
+    log_message: bool = False
+
+
+class AppConfig(BaseModel):
+    mini: MiniConfig = MiniConfig()
+    mc: MCConfig = MCConfig()
+    debug: bool = False
 
 
 class ConfigManager:
     """Manages application configuration loaded from / saved to YAML."""
 
     def __init__(self) -> None:
-        self.mini: Mini = {
-            "server": {"ip": "127.0.0.1", "port": 11155, "host_to_room_server": False, "max_players": 65535},
-            "auth": {"uin": 0, "passwd": "", "api_id": 110, "device_id": ""},
-            "send_log_to_chat": False,
-            "admin_uins": [],
-            "whitelist_uins": [],
-        }
-        self.mc: MC = {
-            "ip": "127.0.0.1",
-            "port": 25565,
-            "username": "",
-            "version": "1.21.11",
-            "chunk_parse_thread": 4,
-            "use_new_chunk_parser": True,
-            "log_message": False,
-        }
-        self.debug: bool = False
+        self._config = AppConfig()
         self._config_path: Path = Path("config.yaml")
 
     def load(self, path: Path = Path("config.yaml")) -> None:
@@ -97,108 +88,26 @@ class ConfigManager:
             with path.open() as f:
                 data = yaml.safe_load(f)
                 if isinstance(data, dict):
-                    self._validate_and_merge(data)
+                    try:
+                        self._config = AppConfig.model_validate(data)
+                    except Exception as e:
+                        logger.error(f"Config validation error: {e}")
+                        logger.warning("Using defaults for invalid fields")
+                        self._config = AppConfig()
         else:
             self.save(path)
 
-    def _validate_and_merge(self, data: dict) -> None:
-        if not isinstance(data, dict):
-            return
+    @property
+    def mini(self) -> MiniConfig:
+        return self._config.mini
 
-        mini_section = data.get("mini")
-        if isinstance(mini_section, dict):
-            server_section = mini_section.get("server")
-            if isinstance(server_section, dict):
-                if "ip" in server_section and isinstance(server_section["ip"], str):
-                    self.mini["server"]["ip"] = server_section["ip"]
-                else:
-                    logger.warning("Config missing or invalid mini.server.ip; using default")
-                if "port" in server_section and isinstance(server_section["port"], int):
-                    self.mini["server"]["port"] = server_section["port"]
-                else:
-                    logger.warning("Config missing or invalid mini.server.port; using default")
-                if "host_to_room_server" in server_section and isinstance(server_section["host_to_room_server"], bool):
-                    self.mini["server"]["host_to_room_server"] = server_section["host_to_room_server"]
-                else:
-                    logger.warning("Config missing or invalid mini.server.host_to_room_server; using default")
-                if "max_players" in server_section and isinstance(server_section["max_players"], int):
-                    self.mini["server"]["max_players"] = server_section["max_players"]
-                else:
-                    logger.warning("Config missing or invalid mini.server.max_players; using default")
+    @property
+    def mc(self) -> MCConfig:
+        return self._config.mc
 
-            auth_section = mini_section.get("auth")
-            if isinstance(auth_section, dict):
-                if "uin" in auth_section and isinstance(auth_section["uin"], int):
-                    self.mini["auth"]["uin"] = auth_section["uin"]
-                else:
-                    logger.warning("Config missing or invalid mini.auth.uin; using default")
-                if "passwd" in auth_section and isinstance(auth_section["passwd"], str):
-                    self.mini["auth"]["passwd"] = auth_section["passwd"]
-                else:
-                    logger.warning("Config missing or invalid mini.auth.passwd; using default")
-                if "api_id" in auth_section and isinstance(auth_section["api_id"], int):
-                    self.mini["auth"]["api_id"] = auth_section["api_id"]
-                else:
-                    logger.warning("Config missing or invalid mini.auth.api_id; using default")
-                if "device_id" in auth_section and isinstance(auth_section["device_id"], str):
-                    self.mini["auth"]["device_id"] = auth_section["device_id"]
-                else:
-                    logger.warning("Config missing or invalid mini.auth.device_id; using default")
-
-            if "send_log_to_chat" in mini_section and isinstance(mini_section["send_log_to_chat"], bool):
-                self.mini["send_log_to_chat"] = mini_section["send_log_to_chat"]
-            else:
-                logger.warning("Config missing or invalid mini.send_log_to_chat; using default")
-
-            if "admin_uins" in mini_section and isinstance(mini_section["admin_uins"], list):
-                self.mini["admin_uins"] = [u for u in mini_section["admin_uins"] if isinstance(u, int)]
-            else:
-                logger.warning("Config missing or invalid mini.admin_uins; using default")
-
-            if "whitelist_uins" in mini_section and isinstance(mini_section["whitelist_uins"], list):
-                self.mini["whitelist_uins"] = [u for u in mini_section["whitelist_uins"] if isinstance(u, int)]
-            else:
-                logger.warning("Config missing or invalid mini.whitelist_uins; using default")
-        else:
-            logger.warning("Config missing or invalid mini section; using defaults")
-
-        mc_section = data.get("mc")
-        if isinstance(mc_section, dict):
-            if "ip" in mc_section and isinstance(mc_section["ip"], str):
-                self.mc["ip"] = mc_section["ip"]
-            else:
-                logger.warning("Config missing or invalid mc.ip; using default")
-            if "port" in mc_section and isinstance(mc_section["port"], int):
-                self.mc["port"] = mc_section["port"]
-            else:
-                logger.warning("Config missing or invalid mc.port; using default")
-            if "username" in mc_section and isinstance(mc_section["username"], str):
-                self.mc["username"] = mc_section["username"]
-            else:
-                logger.warning("Config missing or invalid mc.username; using default")
-            if "version" in mc_section and isinstance(mc_section["version"], str):
-                self.mc["version"] = mc_section["version"]
-            else:
-                logger.warning("Config missing or invalid mc.version; using default")
-            if "chunk_parse_thread" in mc_section and isinstance(mc_section["chunk_parse_thread"], int):
-                self.mc["chunk_parse_thread"] = mc_section["chunk_parse_thread"]
-            else:
-                logger.warning("Config missing or invalid mc.chunk_parse_thread; using default")
-            if "use_new_chunk_parser" in mc_section and isinstance(mc_section["use_new_chunk_parser"], bool):
-                self.mc["use_new_chunk_parser"] = mc_section["use_new_chunk_parser"]
-            else:
-                logger.warning("Config missing or invalid mc.use_new_chunk_parser; using default")
-            if "log_message" in mc_section and isinstance(mc_section["log_message"], bool):
-                self.mc["log_message"] = mc_section["log_message"]
-            else:
-                logger.warning("Config missing or invalid mc.log_message; using default")
-        else:
-            logger.warning("Config missing or invalid mc section; using defaults")
-
-        if "debug" in data and isinstance(data["debug"], bool):
-            self.debug = data["debug"]
-        else:
-            logger.warning("Config missing or invalid debug; using default")
+    @property
+    def debug(self) -> bool:
+        return self._config.debug
 
     def save(self, path: Path | None = None) -> None:
         """Serialize the current config state to YAML.
@@ -210,7 +119,7 @@ class ConfigManager:
             path = self._config_path
         with path.open("w") as f:
             yaml.dump(
-                {"mini": self.mini, "mc": self.mc, "debug": self.debug},
+                self._config.model_dump(),
                 f,
                 default_flow_style=False,
                 sort_keys=False,
@@ -226,8 +135,8 @@ config = ConfigManager()
 _CONFIG_ATTRS = frozenset({"mini", "mc", "debug", "load", "save"})
 
 if TYPE_CHECKING:
-    mini: Mini
-    mc: MC
+    mini: MiniConfig
+    mc: MCConfig
     debug: bool
     def load(path: Path = ...) -> None: ...
     def save(path: Path | None = ...) -> None: ...

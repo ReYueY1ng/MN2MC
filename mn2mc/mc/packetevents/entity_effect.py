@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from loguru import logger
 
-from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mapping import effects as eff_map
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
@@ -24,16 +23,8 @@ def _next_instance() -> int:
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     """Apply or refresh a status effect on an entity."""
     entityid = jsondata.get("entityId", 0)
-    if entityid == client.entityid:
-        objid = client.miniplayer.uin
-    elif entityid in client.entities:
-        for _, player in client.players.items():
-            if "entityid" in player and player["entityid"] == entityid:
-                objid = player["uin"]
-                break
-        else:
-            objid = MINI_OBJ_ID_BASE + entityid
-    else:
+    objid = client.resolve_objid(entityid)
+    if objid is None:
         return
 
     effect_id = jsondata.get("effectId", 0)  # MC effect ID (1-33)

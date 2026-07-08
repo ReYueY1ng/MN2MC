@@ -124,7 +124,7 @@ def create_worker_threads(process_func, chunkqueue, thread_count=None):
         thread_count: Number of threads (defaults to config value)
     """
     if thread_count is None:
-        thread_count = config.mc["chunk_parse_thread"]
+        thread_count = config.mc.chunk_parse_thread
 
     def _parse_thread():
         while mn2mc.running:

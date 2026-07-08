@@ -28,7 +28,7 @@ async def start():
         "-target_ip",
         "127.0.0.1",
         "-target_port",
-        str(config.mini["server"]["port"]),
+        str(config.mini.server.port),
         "-nat_ip",
         mn2mc.mini.room.config["punch"]["ip"],
         "-nat_port",
@@ -41,7 +41,7 @@ async def start():
         str(mn2mc.mini.room.config["proxy"]["port"]),
         "-upnp",
         "-max_clients",
-        str(mn2mc.config.mini['server']['max_players']),
+        str(mn2mc.config.mini.server.max_players),
         start_new_session=True
     )
 

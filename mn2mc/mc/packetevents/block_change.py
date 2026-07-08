@@ -14,7 +14,7 @@ from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_BlockUpdateHC
 from mn2mc.utils.vector import Vector3
 
-prismarine_block = require("prismarine-block")(config.mc["version"])
+prismarine_block = require("prismarine-block")(config.mc.version)
 
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:

@@ -44,7 +44,7 @@ class MiniPlayer:
         """Send a packet to the Mini World client."""
         # logger.debug(f"({self.uin}) send packet {msg_code}")
         if self.conn.state == aiorak.ConnectionState.CONNECTED:
-            if config.mini["server"]["host_to_room_server"]:
+            if config.mini.server.host_to_room_server:
                 self.conn.send(
                     MiniClientPacket(
                         mn2mc.mini.auth.uin, msg_code, data, self.uin
@@ -114,3 +114,9 @@ class MiniPlayer:
 
 players: list[MiniPlayer] = []
 _players_lock = threading.RLock()
+
+
+def get_players_snapshot() -> list[MiniPlayer]:
+    """Return a thread-safe snapshot of the connected players list."""
+    with _players_lock:
+        return players.copy()

@@ -40,7 +40,7 @@ def _schedule_open(client: MCClient, grids: int) -> None:
     client._open_pending = True
     client._pending_grids = grids
     client._open_timer = threading.Timer(0.1, _do_open_container, args=[client])
-    client._open_timer.start()
+    client._open_timer.start()  # ty:ignore[unresolved-attribute]
 
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:

@@ -27,17 +27,8 @@ def prepare_dependencies():
 
     current_loop = asyncio.get_running_loop()
     javascript.eval_js("""
-        global.mcprotocol = mcprotocol
-        global.prismarineChat = prismarineChat
-        global.prismarineBlock = prismarineBlock
-        global.prismarineChunk = prismarineChunk
-        global.Vec3 = Vec3
-        global.msgpackr = msgpackr
-        global.prismarineItem = prismarineItem
-        global.prismarineRegistry = prismarineRegistry
-
         process.on('uncaughtException', (err) => {
-            logger.error('Uncaught javascript Exception:\\n' + err.stack)
+            console.error('Uncaught javascript Exception:\\n' + err.stack)
         })
     """)
 
@@ -77,7 +68,7 @@ async def main():
             const process = require('node:process')
             process.on('SIGINT', () => {})
         """)
-        await server.start(config.mini["server"]["ip"], config.mini["server"]["port"])
+        await server.start(config.mini.server.ip, config.mini.server.port)
     except (KeyboardInterrupt, asyncio.CancelledError):
         pass
     finally:

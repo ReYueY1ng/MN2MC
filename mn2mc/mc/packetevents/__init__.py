@@ -24,7 +24,7 @@ def reloadevents():
         del f, module_name
 
     chunk_name = "map_chunk"
-    if config.mc["use_new_chunk_parser"]:
+    if config.mc.use_new_chunk_parser:
         chunk_name = "parsed_chunk"
     if hasattr(globals()['chunk'], chunk_name):
         reload(getattr(globals()['chunk'], chunk_name))

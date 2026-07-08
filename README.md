@@ -2,9 +2,12 @@
 
 迷你世界转译代理，用于连接 Minecraft Java 版 1.21.11 服务器。  
 
+> [!CAUTION]
+> 本工具通过协议翻译将 Mini World 操作映射到 Minecraft 协议包，行为可能与原版 MC 客户端存在差异，可能触发 MC 服务端反作弊检测，导致封号。请自行评估风险。
+
 ## 支持版本
 
-迷你世界 1.56.1 / Minecraft 1.21.11
+迷你世界 1.57.1 / Minecraft 1.21.11
 
 ## 已实现功能
 
@@ -33,23 +36,7 @@
 pip install -r requirements.txt
 ```
 
-2. 安装 `aiorak`：
-
-```bash
-git clone https://github.com/wu-vincent/aiorak.git
-pip install ./aiorak
-```
-
-3. 安装最新版 `minebase`：
-
-```bash
-# depth 设为 1 可加快克隆速度
-git clone https://github.com/py-mine/minebase.git --depth=1
-git clone https://github.com/PrismarineJS/minecraft-data.git minebase/minebase/data --depth=1
-pip install ./minebase
-```
-
-4. 安装 Node.js 依赖（可选）：
+2. 安装 Node.js 依赖（可选）：
 
 ```bash
 npm install minecraft-protocol prismarine-chat prismarine-block prismarine-chunk vec3 msgpackr prismarine-item prismarine-registry

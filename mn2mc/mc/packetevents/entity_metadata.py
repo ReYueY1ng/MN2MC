@@ -17,7 +17,7 @@ from mn2mc.mini.proto.common import (
 from mn2mc.mini.proto.hc import PB_ActorLeaveAOIHC, PB_ActorMotionHC, PB_GeneralEnterAOIHC
 from mn2mc.utils.vector import Vector3
 
-prismarine_item = require("prismarine-item")(config.mc["version"])
+prismarine_item = require("prismarine-item")(config.mc.version)
 
 def _handle_item(client: MCClient, entityid: int, metadata):
     """Send AOI enter packet for a item entity."""

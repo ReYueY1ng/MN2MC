@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import (
@@ -21,14 +20,9 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     World object IDs.
     """
     entityid = jsondata["entityId"]
-    if entityid not in client.entities:
+    objid = client.resolve_objid(entityid)
+    if objid is None:
         return
-    for _, player in client.players.items():
-        if "entityid" in player and player["entityid"] == entityid:
-            objid = player["uin"]
-            break
-    else:
-        objid = MINI_OBJ_ID_BASE + entityid
     pos3f = Vector3f(jsondata["x"], jsondata["y"], jsondata["z"])
     angle = Angle(jsondata["yaw"], jsondata["pitch"])
     client.entities[entityid].pos = pos3f

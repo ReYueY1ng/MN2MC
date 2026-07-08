@@ -191,7 +191,7 @@ class MiniRoom:
             "pause": "0",
             "can_trace": "9335",
             "public_type": "0",
-            "max_count": str(mn2mc.config.mini['server']['max_players']),
+            "max_count": str(mn2mc.config.mini.server.max_players),
             "passwd": "",
             "is_empty_night": "0",
         }

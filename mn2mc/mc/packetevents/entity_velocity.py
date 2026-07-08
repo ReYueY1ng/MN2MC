@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
@@ -23,18 +22,11 @@ def on_recv(client: MCClient, jsondata: dict, _metadata: dict) -> None:
     # https://github.com/atiweb/node-minecraft-protocol/blob/64c8cee434a24a08a050ef73c471075b160a3f64/src/datatypes/lpVec3.js
     entityid = jsondata["entityId"]
     vel = Vector3f.from_dict(jsondata["velocity"])
-    if entityid == client.entityid:
-        objid = client.miniplayer.uin
-    elif entityid in client.entities:
-        for _, player in client.players.items():
-            if "entityid" in player and player["entityid"] == entityid:
-                objid = player["uin"]
-                break
-        else:
-            objid = MINI_OBJ_ID_BASE + entityid
-        client.entities[entityid].motion = vel
-    else:
+    objid = client.resolve_objid(entityid)
+    if objid is None:
         return
+    if entityid in client.entities:
+        client.entities[entityid].motion = vel
 
     vel = vel.convert()
     client.miniplayer.send_packet(

@@ -15,7 +15,7 @@ from mn2mc.mc.packetevents.chunk.chunk_parser import (
     send_block_updates,
 )
 
-prismarine_chunk = require("prismarine-chunk")(config.mc["version"])
+prismarine_chunk = require("prismarine-chunk")(config.mc.version)
 Vec3 = require("vec3")
 chunkqueue = queue.Queue()
 # miny/worldheight 由 dimension setter 写入，chunk parser 线程读取

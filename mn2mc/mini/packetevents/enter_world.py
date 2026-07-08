@@ -224,8 +224,8 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
     await asyncio.sleep(1)
 
     # Build MC username candidates with fallback chain
-    if config.mc["username"]:
-        username_candidates = [config.mc["username"]]
+    if config.mc.username:
+        username_candidates = [config.mc.username]
     else:
         username_candidates = [player.name, _sanitize_mc_username(player.name), str(player.uin)]
     # Deduplicate while preserving order
@@ -234,10 +234,10 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
 
     player.mcclient = MCClient(
         options={
-            "version": config.mc["version"],
+            "version": config.mc.version,
             "username": username_candidates[0],
-            "host": config.mc["ip"],
-            "port": config.mc["port"],
+            "host": config.mc.ip,
+            "port": config.mc.port,
         },
         miniplayer=player,
         _username_candidates=username_candidates[1:],

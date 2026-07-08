@@ -231,27 +231,29 @@ class TestConfigManagerSingleton:
 
     def test_config_has_mini(self, config_mod):
         assert hasattr(config_mod.config, "mini")
-        assert isinstance(config_mod.config.mini, dict)
+        from mn2mc.config import MiniConfig
+        assert isinstance(config_mod.config.mini, MiniConfig)
 
     def test_config_has_mc(self, config_mod):
         assert hasattr(config_mod.config, "mc")
-        assert isinstance(config_mod.config.mc, dict)
+        from mn2mc.config import MCConfig
+        assert isinstance(config_mod.config.mc, MCConfig)
 
     def test_config_has_debug(self, config_mod):
         assert hasattr(config_mod.config, "debug")
         assert isinstance(config_mod.config.debug, bool)
 
     def test_config_mini_has_auth_key(self, config_mod):
-        assert "auth" in config_mod.config.mini
+        assert hasattr(config_mod.config.mini, "auth")
 
     def test_config_mini_has_server_key(self, config_mod):
-        assert "server" in config_mod.config.mini
+        assert hasattr(config_mod.config.mini, "server")
 
     def test_config_mc_has_ip(self, config_mod):
-        assert "ip" in config_mod.config.mc
+        assert hasattr(config_mod.config.mc, "ip")
 
     def test_config_mc_has_port(self, config_mod):
-        assert "port" in config_mod.config.mc
+        assert hasattr(config_mod.config.mc, "port")
 
 
 class TestConfigManagerGetattr:

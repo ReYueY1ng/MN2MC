@@ -11,7 +11,7 @@ from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import PB_ItemData, ePBMsgCode
 from mn2mc.mini.proto.hc import PB_BackPackGridUpdateHC
 
-prismarine_item = require("prismarine-item")(config.mc["version"])
+prismarine_item = require("prismarine-item")(config.mc.version)
 
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:

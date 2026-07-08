@@ -39,24 +39,24 @@ class MiniAuth:
         )
 
     async def login(self):
-        logger.info(f"Logging in {config.mini['auth']['uin']}...")
+        logger.info(f"Logging in {config.mini.auth.uin}...")
         server_time = int(time.time())
         msg = self._encode(
             {
                 "source": "client",
                 "juhe_auth": "",
-                "passwd_auth": '{"passwd":"' + config.mini["auth"]["passwd"] + '"}',
-                "DeviceID": config.mini["auth"]["device_id"],
+                "passwd_auth": '{"passwd":"' + config.mini.auth.passwd + '"}',
+                "DeviceID": config.mini.auth.device_id,
                 "is_url": True,
                 "geetest": "blending",
                 "target": "login",
-                "apiid": config.mini["auth"]["api_id"],
+                "apiid": config.mini.auth.api_id,
                 "juhe_strong_auth": "",
                 "svrTime": server_time,
                 "login_type": "passwd",
                 "version": mn2mc.mini.cltversion,
                 "time": server_time,
-                "uin": config.mini["auth"]["uin"],
+                "uin": config.mini.auth.uin,
             }
         )
 
@@ -76,8 +76,8 @@ class MiniAuth:
                         f"Login failed: invalid JSON response: {text[:200]}"
                     )
                 if data["code"] == 0:
-                    self.uin = int(config.mini["auth"]["uin"])
-                    self.api_id = config.mini["auth"]["api_id"]
+                    self.uin = int(config.mini.auth.uin)
+                    self.api_id = config.mini.auth.api_id
                     self.name = data["baseinfo"]["RoleInfo"]["NickName"]
                     self.full_sign = data["authinfo"]["sign"]
                     self.s2, self.s2t = self.full_sign.split("_")

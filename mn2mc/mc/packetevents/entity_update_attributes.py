@@ -10,7 +10,6 @@ from typing import Any
 
 from loguru import logger
 
-from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
@@ -24,16 +23,8 @@ from mn2mc.mini.proto.hc import (
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     """Map MC entity attributes to Mini World attribute/speed change packets."""
     entityid = jsondata["entityId"]
-    if entityid == client.entityid:
-        objid = client.miniplayer.uin
-    elif entityid in client.entities:
-        for _, player in client.players.items():
-            if "entityid" in player and player["entityid"] == entityid:
-                objid = player["uin"]
-                break
-        else:
-            objid = MINI_OBJ_ID_BASE + entityid
-    else:
+    objid = client.resolve_objid(entityid)
+    if objid is None:
         return
 
     logger.debug(jsondata)

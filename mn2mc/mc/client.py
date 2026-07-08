@@ -4,7 +4,7 @@ import json
 import threading
 import time
 import zlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import aiorak
 import javascript
@@ -16,7 +16,11 @@ from loguru import logger
 import mn2mc.config as config
 import mn2mc.utils.color_converter as color_converter
 from mn2mc.constants import DIMENSION_OVERWORLD
+from mn2mc.mc.chunk_bridge import MCChunkBridge
+from mn2mc.mc.connection import MCConnection
 from mn2mc.mc.entity import MCEntity
+from mn2mc.mc.entity_tracker import MCEntityTracker
+from mn2mc.mc.inventory import MCInventory
 from mn2mc.mc.packet import events, on_event
 from mn2mc.utils.angle import Angle
 from mn2mc.utils.vector import Vector3f
@@ -24,8 +28,8 @@ from mn2mc.utils.vector import Vector3f
 if TYPE_CHECKING:
     from mn2mc.mini.player import MiniPlayer
 
-prismarinechat = require("prismarine-chat")(config.mc["version"])
-minedata = minebase.load_version(config.mc["version"])
+prismarinechat = require("prismarine-chat")(config.mc.version)
+minedata = minebase.load_version(config.mc.version)
 language = minedata["language"]
 mcprotocol = require("minecraft-protocol")
 vec3 = require("vec3")
@@ -35,30 +39,9 @@ registry = require("prismarine-registry")
 
 class MCClient:
     MAX_PENDING_ITEMS = 1000
-    _dimension: int
-    client: mcprotocol.Client
     miniplayer: MiniPlayer
     on_events: list[str]
-    position: Vector3f
-    angle: Angle
     username: str
-    chunkmgr: ChunkManager
-    block_sequence: int
-    container_sequence: int
-    window_id: int
-    inventory_type: str | int
-    players: dict
-    add_player_count: int
-    entities: dict[int, MCEntity]
-    registry: registry
-    entityid: int
-    container_ts: float
-    _open_pending: bool
-    _pending_grids: int
-    _pending_item_packets: list[tuple[int, bytes]]
-    _open_timer: threading.Timer | None
-    _lock: threading.Lock
-    _connected: bool
     _username_candidates: list[str]
     _username_index: int
     _base_options: dict
@@ -69,33 +52,19 @@ class MCClient:
         miniplayer: MiniPlayer,
         _username_candidates: list[str] | None = None,
     ) -> None:
-        self._lock = threading.Lock()
-        self.running = threading.Event()
-        self.running.set()
-        self._connected = False
         self._username_candidates = _username_candidates or []
         self._username_index = 0
         self._base_options = options
         self.username = options["username"]
         self.miniplayer = miniplayer
-        self.state = "handshaking"
-        self.position = Vector3f()
-        self.angle = Angle(0, 0)
-        self.block_sequence = 0
-        self.container_sequence = 0
-        self.inventory_type = "inventory"
-        self.window_id = 0
-        self.players = {}
-        self.add_player_count = 0
-        self.entityid = 0
-        self.container_ts = 0.0
-        self._open_pending = False
-        self._pending_grids = 0
-        self._pending_item_packets = []
-        self._open_timer = None
-        self.entities = {}
-        self.registry = registry(config.mc["version"])
-        self._dimension = DIMENSION_OVERWORLD
+        self.on_events: list[str] = []
+
+        # Create component instances
+        self._inventory = MCInventory()
+        self._entity_tracker = MCEntityTracker()
+        self._connection: MCConnection = cast(MCConnection, None)  # set in _setup_connection
+        self._chunk_bridge: MCChunkBridge | None = None
+
         logger.info(
             f"({miniplayer.name}) Connecting to {options['host']}:{options['port']}"
         )
@@ -104,40 +73,27 @@ class MCClient:
     def _setup_connection(self, options: dict) -> None:
         """Create MC client connection and bind event handlers."""
         self.client = mcprotocol.createClient(options)
+
+        # Create/reset connection component
+        self._connection = MCConnection(self.client, self.miniplayer)
+        self._connection.registry = registry(config.mc.version)
+
+        # Reset other components
+        self._entity_tracker.reset()
+        self._inventory.reset()
+
         self.client.on("error", self.on_error)
         self.client.on("end", self.on_end)
         self.client.on("disconnect", self.on_disconnect)
         self.client.on("connect", self.on_connect)
         self.on_events = []
-        self.position = Vector3f()
-        self.angle = Angle(0, 0)
-        self.block_sequence = 0
-        self.container_sequence = 0
-        self.inventory_type = "inventory"
-        self.window_id = 0
-        self.players = {}
-        self.add_player_count = 0
-        self.entityid = 0
-        self.container_ts = 0.0
-        self._open_pending = False
-        self._pending_grids = 0
-        self._pending_item_packets = []
-        self._open_timer = None
-        self.entities = {}
-        self.registry = registry(config.mc["version"])
-        self._dimension = DIMENSION_OVERWORLD
         self.client.on("playerChat", self.on_player_chat)
         self.client.on("systemChat", self.on_server_chat)
         self.client.on("state", self.on_state_change)
         self.load_events()
-        if config.mc["use_new_chunk_parser"]:
-            self.chunkmgr = ChunkManager(config.mc["version"], self, self.client, self.registry)
-            self.get_chunk_thread = threading.Thread(
-                target=self.get_chunks_task,
-                name=f"({self.miniplayer.name}) Get chunk thread",
-                daemon=True,
-            )
-            self.get_chunk_thread.start()
+        if config.mc.use_new_chunk_parser:
+            self._chunk_bridge = MCChunkBridge(self, self.client, self.registry)
+            self._chunk_bridge.start(self.miniplayer.name, self.running)
         else:
             javascript.eval_js("""
                 self.client.on("registry_data", (data) => {
@@ -145,6 +101,230 @@ class MCClient:
                 })
             """)
 
+    # ==================================================================
+    # Backward-compatible delegation: connection component
+    # ==================================================================
+
+    @property
+    def state(self) -> str:
+        return self._connection.state
+
+    @state.setter
+    def state(self, value: str) -> None:
+        self._connection.state = value
+
+    @property
+    def _connected(self) -> bool:
+        return self._connection._connected
+
+    @_connected.setter
+    def _connected(self, value: bool) -> None:
+        self._connection._connected = value
+
+    @property
+    def running(self):
+        return self._connection.running
+
+    @property
+    def position(self) -> Vector3f:
+        return self._connection.position
+
+    @position.setter
+    def position(self, value: Vector3f) -> None:
+        self._connection.position = value
+
+    @property
+    def angle(self) -> Angle:
+        return self._connection.angle
+
+    @angle.setter
+    def angle(self, value: Angle) -> None:
+        self._connection.angle = value
+
+    @property
+    def registry(self):
+        return self._connection.registry
+
+    @registry.setter
+    def registry(self, value):
+        self._connection.registry = value
+
+    @property
+    def _dimension(self) -> int:
+        return self._connection._dimension
+
+    @_dimension.setter
+    def _dimension(self, value: int) -> None:
+        self._connection._dimension = value
+
+    @property
+    def dimension(self) -> int:
+        return self._connection.dimension
+
+    @dimension.setter
+    def dimension(self, value: int) -> None:
+        self._connection.dimension = value
+
+    # ==================================================================
+    # Backward-compatible delegation: entity tracker component
+    # ==================================================================
+
+    @property
+    def entities(self) -> dict[int, MCEntity]:
+        return self._entity_tracker.entities
+
+    @entities.setter
+    def entities(self, value: dict[int, MCEntity]) -> None:
+        self._entity_tracker.entities = value
+
+    @property
+    def players(self) -> dict:
+        return self._entity_tracker.players
+
+    @players.setter
+    def players(self, value: dict) -> None:
+        self._entity_tracker.players = value
+
+    @property
+    def entityid(self) -> int:
+        return self._entity_tracker.entityid
+
+    @entityid.setter
+    def entityid(self, value: int) -> None:
+        self._entity_tracker.entityid = value
+
+    @property
+    def add_player_count(self) -> int:
+        return self._entity_tracker.add_player_count
+
+    @add_player_count.setter
+    def add_player_count(self, value: int) -> None:
+        self._entity_tracker.add_player_count = value
+
+    # ==================================================================
+    # Backward-compatible delegation: inventory component
+    # ==================================================================
+
+    @property
+    def window_id(self) -> int:
+        return self._inventory.window_id
+
+    @window_id.setter
+    def window_id(self, value: int) -> None:
+        self._inventory.window_id = value
+
+    @property
+    def inventory_type(self) -> str | int:
+        return self._inventory.inventory_type
+
+    @inventory_type.setter
+    def inventory_type(self, value: str | int) -> None:
+        self._inventory.inventory_type = value
+
+    @property
+    def container_sequence(self) -> int:
+        return self._inventory.container_sequence
+
+    @container_sequence.setter
+    def container_sequence(self, value: int) -> None:
+        self._inventory.container_sequence = value
+
+    @property
+    def block_sequence(self) -> int:
+        return self._inventory.block_sequence
+
+    @block_sequence.setter
+    def block_sequence(self, value: int) -> None:
+        self._inventory.block_sequence = value
+
+    @property
+    def container_ts(self) -> float:
+        return self._inventory.container_ts
+
+    @container_ts.setter
+    def container_ts(self, value: float) -> None:
+        self._inventory.container_ts = value
+
+    @property
+    def _open_pending(self) -> bool:
+        return self._inventory._open_pending
+
+    @_open_pending.setter
+    def _open_pending(self, value: bool) -> None:
+        self._inventory._open_pending = value
+
+    @property
+    def _pending_grids(self) -> int:
+        return self._inventory._pending_grids
+
+    @_pending_grids.setter
+    def _pending_grids(self, value: int) -> None:
+        self._inventory._pending_grids = value
+
+    @property
+    def _pending_item_packets(self) -> list[tuple[int, bytes]]:
+        return self._inventory._pending_item_packets
+
+    @_pending_item_packets.setter
+    def _pending_item_packets(self, value: list[tuple[int, bytes]]) -> None:
+        self._inventory._pending_item_packets = value
+
+    @property
+    def _open_timer(self) -> threading.Timer | None:
+        return self._inventory._open_timer
+
+    @_open_timer.setter
+    def _open_timer(self, value: threading.Timer | None) -> None:
+        self._inventory._open_timer = value
+
+    @property
+    def _lock(self) -> threading.Lock:
+        return self._inventory._lock
+
+    # ==================================================================
+    # Delegation: chunk bridge
+    # ==================================================================
+
+    @property
+    def chunkmgr(self):
+        if self._chunk_bridge is not None:
+            return self._chunk_bridge.chunkmgr
+        return None
+
+    @chunkmgr.setter
+    def chunkmgr(self, value):
+        # Only used during _setup_connection; chunk_bridge holds it
+        pass
+
+    # ==================================================================
+    # Delegate methods to connection component
+    # ==================================================================
+
+    def send(self, name: str, message: dict, ignorestate=False):
+        self._connection.send(name, message, ignorestate)
+
+    def chat(self, content: str, ignorestate=False):
+        self._connection.chat(content, ignorestate)
+
+    def end(self):
+        self._connection.end()
+
+    # ==================================================================
+    # Delegate methods to entity tracker
+    # ==================================================================
+
+    def resolve_objid(self, entityid: int) -> int | None:
+        """Resolve MC entity ID to Mini World objid.
+
+        Returns:
+            int: The corresponding Mini World objid
+            None: Entity is unknown/tracked (caller should ignore)
+        """
+        return self._entity_tracker.resolve_objid(self, entityid)
+
+    # ==================================================================
+    # MCClient-owned methods (chat handlers, event loading, etc.)
+    # ==================================================================
 
     def on_disconnect(self, packet, _):
         logger.debug(packet)
@@ -191,7 +371,7 @@ class MCClient:
             logger.exception(f"({self.miniplayer.name}) Failed to parse chat content")
             return
         chat = prismarinechat(content)
-        if config.mc['log_message']:
+        if config.mc.log_message:
             logger.debug(f"[Chat] {chat.toAnsi()}")
         msg = color_converter.convert_minecraft_to_miniworld(chat.toMotd())
         try:
@@ -200,10 +380,10 @@ class MCClient:
             name = e["senderName"][1:-1]
         match e["type"]["chatType"]:
             case 0:  # normal
-                from mn2mc.mini.player import players
+                from mn2mc.mini.player import get_players_snapshot
 
                 uin = 0
-                for player in players.copy():
+                for player in get_players_snapshot():
                     if player.name == name:
                         uin = player.uin
                         break
@@ -234,7 +414,7 @@ class MCClient:
             "\n"
         ):
             self.miniplayer.send_msg(msg)
-        if config.mc['log_message']:
+        if config.mc.log_message:
             logger.debug(f"[Chat] {chat.toAnsi()}")
 
     def on_state_change(self, newstate, oldstate):
@@ -245,28 +425,18 @@ class MCClient:
         # logger.debug(f"mcpacket: {metadata}\n{jsondata}")
         on_event(metadata["name"], self, jsondata, metadata)
 
-    def end(self):
-        self.client.end()
-
     def remove(self):
         if self._open_timer:
             self._open_timer.cancel()
             self._open_timer = None
-        if hasattr(self, "chunkmgr"):
-            self.chunkmgr.running = False
+        if self._chunk_bridge is not None:
+            self._chunk_bridge.stop()
         self.end()
 
-    def chat(self, content: str, ignorestate=False):
-        if self.state == "play" or ignorestate:
-            self.client.chat(content)
-
-    def send(self, name: str, message: dict, ignorestate=False):
-        if self.state == "play" or ignorestate:
-            self.client.write(name, message)
-
     def get_chunks(self):
-        if self.running.is_set() and self.chunkmgr.cacheParsedChunks.length > 0:
-            compressed_chunks = self.chunkmgr.compressedChunks.blobValueOf()
+        cm = self.chunkmgr
+        if cm is not None and self.running.is_set() and cm.cacheParsedChunks.length > 0:
+            compressed_chunks = cm.compressedChunks.blobValueOf()
             chunks = ormsgpack.unpackb(zlib.decompress(compressed_chunks))
             self.on_packet(chunks, {"name": "parsed_chunk"})
 
@@ -282,29 +452,7 @@ class MCClient:
                 self.on_events.append(event)
 
     def set_world_miny(self, miny: int):
-        if not config.mc["use_new_chunk_parser"]:
-            import mn2mc.mc.packetevents.chunk.map_chunk as map_chunk
-
-            map_chunk.miny = miny
+        self._connection.set_world_miny(miny)
 
     def set_world_height(self, height: int):
-        if not config.mc["use_new_chunk_parser"]:
-            import mn2mc.mc.packetevents.chunk.map_chunk as map_chunk
-
-            map_chunk.worldheight = height
-
-    @property
-    def dimension(self) -> int:
-        return self._dimension
-
-    @dimension.setter
-    def dimension(self, value: int):
-        self._dimension = value
-        if not hasattr(self.registry, 'dimensionsById') or self.registry.dimensionsById is None:
-            return
-        dimdata = self.registry.dimensionsById[value]
-        if dimdata is None:
-            return
-        logger.debug(f"({self.miniplayer.name}) dimension change {dimdata}")
-        self.set_world_miny(dimdata.minY)
-        self.set_world_height(dimdata.height)
+        self._connection.set_world_height(height)

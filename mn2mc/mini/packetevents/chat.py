@@ -21,7 +21,7 @@ from mn2mc.mini.packet import (
 from mn2mc.mini.packet import (
     reset_events as mini_reset_events,
 )
-from mn2mc.mini.player import MiniPlayer, players
+from mn2mc.mini.player import MiniPlayer, get_players_snapshot
 
 # Per-player cooldown for /mn2mc commands (seconds)
 _command_cooldowns: dict[int, float] = {}
@@ -44,7 +44,7 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
             return
 
         # Check admin permission: whitelist
-        is_admin = player.uin in config.mini["admin_uins"] if config.mini["admin_uins"] else False
+        is_admin = player.uin in config.mini.admin_uins if config.mini.admin_uins else False
 
         match args[0]:
             case "version":
@@ -78,12 +78,12 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                     mc_reloadevents()
                     reload_mapping()
 
-                    for player in players.copy():
+                    for player in get_players_snapshot():
                         player.mcclient.load_events()
 
-                    use_new_chunk_parser = config.mc['use_new_chunk_parser']
+                    use_new_chunk_parser = config.mc.use_new_chunk_parser
                     config.load()
-                    config.mc['use_new_chunk_parser'] = use_new_chunk_parser
+                    config.mc.use_new_chunk_parser = use_new_chunk_parser
                     if config.debug:
                         reload(protobuf_parser)
                         protobuf_parser.init()

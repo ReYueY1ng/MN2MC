@@ -10,7 +10,7 @@ from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
 from mn2mc.mini.proto.hc import PB_GameModeChangeHC
 
-registry = require("prismarine-registry")(config.mc["version"])
+registry = require("prismarine-registry")(config.mc.version)
 
 
 def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:

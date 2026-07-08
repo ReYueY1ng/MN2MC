@@ -18,10 +18,12 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     """
     time_of_day = int(jsondata['time'].valueOf())
     world_age = int(jsondata['age'].valueOf())
+    if world_age > 214748364:
+        world_age = 214748364
 
     msg = PB_WGlobalUpdateHC(
         WorldTime=world_age,
-        DayNightTime=time_of_day,
+        DayNightTime=time_of_day % 24000,
         CurWeather=0
     ).SerializeToString()
     client.miniplayer.send_packet(ePBMsgCode.PB_WGLOBAL_UPDATE_HC, msg)

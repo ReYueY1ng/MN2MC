@@ -11,7 +11,7 @@ import mn2mc.mini.proto as proto
 from mn2mc.mini.packet import MiniClientPacket, add_event
 from mn2mc.mini.player import MiniPlayer
 
-prismarine_item = require("prismarine-item")(config.mc["version"])
+prismarine_item = require("prismarine-item")(config.mc.version)
 
 
 async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:

@@ -29,7 +29,7 @@ def on_event(event: str, client: object, jsondata: dict, metadata: dict):
 
 def load_all_event():
     importlib.import_module("mn2mc.mc.packetevents")
-    if config.mc["use_new_chunk_parser"]:
+    if config.mc.use_new_chunk_parser:
         importlib.import_module("mn2mc.mc.packetevents.chunk.parsed_chunk", __package__)
     else:
         importlib.import_module("mn2mc.mc.packetevents.chunk.map_chunk", __package__)

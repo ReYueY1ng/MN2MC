@@ -10,7 +10,7 @@ from mn2mc.utils.angle import Angle
 from mn2mc.utils.vector import Vector3f
 
 entitytypes: dict[str, int] = {}
-for entitydata in minebase.load_version(config.mc["version"])['entities']:
+for entitydata in minebase.load_version(config.mc.version)['entities']:
     entitytypes[entitydata['name']] = entitydata['id']
 
 
