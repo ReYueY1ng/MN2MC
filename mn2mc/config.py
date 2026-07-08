@@ -31,6 +31,8 @@ mc:
   use_new_chunk_parser: true # 是否使用新版区块解析器，能够减小跨语言调用开销，但可能会超时，占用大量内存
   chunk_parse_thread: 4 # 区块解析线程数
   log_message: false # 记录聊天消息
+  chunk_transport: auto  # auto=自动检测, kren=共享内存(快), tcp=TCP(兼容)
+  kren_buffer_size: 10485760  # KREN 共享内存缓冲区大小(字节), 默认10MB
 
 debug: false
 
@@ -67,6 +69,8 @@ class MCConfig(BaseModel):
     chunk_parse_thread: int = Field(default=4, ge=1, le=32)
     use_new_chunk_parser: bool = True
     log_message: bool = False
+    chunk_transport: Literal["auto", "kren", "tcp"] = "auto"
+    kren_buffer_size: int = Field(default=10485760, ge=1024, le=104857600)
 
 
 class AppConfig(BaseModel):

@@ -23,6 +23,11 @@ git clone https://github.com/py-mine/minebase.git --depth=1 && \
 
 `requirements.txt` has them commented out — read the README for full setup.
 
+Optional: KREN shared memory IPC (requires Rust toolchain):
+```bash
+pip install kren
+```
+
 Node.js deps are required for the MC client bridge:
 ```bash
 npm install minecraft-protocol prismarine-chat prismarine-block prismarine-chunk vec3 msgpackr prismarine-item prismarine-registry

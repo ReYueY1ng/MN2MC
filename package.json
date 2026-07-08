@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@pawanxz/kren": "^0.1.0",
     "minecraft-protocol": "^1.66.0",
     "msgpackr": "^1.11.10",
     "prismarine-block": "^1.23.0",

@@ -8,7 +8,7 @@ function sleep(ms) {
 }
 
 class ChunkManager {
-    constructor(version, pyclient, mcclient, registry) {
+    constructor(version, pyclient, mcclient, registry, transportMode, channelName, bufferSize) {
         this.version = version
         this.pyclient = pyclient
         this.registry = registry
@@ -21,6 +21,12 @@ class ChunkManager {
         this.cacheChunks = []
         this.cacheParsedChunks = []
         this.running = true
+        this.transportReady = false
+        this.transportMode = transportMode || 'legacy'
+        this.transportPort = null
+        this._tcpSocket = null
+        this._tcpServer = null
+        this._writer = null
         this.mcclient.on("registry_data", (data) => {
             if (data.id == "minecraft:dimension_type") {
                 this.registry.loadDimensionCodec(data)
@@ -37,13 +43,45 @@ class ChunkManager {
         this.mcclient.on('respawn', setDimension)
         this.mcclient.on('map_chunk', (jsondata) => this.cacheChunks.push(jsondata))
         //this.intervalId = setInterval(async () => this.pushPyEvent(), 200)
-        this.parseChunks()
+        this._initTransport(channelName, bufferSize)
         return
+    }
+
+    _initTransport(channelName, bufferSize) {
+        if (this.transportMode === 'kren') {
+            try {
+                const kren = require('@pawanxz/kren')
+                this._writer = new kren.Writer(channelName, bufferSize)
+                this.transportReady = true
+            } catch (err) {
+                console.error(`KREN transport init failed: ${err.message}`)
+                this.transportReady = true // allow parseChunks to run, data will be lost
+            }
+        } else if (this.transportMode === 'tcp') {
+            const net = require('net')
+            this._tcpServer = net.createServer((socket) => {
+                socket.setNoDelay(true)
+                this._tcpSocket = socket
+            })
+            this._tcpServer.listen(0, '127.0.0.1', () => {
+                this.transportPort = this._tcpServer.address().port
+                this.transportReady = true
+            })
+        } else {
+            // legacy mode: no special transport, use compressedChunks getter
+            this.transportReady = true
+        }
+        // Start parseChunks after transport is set up
+        this.parseChunks()
     }
 
     async parseChunks() {
         let processedChunks = 0
         while (this.running) {
+            if (!this.transportReady) {
+                await sleep(10)
+                continue
+            }
             let jsondata = this.cacheChunks.shift()
             if (jsondata == undefined) {
                 await sleep(200)
@@ -123,6 +161,51 @@ class ChunkManager {
         }
         //console.log('Parse done')
         this.cacheParsedChunks.push({ x: jsondata.x, z: jsondata.z, blocks: blocks })
+
+        // Non-legacy transports: send immediately after each chunk is parsed
+        if (this.transportMode === 'kren' && this._writer) {
+            this._flushKren()
+        } else if (this.transportMode === 'tcp' && this._tcpSocket) {
+            this._flushTcp()
+        }
+    }
+
+    _flushKren() {
+        if (this.cacheParsedChunks.length === 0) return
+        try {
+            const compressed = zlib.deflateSync(msgpackr.pack(this.cacheParsedChunks))
+            this._writer.write(compressed)
+        } catch (err) {
+            console.error(`KREN write error: ${err.message}`)
+        }
+        this.cacheParsedChunks.length = 0
+    }
+
+    _flushTcp() {
+        if (this.cacheParsedChunks.length === 0) return
+        try {
+            const compressed = zlib.deflateSync(msgpackr.pack(this.cacheParsedChunks))
+            const header = Buffer.alloc(4)
+            header.writeUInt32BE(compressed.length, 0)
+            this._tcpSocket.write(Buffer.concat([header, compressed]))
+        } catch (err) {
+            console.error(`TCP send error: ${err.message}`)
+        }
+        this.cacheParsedChunks.length = 0
+    }
+
+    stop() {
+        this.running = false
+        if (this._tcpSocket) {
+            try { this._tcpSocket.destroy() } catch (_) {}
+            this._tcpSocket = null
+        }
+        if (this._tcpServer) {
+            try { this._tcpServer.close() } catch (_) {}
+            this._tcpServer = null
+        }
+        // kren Writer: no explicit close needed, GC handles cleanup
+        this._writer = null
     }
 
     async pushPyEvent() {

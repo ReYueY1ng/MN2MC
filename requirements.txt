@@ -10,3 +10,4 @@ PyYAML>=6.0.3
 aiohttp>=3.13.5
 websockets>=16.0
 xxtea>=3.8.0
+# kren  # shared memory IPC (requires Rust toolchain to build, pip install kren)
