@@ -42,6 +42,24 @@ pip install -r requirements.txt
 npm install minecraft-protocol prismarine-chat prismarine-block prismarine-chunk vec3 msgpackr prismarine-item prismarine-registry
 ```
 
+3. 安装 KREN 共享内存 IPC（可选，需要 Rust 工具链）：
+
+```bash
+pip install kren  # Python 绑定
+npm install @pawanxz/kren  # Node.js 原生绑定
+```
+
+如果安装 KREN 失败，或者 Node.js 报错（找不到文件），手动编译安装：
+
+```bash
+git clone https://github.com/Cintu07/kren.git
+cd kren
+pip install ./kren-python # Python 绑定
+cd kren-node && cargo build --release # Node.js 原生绑定（从源码编译）
+```
+
+KREN 启用后区块数据通过共享内存传输（~100ns），否则使用 TCP 回退（~10µs）。在 `config.yaml` 中设置 `chunk_transport: kren` 强制启用，或保持 `auto` 自动检测。
+
 ### 启动代理
 
 ```bash
