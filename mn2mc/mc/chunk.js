@@ -1,5 +1,6 @@
 const { performance } = require('perf_hooks')
 const zlib = require('zlib')
+const fs = require('fs/promises')
 
 const MAX_PARSED_CACHE = 100
 
@@ -93,6 +94,8 @@ class ChunkManager {
             processedChunks++
             await this.onEvent(jsondata)
         }
+        
+        this.stop()
     }
 
     async onEvent(jsondata) {
@@ -204,8 +207,17 @@ class ChunkManager {
             try { this._tcpServer.close() } catch (_) {}
             this._tcpServer = null
         }
-        // kren Writer: no explicit close needed, GC handles cleanup
-        this._writer = null
+        // kren Writer: set to null, GC will trigger shm_unlink
+        if (this.transportMode === 'kren') {
+            const name = this._writer.name
+            const path = '/dev/shm/kren_' + name
+            this._writer = null
+            // 在部分情况下（比如关闭代理）不会清理共享内存，这里手动清理一下
+            fs.rm(path, {force: true})
+            .catch((reason) => {
+                console.error(`Failed to remove kren shm file ${name}: ${reason}`)
+            })
+        }
     }
 
     async pushPyEvent() {
