@@ -165,6 +165,14 @@ class MCClient:
     def dimension(self, value: int) -> None:
         self._connection.dimension = value
 
+    @property
+    def on_ground(self) -> bool:
+        return self._connection.on_ground
+
+    @on_ground.setter
+    def on_ground(self, value: bool) -> None:
+        self._connection.on_ground = value
+
     # ==================================================================
     # Backward-compatible delegation: entity tracker component
     # ==================================================================
@@ -371,13 +379,13 @@ class MCClient:
             logger.exception(f"({self.miniplayer.name}) Failed to parse chat content")
             return
         chat = prismarinechat(content)
-        if config.mc.log_message:
-            logger.debug(f"[Chat] {chat.toAnsi()}")
         msg = color_converter.convert_minecraft_to_miniworld(chat.toMotd())
         try:
             name = json.loads(e["senderName"])["text"]
         except Exception:
             name = e["senderName"][1:-1]
+        if config.mc.log_message:
+            logger.debug(f"[Chat] <{name}> {chat.toAnsi()}")
         match e["type"]["chatType"]:
             case 0:  # normal
                 from mn2mc.mini.player import get_players_snapshot

@@ -1,6 +1,11 @@
 # AGENTS.md
 
-MN2MC — Protocol translation proxy between 迷你世界 1.56.1 and Minecraft Java 1.21.11.
+MN2MC — Protocol translation proxy between 迷你世界 1.57.1 and Minecraft Java 1.21.11.
+
+## Requirements
+
+- Python 3.13+
+- Node.js (for the MC client bridge)
 
 ## How to run
 
@@ -12,16 +17,13 @@ Config is auto-generated on first run. `config.yaml` is gitignored.
 
 ## Dependencies (non-obvious)
 
-These are **not on PyPI** — must clone and `pip install` manually:
+These are **not on PyPI** — specified as git dependencies in `requirements.txt`:
 
 ```bash
-git clone https://github.com/wu-vincent/aiorak.git && pip install ./aiorak
-git clone https://github.com/py-mine/minebase.git --depth=1 && \
-  git clone https://github.com/PrismarineJS/minecraft-data.git minebase/minebase/data --depth=1 && \
-  pip install ./minebase
+pip install -r requirements.txt
 ```
 
-`requirements.txt` has them commented out — read the README for full setup.
+`aiorak` and `minebase` are installed from GitHub. `minebase` requires `minecraft-data` cloned into its data directory — see README for manual setup if pip install fails.
 
 Optional: KREN shared memory IPC (requires Rust toolchain):
 ```bash
@@ -32,6 +34,19 @@ Node.js deps are required for the MC client bridge:
 ```bash
 npm install minecraft-protocol prismarine-chat prismarine-block prismarine-chunk vec3 msgpackr prismarine-item prismarine-registry
 ```
+
+## Developer commands
+
+```bash
+python -m pytest                          # run all tests (pytest is not in requirements.txt — install separately)
+python -m pytest tests/test_blocks.py     # run single test file
+python -m pytest -k "test_name"           # run single test by name
+ruff check mn2mc                          # lint (ruff)
+ruff format mn2mc                         # format (ruff)
+ty check mn2mc                            # typecheck (ty)
+```
+
+`ruff` and `ty` are configured in `pyproject.toml`. Proto files (`mn2mc/mini/proto/`) are excluded from both.
 
 ## Architecture
 
@@ -46,7 +61,7 @@ Mini World client <--aiorak--> mn2mc/mini/ (server) <--bridge--> mn2mc/mc/ (clie
 | `mn2mc/mini/` | Mini World server side — RakNet (aiorak) server, packet codec, protobuf message handlers |
 | `mn2mc/mc/` | Minecraft client side — wraps `minecraft-protocol` (Node.js via `javascript` bridge), MC event handlers |
 | `mn2mc/mapping/` | ID translation tables: `blocks.py`, `items.py`, `mobs.py`, `face.py`, `slotid.py` |
-| `mn2mc/data/` | JSON mapping files (`blocks.json`, `items.json`, `mobs.json`) loaded by `loader.py` |
+| `mn2mc/data/` | YAML mapping files (`blocks.yaml`, `items.yaml`, `mobs.yaml`) loaded by `loader.py` |
 | `mn2mc/mini/proto/` | Pre-compiled Protocol Buffer `.py`/`.pyi` files (ch, hc, common messages) |
 | `mn2mc/utils/` | Utilities: XXTEA crypto, protobuf debug parser, color converter, vector math |
 | `resources/` | Reference data, C++ test code, JSON — not imported at runtime |
@@ -83,7 +98,7 @@ Old map_chunk files (`_map_chunk_old*.py`) are legacy, not imported at runtime.
 
 ### Config is auto-generated
 
-`config.yaml` is gitignored. `config.py` has defaults in `default_file` string. If the file doesn't exist, it's written with defaults. When editing config schema, update both `default_file` and the TypedDict classes.
+`config.yaml` is gitignored. `config.py` has defaults in `default_file` string. If the file doesn't exist, it's written with defaults. Config uses Pydantic models for validation. When editing config schema, update both the Pydantic model classes and the `default_file` YAML string.
 
 ### Protobuf files are pre-compiled
 
@@ -99,12 +114,12 @@ Tests exist in `tests/` (10 files). `pyproject.toml` configures pytest with `asy
 
 ### Block mapping
 
-`mapping/blocks.py` loads from `data/blocks.json` via `data/loader.py`. The JSON files (`blocks.json`, `items.json`, `mobs.json`) are the primary mapping source. Unknown MC blocks default to Mini ID 470 (question mark block) — check the lookup logic before assuming fallback behavior. Reverse mappings (`mini_to_mc`) are auto-generated (last-wins on collisions).
+`mapping/blocks.py` loads from `data/blocks.yaml` via `data/loader.py`. The YAML files (`blocks.yaml`, `items.yaml`, `mobs.yaml`) are the primary mapping source. Unknown MC blocks default to Mini ID 470 (question mark block) — check the lookup logic before assuming fallback behavior. Reverse mappings (`mini_to_mc`) are auto-generated (last-wins on collisions).
 
 ### aiorak protocol
 
 Mini World uses a custom RakNet-derived protocol. Packet format:
-- Client→Server: `\x89` + 4-byte big-endian uin + 8-byte placeholder + 2-byte little-endian msgcode + 2-byte length + data
+- Client→Server: `\x89` + 4-byte big-endian uin + 4-byte big-endian touin + 2-byte little-endian msgcode + 2-byte length + data
 - Server→Client: `\x89` + 2-byte little-endian msgcode + 2-byte length + data
 
 The `aiorak` server is created with `guid=666`.
@@ -123,8 +138,8 @@ The `aiorak` server is created with `guid=666`.
 ## Conventions
 
 - **Logging**: `loguru` throughout. Logs go to `logs/{time}.log`. Use `logger.info/debug/error/exception`.
-- **TypedDict** for config, otherwise mostly untyped
+- **Pydantic** for config validation, otherwise mostly untyped
 - **Async**: `aiorak` connections and `MCClient` packet handling are async. Node.js bridge calls are synchronous.
 - **Threading**: `MCClient.get_chunk_thread` runs a separate thread for chunk polling. Thread safety is minimal.
 - **Error handling**: Packet event handlers catch exceptions and log them via `logger.exception` — errors in one handler won't crash the server.
-- **Config changes**: Update both the TypedDict classes and the `default_file` YAML string in `config.py`.
+- **Config changes**: Update both the Pydantic model classes and the `default_file` YAML string in `config.py`.
