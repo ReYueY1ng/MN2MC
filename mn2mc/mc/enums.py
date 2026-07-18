@@ -1,0 +1,77 @@
+"""Minecraft enums."""
+
+from enum import IntEnum
+
+
+class MetadataType(IntEnum):
+    """Entity Metadata 数据类型 (1.21.11, 共39种)."""
+
+    BYTE = 0
+    VARINT = 1
+    VARLONG = 2
+    FLOAT = 3
+    STRING = 4
+    TEXT_COMPONENT = 5
+    OPTIONAL_TEXT_COMPONENT = 6
+    SLOT = 7
+    BOOLEAN = 8
+    ROTATIONS = 9
+    POSITION = 10
+    OPTIONAL_POSITION = 11
+    DIRECTION = 12
+    OPTIONAL_LIVING_ENTITY_REF = 13
+    BLOCK_STATE = 14
+    OPTIONAL_BLOCK_STATE = 15
+    PARTICLE = 16
+    PARTICLES = 17
+    VILLAGER_DATA = 18
+    OPTIONAL_VARINT = 19
+    POSE = 20
+    CAT_VARIANT = 21
+    COW_VARIANT = 22
+    WOLF_VARIANT = 23
+    WOLF_SOUND_VARIANT = 24
+    FROG_VARIANT = 25
+    PIG_VARIANT = 26
+    CHICKEN_VARIANT = 27
+    ZOMBIE_NAUTILUS_VARIANT = 28
+    OPTIONAL_GLOBAL_POSITION = 29
+    PAINTING_VARIANT = 30
+    SNIFFER_STATE = 31
+    ARMADILLO_STATE = 32
+    COPPER_GOLEM_STATE = 33
+    WEATHERING_COPPER_STATE = 34
+    VECTOR3 = 35
+    QUATERNION = 36
+    RESOLVABLE_PROFILE = 37
+    HUMANOID_ARM = 38
+
+
+class Direction(IntEnum):
+    DOWN = 0
+    UP = 1
+    NORTH = 2
+    SOUTH = 3
+    WEST = 4
+    EAST = 5
+
+
+class Pose(IntEnum):
+    STANDING = 0
+    FALL_FLYING = 1
+    SLEEPING = 2
+    SWIMMING = 3
+    SPIN_ATTACK = 4
+    SNEAKING = 5
+    LONG_JUMPING = 6
+    DYING = 7
+    CROAKING = 8
+    USING_TONGUE = 9
+    SITTING = 10
+    ROARING = 11
+    SNIFFING = 12
+    EMERGING = 13
+    DIGGING = 14
+    SLIDING = 15
+    SHOOTING = 16
+    INHALING = 17

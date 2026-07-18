@@ -7,6 +7,7 @@ from mn2mc.config import config
 from mn2mc.constants import MINI_OBJ_ID_BASE
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.entity import entitytypes
+from mn2mc.mc.entity_metadata import ItemEntityMetadata, PlayerMetadata
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import (
     PB_ActorAttInfo,
@@ -14,15 +15,18 @@ from mn2mc.mini.proto.common import (
     PB_ActorItem,
     ePBMsgCode,
 )
-from mn2mc.mini.proto.hc import PB_ActorLeaveAOIHC, PB_ActorMotionHC, PB_GeneralEnterAOIHC
+from mn2mc.mini.proto.hc import PB_ActorLeaveAOIHC, PB_ActorMotionHC, PB_GeneralEnterAOIHC, PB_PlayerAttrChangeHC
 from mn2mc.utils.vector import Vector3
 
 prismarine_item = require("prismarine-item")(config.mc.version)
 
-def _handle_item(client: MCClient, entityid: int, metadata):
-    """Send AOI enter packet for a item entity."""
+
+def _handle_item(client: MCClient, entityid: int, metadata: ItemEntityMetadata):
+    if not metadata.has("item"):
+        return
+
     mini_obj_id = MINI_OBJ_ID_BASE + entityid
-    item = prismarine_item.fromNotch(metadata[8]['value'])
+    item = prismarine_item.fromNotch(metadata.item)
 
     entity = client.entities[entityid]
 
@@ -52,8 +56,8 @@ def _handle_item(client: MCClient, entityid: int, metadata):
                 ),
                 itemid=item_mapping.mc_to_mini(item.type),
                 num=item.count,
-                durable=-1
-            )
+                durable=-1,
+            ),
         ).SerializeToString(),
     )
 
@@ -72,14 +76,25 @@ def _handle_item(client: MCClient, entityid: int, metadata):
         ).SerializeToString(),
     )
 
-def on_recv(client: MCClient, jsondata: dict, metadata: dict):
-    entityid = jsondata['entityId']
-    entitymetadata = {}
+
+def _handle_self(client: MCClient, _entityid: int, metadata: PlayerMetadata):
+    attr_change = PB_PlayerAttrChangeHC()
+    if metadata.has("air_ticks"):
+        attr_change.Oxygen = metadata.air_ticks / 30
+    client.miniplayer.send_packet(ePBMsgCode.PB_PLAYER_ATTR_CHANGE_HC, attr_change.SerializeToString())
+
+
+def on_recv(client: MCClient, jsondata: dict, _metadata: dict):
+    entityid = jsondata["entityId"]
     if entityid not in client.entities:
         return
-    for meta in jsondata['metadata']:
-        entitymetadata[meta['key']] = meta
-    if client.entities[entityid].type == entitytypes['item']:
-        _handle_item(client, entityid, entitymetadata)
 
-add_event('entity_metadata', on_recv)
+    raw = jsondata["metadata"]
+
+    if client.entities[entityid].type == entitytypes["item"]:
+        _handle_item(client, entityid, ItemEntityMetadata.from_protocol(raw))
+    elif entityid == client.entityid:
+        _handle_self(client, entityid, PlayerMetadata.from_protocol(raw))
+
+
+add_event("entity_metadata", on_recv)
