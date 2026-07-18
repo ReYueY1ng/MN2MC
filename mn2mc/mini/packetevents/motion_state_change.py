@@ -19,6 +19,7 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
         case MotionStateType.JUMP:  # Mini World 似乎不会发 FallGround 类型，先用这个凑合一下
             player.mcclient.on_ground = not motion_state.StateSwitch
         case MotionStateType.SNEAK:
+            player.mcclient.sneaking = motion_state.StateSwitch
             player.mcclient.send("player_input", {"inputs": {"shift": motion_state.StateSwitch}})
 
 

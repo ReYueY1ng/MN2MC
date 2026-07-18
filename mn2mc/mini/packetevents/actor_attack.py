@@ -31,9 +31,7 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                         break
                 else:
                     entityid = objid
-        player.mcclient.send(
-            "use_entity", {"target": entityid, "mouse": 1, "sneaking": False}
-        )
+        player.mcclient.send("use_entity", {"target": entityid, "mouse": 1, "sneaking": player.mcclient.sneaking})
 
 
 add_event(proto.common.ePBMsgCode.PB_ACTOR_ATTACK_CH, on_recv)

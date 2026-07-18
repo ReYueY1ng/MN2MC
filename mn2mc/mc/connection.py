@@ -28,6 +28,7 @@ class MCConnection:
         self.position = Vector3f()
         self.angle = Angle(0, 0)
         self.on_ground = True
+        self.sneaking = False
         self._dimension = DIMENSION_OVERWORLD
         self.registry = None  # prismarine-registry instance, set by caller
 

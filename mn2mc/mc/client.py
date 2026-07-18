@@ -15,7 +15,6 @@ from loguru import logger
 
 import mn2mc.config as config
 import mn2mc.utils.color_converter as color_converter
-from mn2mc.constants import DIMENSION_OVERWORLD
 from mn2mc.mc.chunk_bridge import MCChunkBridge
 from mn2mc.mc.connection import MCConnection
 from mn2mc.mc.entity import MCEntity
@@ -172,6 +171,14 @@ class MCClient:
     @on_ground.setter
     def on_ground(self, value: bool) -> None:
         self._connection.on_ground = value
+
+    @property
+    def sneaking(self) -> bool:
+        return self._connection.sneaking
+
+    @sneaking.setter
+    def sneaking(self, value: bool) -> None:
+        self._connection.sneaking = value
 
     # ==================================================================
     # Backward-compatible delegation: entity tracker component
@@ -339,8 +346,6 @@ class MCClient:
         logger.warning(
             f"({self.miniplayer.name}) Disconnected from server: {packet['reason']}"
         )
-
-    def on_end(self, end):
         if not self._connected and self._username_index < len(self._username_candidates):
             next_username = self._username_candidates[self._username_index]
             self._username_index += 1
@@ -349,6 +354,8 @@ class MCClient:
             )
             self._setup_connection({**self._base_options, "username": next_username})
             return
+
+    def on_end(self, end):
         self.running.clear()
         with self._lock:
             self._pending_item_packets.clear()
