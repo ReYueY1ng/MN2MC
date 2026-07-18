@@ -48,9 +48,8 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
 
         match args[0]:
             case "version":
-                player.send_msg(
-                    f"[color=#aaeeee]MN2MC {mn2mc.version}\nPowered by YueY1ng", False
-                )
+                player.send_msg(f"[color=#aaeeee]MN2MC {mn2mc.version}", False)
+                player.send_msg("[color=#aaeeee]github.com/ReYueY1ng/MN2MC")
             case "reload" | "respawn":
                 if not is_admin:
                     player.send_msg("#RPermission denied", False)
@@ -60,9 +59,7 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                 last = _command_cooldowns.get(player.uin, 0.0)
                 if now - last < _COMMAND_COOLDOWN_SECS:
                     remaining = int(_COMMAND_COOLDOWN_SECS - (now - last))
-                    player.send_msg(
-                        f"#RCooldown: {remaining}s", False
-                    )
+                    player.send_msg(f"#RCooldown: {remaining}s", False)
                     return
                 _command_cooldowns[player.uin] = now
 
@@ -96,7 +93,9 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                     return
                 sub = args[1:] if len(args) > 1 else []
                 if not sub:
-                    player.send_msg("Usage: /mn2mc skin list | /mn2mc skin set <name> <id> | /mn2mc skin remove <name>", False)
+                    player.send_msg(
+                        "Usage: /mn2mc skin list | /mn2mc skin set <name> <id> | /mn2mc skin remove <name>", False
+                    )
                 elif sub[0] == "list":
                     mappings = skin_store.list_skins()
                     if not mappings:
@@ -121,7 +120,9 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                     else:
                         player.send_msg(f"#YNo stored skin for {sub[1]}", False)
                 else:
-                    player.send_msg("Usage: /mn2mc skin list | /mn2mc skin set <name> <id> | /mn2mc skin remove <name>", False)
+                    player.send_msg(
+                        "Usage: /mn2mc skin list | /mn2mc skin set <name> <id> | /mn2mc skin remove <name>", False
+                    )
     else:
         player.mcclient.chat(chat_ch.Content)
 

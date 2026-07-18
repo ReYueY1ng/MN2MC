@@ -1,0 +1,1379 @@
+# MC sound name → Mini World SoundPath mapping
+# Format: mc_sound_name: mini_sound_path
+# MC sound names from Minecraft Java 1.21.11
+# Sound paths from sound.csv (音效路径 column)
+
+# === Block sounds ===
+
+# Wool
+block.wool.break: blockd.cloth1
+block.wool.step: blocks.cloth1
+block.wool.place: blocks.cloth1
+block.wool.fall: blocks.cloth1
+block.wool.hit: blockd.cloth1
+
+# Glass
+block.glass.break: blockd.glass1
+block.glass.step: blocks.stone1
+block.glass.place: blocks.stone1
+block.glass.fall: blocks.stone1
+block.glass.hit: blockd.glass1
+
+# Grass
+block.grass.break: blockd.grass1
+block.grass.step: blocks.grass1
+block.grass.place: blocks.grass1
+block.grass.fall: blocks.grass1
+block.grass.hit: blockd.grass1
+
+# Gravel
+block.gravel.break: blockd.gravel1
+block.gravel.step: blocks.gravel1
+block.gravel.place: blocks.gravel1
+block.gravel.fall: blocks.gravel1
+block.gravel.hit: blockd.gravel1
+
+# Sand
+block.sand.break: blockd.sand1
+block.sand.step: blocks.sand1
+block.sand.place: blocks.sand1
+block.sand.fall: blocks.sand1
+block.sand.hit: blockd.sand1
+
+# Snow
+block.snow.break: blockd.snow1
+block.snow.step: blocks.snow1
+block.snow.place: blocks.snow1
+block.snow.fall: blocks.snow1
+block.snow.hit: blockd.snow1
+
+# Stone
+block.stone.break: blockd.stone1
+block.stone.step: blocks.stone1
+block.stone.place: blocks.stone1
+block.stone.fall: blocks.stone1
+block.stone.hit: blockd.stone1
+
+# Wood
+block.wood.break: blockd.wood1
+block.wood.step: blocks.wood1
+block.wood.place: blocks.wood1
+block.wood.fall: blocks.wood1
+block.wood.hit: blockd.wood1
+
+# Ladder
+block.ladder.step: blocks.ladder1
+block.ladder.place: blocks.ladder1
+
+# Dirt
+block.dirt.break: blockd.gravel1
+block.dirt.step: blocks.gravel1
+block.dirt.place: blocks.gravel1
+block.dirt.fall: blocks.gravel1
+
+# Clay
+block.clay.break: blockd.gravel1
+block.clay.step: blocks.gravel1
+block.clay.place: blocks.gravel1
+block.clay.fall: blocks.gravel1
+
+# === Entity sounds ===
+
+# Zombie
+entity.zombie.ambient: ent.3101.idle1
+entity.zombie.hurt: ent.3101.hit1
+entity.zombie.death: ent.3101.die
+entity.zombie.step: ent.3101.foot1
+entity.zombie.attack_iron_door: ent.3101.dig1
+entity.zombie.break_wooden_door: ent.3101.digbreak
+
+# Skeleton
+entity.skeleton.ambient: ent.3102.idle1
+entity.skeleton.hurt: ent.3102.hit1
+entity.skeleton.death: ent.3102.die
+entity.skeleton.step: ent.3102.foot1
+
+# Creeper
+entity.creeper.ambient: ent.3103.idle1
+entity.creeper.hurt: ent.3103.hit1
+entity.creeper.death: ent.3103.die
+entity.creeper.primed: ent.3103.angry
+
+# Spider
+entity.spider.ambient: ent.3105.idle1
+entity.spider.hurt: ent.3105.hit1
+entity.spider.death: ent.3105.die
+entity.spider.step: ent.3105.foot1
+
+# Pig
+entity.pig.ambient: ent.3400.idle1
+entity.pig.hurt: ent.3400.hit1
+entity.pig.death: ent.3400.die
+entity.pig.step: ent.3400.foot1
+
+# Sheep
+entity.sheep.ambient: ent.3401.idle1
+entity.sheep.hurt: ent.3401.hit1
+entity.sheep.death: ent.3401.die
+entity.sheep.step: ent.3401.foot1
+entity.sheep.shear: ent.3403.shear
+
+# Cow
+entity.cow.ambient: ent.3403.idle1
+entity.cow.hurt: ent.3403.hit1
+entity.cow.death: ent.3403.die
+entity.cow.step: ent.3403.foot1
+
+# Chicken
+entity.chicken.ambient: ent.3402.idle1
+entity.chicken.hurt: ent.3402.hit1
+entity.chicken.death: ent.3402.die
+entity.chicken.step: ent.3402.foot1
+
+# Generic
+entity.generic.hurt: ent.3101.hit1
+entity.generic.death: ent.3101.die
+entity.generic.ambient: ent.3101.idle1
+entity.generic.step: ent.3101.foot1
+entity.generic.splash: env.splash
+entity.generic.swim: env.swim1
+
+# Player
+entity.player.hurt: ent.3018.hit1
+entity.player.death: ent.3018.die
+entity.player.attack.nodamage: misc.throw
+entity.player.attack.crit: misc.hit1
+entity.player.attack.knockback: misc.hit2
+entity.player.attack.strong: misc.hit3
+entity.player.attack.sweep: misc.hit1
+entity.player.attack.weak: misc.hit1
+entity.player.levelup: ui.info.experience_star
+entity.player.burp: misc.eat1
+entity.player.hurt_drown: env.splash
+entity.player.hurt_freeze: misc.freeze
+entity.player.hurt_on_fire: misc.fire
+entity.player.hurt_sweet_berry_bush: blockd.grass1
+entity.player.big_fall: misc.fallbig
+entity.player.small_fall: misc.fallsmall
+entity.player.splash: env.splash
+entity.player.splash.high_speed: env.splash
+entity.player.breath: env.underwater
+entity.player.attack.sweepAttack: misc.hit1
+
+# === Environment sounds ===
+
+# Water
+ambient.underwater.loop: env.water
+
+# Fire
+block.fire.ambient: env.lava
+block.fire.extinguish: misc.fizz
+block.lava.ambient: env.lava
+
+# Weather
+weather.rain: env.rain1
+entity.lightning_bolt.thunder: misc.explode1
+ambient.cave: env.portal
+
+# === UI sounds ===
+
+ui.button.click: ui.button.button_click
+block.chest.open: misc.chest_open
+block.chest.close: misc.chest_close
+item.pickup: npc.pick
+
+# === Additional Block sounds ===
+
+# Anvil
+block.anvil.break: blockd.stone1
+block.anvil.destroy: blockd.stone1
+block.anvil.fall: blocks.stone1
+block.anvil.hit: blockd.stone1
+block.anvil.land: blocks.stone1
+block.anvil.place: blocks.stone1
+block.anvil.step: blocks.stone1
+block.anvil.use: blocks.stone1
+
+# Metal / Iron / Copper
+block.metal.break: blockd.stone1
+block.metal.step: blocks.stone1
+block.metal.place: blocks.stone1
+block.metal.fall: blocks.stone1
+block.metal.hit: blockd.stone1
+block.iron.break: blockd.stone1
+block.iron.step: blocks.stone1
+block.iron.place: blocks.stone1
+block.iron.fall: blocks.stone1
+block.iron.hit: blockd.stone1
+block.copper.break: blockd.stone1
+block.copper.step: blocks.stone1
+block.copper.place: blocks.stone1
+block.copper.fall: blocks.stone1
+block.copper.hit: blockd.stone1
+
+# Deepslate / Basalt / Calcite / Dripstone / Bone block
+block.deepslate.break: blockd.stone1
+block.deepslate.step: blocks.stone1
+block.deepslate.place: blocks.stone1
+block.deepslate.fall: blocks.stone1
+block.deepslate.hit: blockd.stone1
+block.deepslate_bricks.break: blockd.stone1
+block.deepslate_bricks.step: blocks.stone1
+block.deepslate_bricks.place: blocks.stone1
+block.deepslate_bricks.fall: blocks.stone1
+block.deepslate_bricks.hit: blockd.stone1
+block.basalt.break: blockd.stone1
+block.basalt.step: blocks.stone1
+block.basalt.place: blocks.stone1
+block.basalt.fall: blocks.stone1
+block.basalt.hit: blockd.stone1
+block.calcite.break: blockd.stone1
+block.calcite.step: blocks.stone1
+block.calcite.place: blocks.stone1
+block.calcite.fall: blocks.stone1
+block.calcite.hit: blockd.stone1
+block.dripstone_block.break: blockd.stone1
+block.dripstone_block.step: blocks.stone1
+block.dripstone_block.place: blocks.stone1
+block.dripstone_block.fall: blocks.stone1
+block.dripstone_block.hit: blockd.stone1
+block.bone_block.break: blockd.stone1
+block.bone_block.step: blocks.stone1
+block.bone_block.place: blocks.stone1
+block.bone_block.fall: blocks.stone1
+block.bone_block.hit: blockd.stone1
+
+# Nether wood / Bamboo / Cherry wood
+block.nether_wood.break: blockd.wood1
+block.nether_wood.step: blocks.wood1
+block.nether_wood.place: blocks.wood1
+block.nether_wood.fall: blocks.wood1
+block.nether_wood.hit: blockd.wood1
+block.bamboo.break: blockd.wood1
+block.bamboo.step: blocks.wood1
+block.bamboo.place: blocks.wood1
+block.bamboo.fall: blocks.wood1
+block.bamboo.hit: blockd.wood1
+block.bamboo_wood.break: blockd.wood1
+block.bamboo_wood.step: blocks.wood1
+block.bamboo_wood.place: blocks.wood1
+block.bamboo_wood.fall: blocks.wood1
+block.bamboo_wood.hit: blockd.wood1
+block.cherry_wood.break: blockd.wood1
+block.cherry_wood.step: blocks.wood1
+block.cherry_wood.place: blocks.wood1
+block.cherry_wood.fall: blocks.wood1
+block.cherry_wood.hit: blockd.wood1
+
+# Mud / Moss / Mud bricks
+block.mud.break: blockd.gravel1
+block.mud.step: blocks.gravel1
+block.mud.place: blocks.gravel1
+block.mud.fall: blocks.gravel1
+block.mud.hit: blockd.gravel1
+block.mud_bricks.break: blockd.stone1
+block.mud_bricks.step: blocks.stone1
+block.mud_bricks.place: blocks.stone1
+block.mud_bricks.fall: blocks.stone1
+block.mud_bricks.hit: blockd.stone1
+block.moss.break: blockd.grass1
+block.moss.step: blocks.grass1
+block.moss.place: blocks.grass1
+block.moss.fall: blocks.grass1
+block.moss.hit: blockd.grass1
+block.moss_carpet.break: blockd.grass1
+block.moss_carpet.step: blocks.grass1
+block.moss_carpet.place: blocks.grass1
+block.moss_carpet.fall: blocks.grass1
+block.moss_carpet.hit: blockd.grass1
+
+# Cobweb
+block.cobweb.break: blockd.cloth1
+block.cobweb.step: blocks.cloth1
+block.cobweb.place: blocks.cloth1
+block.cobweb.fall: blocks.cloth1
+block.cobweb.hit: blockd.cloth1
+
+# Honey block
+block.honey_block.break: blockd.grass1
+block.honey_block.step: blocks.grass1
+block.honey_block.place: blocks.grass1
+block.honey_block.fall: blocks.grass1
+block.honey_block.hit: blockd.grass1
+
+# Amethyst
+block.amethyst_block.break: blockd.glass1
+block.amethyst_block.step: blocks.stone1
+block.amethyst_block.place: blocks.stone1
+block.amethyst_block.fall: blocks.stone1
+block.amethyst_block.hit: blockd.glass1
+
+# Froglight / Azalea / Leaves
+block.froglight.break: blockd.grass1
+block.froglight.step: blocks.grass1
+block.froglight.place: blocks.grass1
+block.froglight.fall: blocks.grass1
+block.froglight.hit: blockd.grass1
+block.azalea.break: blockd.grass1
+block.azalea.step: blocks.grass1
+block.azalea.place: blocks.grass1
+block.azalea.fall: blocks.grass1
+block.azalea.hit: blockd.grass1
+block.azalea_leaves.break: blockd.grass1
+block.azalea_leaves.step: blocks.grass1
+block.azalea_leaves.place: blocks.grass1
+block.azalea_leaves.fall: blocks.grass1
+block.azalea_leaves.hit: blockd.grass1
+block.cherry_leaves.break: blockd.grass1
+block.cherry_leaves.step: blocks.grass1
+block.cherry_leaves.place: blocks.grass1
+block.cherry_leaves.fall: blocks.grass1
+block.cherry_leaves.hit: blockd.grass1
+
+# Hanging sign / Lantern / Chain
+block.hanging_sign.step: blocks.wood1
+block.hanging_sign.place: blocks.wood1
+block.hanging_sign.break: blockd.wood1
+block.hanging_sign.fall: blocks.wood1
+block.hanging_sign.hit: blockd.wood1
+block.lantern.break: blockd.stone1
+block.lantern.step: blocks.stone1
+block.lantern.place: blocks.stone1
+block.lantern.fall: blocks.stone1
+block.lantern.hit: blockd.stone1
+block.chain.break: blockd.stone1
+block.chain.step: blocks.stone1
+block.chain.place: blocks.stone1
+block.chain.fall: blocks.stone1
+block.chain.hit: blockd.stone1
+
+# Cave vines / Roots / Hanging roots
+block.cave_vines.break: blockd.grass1
+block.cave_vines.step: blocks.grass1
+block.cave_vines.place: blocks.grass1
+block.cave_vines.fall: blocks.grass1
+block.cave_vines.hit: blockd.grass1
+block.roots.break: blockd.grass1
+block.roots.step: blocks.grass1
+block.roots.place: blocks.grass1
+block.roots.fall: blocks.grass1
+block.roots.hit: blockd.grass1
+block.hanging_roots.break: blockd.grass1
+block.hanging_roots.step: blocks.grass1
+block.hanging_roots.place: blocks.grass1
+block.hanging_roots.fall: blocks.grass1
+block.hanging_roots.hit: blockd.grass1
+
+# Coral
+block.coral_block.break: blockd.stone1
+block.coral_block.step: blocks.stone1
+block.coral_block.place: blocks.stone1
+block.coral_block.fall: blocks.stone1
+block.coral_block.hit: blockd.stone1
+
+# Decorated pot / Big dripleaf
+block.decorated_pot.break: blockd.gravel1
+block.decorated_pot.step: blocks.gravel1
+block.decorated_pot.place: blocks.gravel1
+block.decorated_pot.fall: blocks.gravel1
+block.decorated_pot.hit: blockd.gravel1
+block.big_dripleaf.break: blockd.grass1
+block.big_dripleaf.step: blocks.grass1
+block.big_dripleaf.place: blocks.grass1
+block.big_dripleaf.fall: blocks.grass1
+block.big_dripleaf.hit: blockd.grass1
+
+# Candle
+block.candle.break: blockd.gravel1
+block.candle.step: blocks.gravel1
+block.candle.place: blocks.gravel1
+block.candle.fall: blocks.gravel1
+block.candle.hit: blockd.gravel1
+
+# Copper bulb / grate / trapdoor / door
+block.copper_bulb.break: blockd.stone1
+block.copper_bulb.step: blocks.stone1
+block.copper_bulb.place: blocks.stone1
+block.copper_bulb.fall: blocks.stone1
+block.copper_bulb.hit: blockd.stone1
+block.copper_grate.break: blockd.stone1
+block.copper_grate.step: blocks.stone1
+block.copper_grate.place: blocks.stone1
+block.copper_grate.fall: blocks.stone1
+block.copper_grate.hit: blockd.stone1
+
+# Gilded blackstone / Lodestone
+block.gilded_blackstone.break: blockd.stone1
+block.gilded_blackstone.step: blocks.stone1
+block.gilded_blackstone.place: blocks.stone1
+block.gilded_blackstone.fall: blocks.stone1
+block.gilded_blackstone.hit: blockd.stone1
+block.lodestone.break: blockd.stone1
+block.lodestone.step: blocks.stone1
+block.lodestone.place: blocks.stone1
+block.lodestone.fall: blocks.stone1
+block.lodestone.hit: blockd.stone1
+
+# Heavy core / Trial spawner
+block.heavy_core.break: blockd.stone1
+block.heavy_core.step: blocks.stone1
+block.heavy_core.place: blocks.stone1
+block.heavy_core.fall: blocks.stone1
+block.heavy_core.hit: blockd.stone1
+block.trial_spawner.break: blockd.stone1
+block.trial_spawner.step: blocks.stone1
+block.trial_spawner.place: blocks.stone1
+block.trial_spawner.fall: blocks.stone1
+block.trial_spawner.hit: blockd.stone1
+
+# Mangrove roots / Muddy mangrove roots
+block.mangrove_roots.break: blockd.grass1
+block.mangrove_roots.step: blocks.grass1
+block.mangrove_roots.place: blocks.grass1
+block.mangrove_roots.fall: blocks.grass1
+block.mangrove_roots.hit: blockd.grass1
+block.muddy_mangrove_roots.break: blockd.gravel1
+block.muddy_mangrove_roots.step: blocks.gravel1
+block.muddy_mangrove_roots.place: blocks.gravel1
+block.muddy_mangrove_roots.fall: blocks.gravel1
+block.muddy_mangrove_roots.hit: blockd.gravel1
+
+# Suspicious sand / gravel
+block.suspicious_sand.break: blockd.sand1
+block.suspicious_sand.step: blocks.sand1
+block.suspicious_sand.place: blocks.sand1
+block.suspicious_sand.fall: blocks.sand1
+block.suspicious_sand.hit: blockd.sand1
+block.suspicious_gravel.break: blockd.gravel1
+block.suspicious_gravel.step: blocks.gravel1
+block.suspicious_gravel.place: blocks.gravel1
+block.suspicious_gravel.fall: blocks.gravel1
+block.suspicious_gravel.hit: blockd.gravel1
+
+# Leaf litter / Pink petals
+block.leaf_litter.break: blockd.grass1
+block.leaf_litter.step: blocks.grass1
+block.leaf_litter.place: blocks.grass1
+block.leaf_litter.fall: blocks.grass1
+block.leaf_litter.hit: blockd.grass1
+block.pink_petals.break: blockd.grass1
+block.pink_petals.step: blocks.grass1
+block.pink_petals.place: blocks.grass1
+block.pink_petals.fall: blocks.grass1
+block.pink_petals.hit: blockd.grass1
+
+# Creaking heart
+block.creaking_heart.break: blockd.wood1
+block.creaking_heart.step: blocks.wood1
+block.creaking_heart.place: blocks.wood1
+block.creaking_heart.fall: blocks.wood1
+block.creaking_heart.hit: blockd.wood1
+
+# Nether blocks
+block.netherrack.break: blockd.stone1
+block.netherrack.step: blocks.stone1
+block.netherrack.place: blocks.stone1
+block.netherrack.fall: blocks.stone1
+block.netherrack.hit: blockd.stone1
+block.nether_bricks.break: blockd.stone1
+block.nether_bricks.step: blocks.stone1
+block.nether_bricks.place: blocks.stone1
+block.nether_bricks.fall: blocks.stone1
+block.nether_bricks.hit: blockd.stone1
+block.netherite_block.break: blockd.stone1
+block.netherite_block.step: blocks.stone1
+block.netherite_block.place: blocks.stone1
+block.netherite_block.fall: blocks.stone1
+block.netherite_block.hit: blockd.stone1
+block.soul_sand.break: blockd.sand1
+block.soul_sand.step: blocks.sand1
+block.soul_sand.place: blocks.sand1
+block.soul_sand.fall: blocks.sand1
+block.soul_sand.hit: blockd.sand1
+block.soul_soil.break: blockd.stone1
+block.soul_soil.step: blocks.stone1
+block.soul_soil.place: blocks.stone1
+block.soul_soil.fall: blocks.stone1
+block.soul_soil.hit: blockd.stone1
+block.nylium.break: blockd.grass1
+block.nylium.step: blocks.grass1
+block.nylium.place: blocks.grass1
+block.nylium.fall: blocks.grass1
+block.nylium.hit: blockd.grass1
+block.wart_block.break: blockd.grass1
+block.wart_block.step: blocks.grass1
+block.wart_block.place: blocks.grass1
+block.wart_block.fall: blocks.grass1
+block.wart_block.hit: blockd.grass1
+block.shroomlight.break: blockd.stone1
+block.shroomlight.step: blocks.stone1
+block.shroomlight.place: blocks.stone1
+block.shroomlight.fall: blocks.stone1
+block.shroomlight.hit: blockd.stone1
+
+# Sculk blocks (deep dark)
+block.sculk.break: blockd.stone1
+block.sculk.step: blocks.stone1
+block.sculk.place: blocks.stone1
+block.sculk.fall: blocks.stone1
+block.sculk.hit: blockd.stone1
+block.sculk_sensor.break: blockd.stone1
+block.sculk_sensor.step: blocks.stone1
+block.sculk_sensor.place: blocks.stone1
+block.sculk_sensor.fall: blocks.stone1
+block.sculk_sensor.hit: blockd.stone1
+block.sculk_shrieker.break: blockd.stone1
+block.sculk_shrieker.step: blocks.stone1
+block.sculk_shrieker.place: blocks.stone1
+block.sculk_shrieker.fall: blocks.stone1
+block.sculk_shrieker.hit: blockd.stone1
+block.sculk_catalyst.break: blockd.stone1
+block.sculk_catalyst.step: blocks.stone1
+block.sculk_catalyst.place: blocks.stone1
+block.sculk_catalyst.fall: blocks.stone1
+block.sculk_catalyst.hit: blockd.stone1
+block.sculk_vein.break: blockd.stone1
+block.sculk_vein.step: blocks.stone1
+block.sculk_vein.place: blocks.stone1
+block.sculk_vein.fall: blocks.stone1
+block.sculk_vein.hit: blockd.stone1
+
+# Deepslate variants
+block.deepslate_tiles.break: blockd.stone1
+block.deepslate_tiles.step: blocks.stone1
+block.deepslate_tiles.place: blocks.stone1
+block.deepslate_tiles.fall: blocks.stone1
+block.deepslate_tiles.hit: blockd.stone1
+block.polished_deepslate.break: blockd.stone1
+block.polished_deepslate.step: blocks.stone1
+block.polished_deepslate.place: blocks.stone1
+block.polished_deepslate.fall: blocks.stone1
+block.polished_deepslate.hit: blockd.stone1
+
+# Tuff / Resin
+block.tuff.break: blockd.stone1
+block.tuff.step: blocks.stone1
+block.tuff.place: blocks.stone1
+block.tuff.fall: blocks.stone1
+block.tuff.hit: blockd.stone1
+block.tuff_bricks.break: blockd.stone1
+block.tuff_bricks.step: blocks.stone1
+block.tuff_bricks.place: blocks.stone1
+block.tuff_bricks.fall: blocks.stone1
+block.tuff_bricks.hit: blockd.stone1
+block.polished_tuff.break: blockd.stone1
+block.polished_tuff.step: blocks.stone1
+block.polished_tuff.place: blocks.stone1
+block.polished_tuff.fall: blocks.stone1
+block.polished_tuff.hit: blockd.stone1
+block.resin.break: blockd.stone1
+block.resin.step: blocks.stone1
+block.resin.place: blocks.stone1
+block.resin.fall: blocks.stone1
+block.resin.hit: blockd.stone1
+block.resin_bricks.break: blockd.stone1
+block.resin_bricks.step: blocks.stone1
+block.resin_bricks.place: blocks.stone1
+block.resin_bricks.fall: blocks.stone1
+block.resin_bricks.hit: blockd.stone1
+
+# Sponge / Wet sponge
+block.sponge.break: blockd.grass1
+block.sponge.step: blocks.grass1
+block.sponge.place: blocks.grass1
+block.sponge.fall: blocks.grass1
+block.sponge.hit: blockd.grass1
+block.wet_sponge.break: blockd.grass1
+block.wet_sponge.step: blocks.grass1
+block.wet_sponge.place: blocks.grass1
+block.wet_sponge.fall: blocks.grass1
+block.wet_sponge.hit: blockd.grass1
+
+# Powder snow
+block.powder_snow.break: blockd.snow1
+block.powder_snow.step: blocks.snow1
+block.powder_snow.place: blocks.snow1
+block.powder_snow.fall: blocks.snow1
+block.powder_snow.hit: blockd.snow1
+
+# Rooted dirt / Packed mud
+block.rooted_dirt.break: blockd.gravel1
+block.rooted_dirt.step: blocks.gravel1
+block.rooted_dirt.place: blocks.gravel1
+block.rooted_dirt.fall: blocks.gravel1
+block.rooted_dirt.hit: blockd.gravel1
+block.packed_mud.break: blockd.gravel1
+block.packed_mud.step: blocks.gravel1
+block.packed_mud.place: blocks.gravel1
+block.packed_mud.fall: blocks.gravel1
+block.packed_mud.hit: blockd.gravel1
+
+# Ancient debris
+block.ancient_debris.break: blockd.stone1
+block.ancient_debris.step: blocks.stone1
+block.ancient_debris.place: blocks.stone1
+block.ancient_debris.fall: blocks.stone1
+block.ancient_debris.hit: blockd.stone1
+
+# Crop / Vine / Ladder
+block.crop.break: blockd.grass1
+block.vine.break: blockd.grass1
+block.vine.step: blocks.grass1
+block.vine.place: blocks.grass1
+block.vine.fall: blocks.grass1
+block.vine.hit: blockd.grass1
+block.ladder.break: blockd.wood1
+block.ladder.fall: blocks.wood1
+block.ladder.hit: blockd.wood1
+
+# Doors
+block.iron_door.close: misc.door_close
+block.iron_door.open: misc.door_open
+block.copper_door.close: misc.door_close
+block.copper_door.open: misc.door_open
+block.cherry_wood_door.close: misc.door_close
+block.cherry_wood_door.open: misc.door_open
+block.bamboo_wood_door.close: misc.door_close
+block.bamboo_wood_door.open: misc.door_open
+
+# Trapdoors
+block.iron_trapdoor.close: misc.door_close
+block.iron_trapdoor.open: misc.door_open
+block.copper_trapdoor.close: misc.door_close
+block.copper_trapdoor.open: misc.door_open
+
+# Fence gate
+block.fence_gate.close: misc.door_close
+block.fence_gate.open: misc.door_open
+
+# Barrel
+block.barrel.close: misc.chest_close
+block.barrel.open: misc.chest_open
+
+# Ender chest
+block.ender_chest.close: misc.chest_close
+block.ender_chest.open: misc.chest_open
+
+# Clicks (buttons, levers, pressure plates, comparators, repeaters)
+block.lever.click: misc.click
+block.stone_button.click_on: misc.click
+block.stone_button.click_off: misc.click
+block.wooden_button.click_on: misc.click
+block.wooden_button.click_off: misc.click
+block.comparator.click: misc.click
+block.wooden_pressure_plate.click_on: misc.click
+block.wooden_pressure_plate.click_off: misc.click
+block.metal_pressure_plate.click_on: misc.click
+block.metal_pressure_plate.click_off: misc.click
+
+# Dispenser / Dropper
+block.dispenser.dispense: misc.piston_out
+block.dispenser.launch: misc.throw
+block.dispenser.fail: misc.click
+
+# Note block / Jukebox
+block.note_block.note: misc.horn
+
+# Grindstone / Enchantment table / Brewing stand
+block.grindstone.use: misc.pickaxe_use
+block.enchantment_table.use: ui.button.button_click
+block.brewing_stand.brew: misc.fizz
+
+# Conduit
+block.conduit.activate: misc.emitter
+block.conduit.deactivate: misc.emitter_null
+
+# Beacon
+block.beacon.activate: misc.emitter
+block.beacon.deactivate: misc.emitter_null
+
+# === Additional Entity sounds ===
+
+# Zombie variants
+entity.zombie.attack_wooden_door: ent.3101.dig1
+entity.zombie_villager.ambient: ent.3101.idle1
+entity.zombie_villager.hurt: ent.3101.hit1
+entity.zombie_villager.death: ent.3101.die
+entity.zombie_villager.step: ent.3101.foot1
+entity.husk.ambient: ent.3101.idle1
+entity.husk.hurt: ent.3101.hit1
+entity.husk.death: ent.3101.die
+entity.husk.step: ent.3101.foot1
+entity.drowned.ambient: ent.3101.idle1
+entity.drowned.hurt: ent.3101.hit1
+entity.drowned.death: ent.3101.die
+entity.drowned.step: ent.3101.foot1
+
+# Skeleton variants
+entity.stray.ambient: ent.3102.idle1
+entity.stray.hurt: ent.3102.hit1
+entity.stray.death: ent.3102.die
+entity.stray.step: ent.3102.foot1
+entity.bogged.ambient: ent.3102.idle1
+entity.bogged.hurt: ent.3102.hit1
+entity.bogged.death: ent.3102.die
+entity.bogged.step: ent.3102.foot1
+entity.wither_skeleton.ambient: ent.3102.idle1
+entity.wither_skeleton.hurt: ent.3102.hit1
+entity.wither_skeleton.death: ent.3102.die
+entity.wither_skeleton.step: ent.3102.foot1
+
+# Spider / Cave spider
+entity.cave_spider.ambient: ent.3105.idle1
+entity.cave_spider.hurt: ent.3105.hit1
+entity.cave_spider.death: ent.3105.die
+entity.cave_spider.step: ent.3105.foot1
+
+# Horse / Donkey / Mule
+entity.horse.ambient: storehorse.horse1
+entity.horse.angry: storehorse.horse2
+entity.horse.death: storehorse.horse3
+entity.horse.hurt: storehorse.horse4
+entity.horse.gallop: storehorse.horse5
+entity.horse.step: storehorse.horse6
+entity.horse.jump: storehorse.horse1
+entity.horse.breathe: storehorse.horse2
+entity.donkey.ambient: storehorse.horse1
+entity.donkey.death: storehorse.horse3
+entity.donkey.hurt: storehorse.horse4
+entity.donkey.step: storehorse.horse6
+entity.mule.ambient: storehorse.horse1
+entity.mule.death: storehorse.horse3
+entity.mule.hurt: storehorse.horse4
+entity.mule.step: storehorse.horse6
+
+# Cat / Ocelot
+entity.cat.ambient: ent.3278.Cat_Bark1
+entity.cat.death: ent.3278.Cat_Death
+entity.cat.hurt: ent.3278.Cat_Under_attack
+entity.cat.purr: ent.3278.Cat_Snoring
+entity.cat.purreow: ent.3278.Cat_Bark2
+entity.cat.hiss: ent.3278.Cat_huff
+entity.ocelot.ambient: ent.3278.Cat_Bark1
+entity.ocelot.hurt: ent.3278.Cat_Under_attack
+entity.ocelot.death: ent.3278.Cat_Death
+
+# Wolf / Dog
+entity.wolf.ambient: ent.3407.idle1
+entity.wolf.death: ent.3407.die
+entity.wolf.hurt: ent.3407.hit1
+entity.wolf.step: ent.3407.foot1
+entity.wolf.growl: ent.3407.howl
+entity.wolf.whine: ent.3407.idle2
+entity.wolf.pant: ent.3407.idle3
+entity.wolf.shake: ent.3407.idle4
+entity.wolf.bark: ent.3407.idle1
+entity.wolf_angry.ambient: ent.3407.idle1
+entity.wolf_angry.death: ent.3407.die
+entity.wolf_angry.hurt: ent.3407.hit1
+entity.wolf_big.ambient: ent.3407.idle1
+entity.wolf_big.death: ent.3407.die
+entity.wolf_big.hurt: ent.3407.hit1
+entity.wolf_cute.ambient: ent.3407.idle1
+entity.wolf_cute.death: ent.3407.die
+entity.wolf_cute.hurt: ent.3407.hit1
+entity.wolf_grumpy.ambient: ent.3407.idle1
+entity.wolf_grumpy.death: ent.3407.die
+entity.wolf_grumpy.hurt: ent.3407.hit1
+entity.wolf_puglin.ambient: ent.3407.idle1
+entity.wolf_puglin.death: ent.3407.die
+entity.wolf_puglin.hurt: ent.3407.hit1
+entity.wolf_sad.ambient: ent.3407.idle1
+entity.wolf_sad.death: ent.3407.die
+entity.wolf_sad.hurt: ent.3407.hit1
+
+# Fox
+entity.fox.ambient: ent.3407.idle1
+entity.fox.death: ent.3407.die
+entity.fox.hurt: ent.3407.hit1
+entity.fox.sleep: ent.3407.idle2
+entity.fox.eat: misc.eat1
+entity.fox.screech: ent.3407.idle3
+
+# Bee
+entity.bee.death: misc.bee
+entity.bee.hurt: misc.bee
+entity.bee.loop: misc.bee
+entity.bee.loop_aggressive: misc.bee
+entity.bee.sting: misc.bodyshot
+entity.bee.pollinate: misc.bee
+
+# Cow / Mooshroom
+entity.mooshroom.ambient: ent.3403.idle1
+entity.mooshroom.death: ent.3403.die
+entity.mooshroom.hurt: ent.3403.hit1
+entity.mooshroom.step: ent.3403.foot1
+entity.mooshroom.shear: ent.3403.shear
+
+# Goat
+entity.goat.ambient: ent.3403.idle1
+entity.goat.death: ent.3403.die
+entity.goat.hurt: ent.3403.hit1
+entity.goat.step: ent.3403.foot1
+entity.goat.long_jump: ent.3403.idle2
+
+# Rabbit (3280 = 野兔)
+entity.rabbit.ambient: ent.3280.run
+entity.rabbit.death: ent.3280.hit
+entity.rabbit.hurt: ent.3280.hit
+entity.rabbit.step: ent.3280.run
+entity.rabbit.attack: ent.3280.hit
+
+# Frog (3881 = 焱焱蟹, use generic small mob sounds)
+entity.frog.ambient: ent.3409.idle1
+entity.frog.death: ent.3409.die
+entity.frog.hurt: ent.3409.hit1
+entity.frog.step: ent.3409.foot1
+entity.frog.tongue: misc.bodyshot
+
+# Bat
+entity.bat.ambient: ent.3433.idle1
+entity.bat.death: ent.3433.die
+entity.bat.hurt: ent.3433.hit1
+entity.bat.loop: ent.3433.fly
+entity.bat.takeoff: ent.3433.fly
+
+# Dolphin (3626 = 水母, limited sounds available)
+entity.dolphin.ambient: env.swim1
+entity.dolphin.death: ent.3626.hit1
+entity.dolphin.hurt: ent.3626.hit1
+entity.dolphin.swim: env.swim1
+entity.dolphin.splash: env.splash
+entity.dolphin.jump: env.splash
+entity.dolphin.attack: ent.3626.hit1
+
+# Squid / Glow squid (3601 = 乌贼, no specific sounds)
+entity.squid.ambient: env.swim1
+entity.squid.death: env.splash
+entity.squid.hurt: env.splash
+entity.squid.squirt: env.splash
+entity.glow_squid.ambient: env.swim1
+entity.glow_squid.death: env.splash
+entity.glow_squid.hurt: env.splash
+
+# Cod / Salmon / Tropical fish / Pufferfish (use generic aquatic sounds)
+entity.cod.ambient: env.swim1
+entity.cod.death: env.splash
+entity.cod.hurt: env.splash
+entity.cod.flop: env.splash
+entity.salmon.ambient: env.swim1
+entity.salmon.death: env.splash
+entity.salmon.hurt: env.splash
+entity.salmon.flop: env.splash
+entity.tropical_fish.ambient: env.swim1
+entity.tropical_fish.death: env.splash
+entity.tropical_fish.hurt: env.splash
+entity.pufferfish.ambient: env.swim1
+entity.pufferfish.death: env.splash
+entity.pufferfish.hurt: env.splash
+
+# Enderman
+entity.enderman.ambient: ent.3501.idle1
+entity.enderman.death: ent.3501.die
+entity.enderman.hurt: ent.3501.hit1
+entity.enderman.scream: ent.3501.angry
+entity.enderman.stare: ent.3501.idle2
+entity.enderman.teleport: env.transfer
+
+# Endermite / Silverfish
+entity.endermite.ambient: ent.3105.idle1
+entity.endermite.death: ent.3105.die
+entity.endermite.hurt: ent.3105.hit1
+entity.endermite.step: ent.3105.foot1
+entity.silverfish.ambient: ent.3105.idle1
+entity.silverfish.death: ent.3105.die
+entity.silverfish.hurt: ent.3105.hit1
+entity.silverfish.step: ent.3105.foot1
+
+# Blaze
+entity.blaze.ambient: env.lava
+entity.blaze.death: misc.fizz
+entity.blaze.hurt: env.lava
+entity.blaze.shoot: misc.fire
+
+# Ghast
+entity.ghast.ambient: ent.3103.idle1
+entity.ghast.death: ent.3103.die
+entity.ghast.hurt: ent.3103.hit1
+entity.ghast.scream: ent.3103.angry
+entity.ghast.shoot: misc.fire
+entity.ghast.warn: ent.3103.hit2
+
+# Magma cube / Slime
+entity.magma_cube.death: ent.3103.die
+entity.magma_cube.hurt: ent.3103.hit1
+entity.magma_cube.jump: blocks.grass1
+entity.magma_cube.squish: blocks.grass1
+entity.slime.death: ent.3103.die
+entity.slime.hurt: ent.3103.hit1
+entity.slime.jump: blocks.grass1
+entity.slime.squish: blocks.grass1
+entity.slime.death_small: ent.3103.hit3
+entity.slime.hurt_small: ent.3103.hit3
+entity.slime.squish_small: blocks.grass1
+entity.slime.attack: ent.3103.hit1
+entity.slime.attack_small: ent.3103.hit3
+entity.magma_cube.attack: ent.3103.hit1
+entity.magma_cube.attack_small: ent.3103.hit3
+
+# Piglin / Piglin brute / Hoglin / Zoglin
+entity.piglin.ambient: ent.3400.idle1
+entity.piglin.death: ent.3400.die
+entity.piglin.hurt: ent.3400.hit1
+entity.piglin.step: ent.3400.foot1
+entity.piglin_brute.ambient: ent.3400.idle1
+entity.piglin_brute.death: ent.3400.die
+entity.piglin_brute.hurt: ent.3400.hit1
+entity.piglin_brute.step: ent.3400.foot1
+entity.hoglin.ambient: ent.3400.idle1
+entity.hoglin.death: ent.3400.die
+entity.hoglin.hurt: ent.3400.hit1
+entity.hoglin.step: ent.3400.foot1
+entity.hoglin.attack: ent.3400.hit1
+entity.zoglin.ambient: ent.3400.idle1
+entity.zoglin.death: ent.3400.die
+entity.zoglin.hurt: ent.3400.hit1
+entity.zoglin.step: ent.3400.foot1
+entity.zoglin.attack: ent.3400.hit1
+
+# Strider
+entity.strider.ambient: ent.3400.idle1
+entity.strider.death: ent.3400.die
+entity.strider.hurt: ent.3400.hit1
+entity.strider.step: blocks.grass1
+
+# Warden
+entity.warden.ambient: ent.3110.idle1
+entity.warden.death: ent.3110.die
+entity.warden.hurt: ent.3110.hit1
+entity.warden.step: ent.3110.foot
+
+# Wither
+entity.wither.ambient: ent.3103.idle1
+entity.wither.death: ent.3103.die
+entity.wither.hurt: ent.3103.hit1
+entity.wither.shoot: misc.fire
+
+# Ender dragon
+entity.ender_dragon.ambient: ent.3502.idle1
+entity.ender_dragon.death: ent.3502.die
+entity.ender_dragon.hurt: ent.3502.hit1
+entity.ender_dragon.flap: ent.3502.fly1
+entity.ender_dragon.growl: ent.3502.growl1
+
+# Iron golem
+entity.iron_golem.attack: ent.3130.hit1
+entity.iron_golem.death: ent.3130.die
+entity.iron_golem.hurt: ent.3130.hit1
+entity.iron_golem.step: ent.3130.foot1
+entity.iron_golem.repair: misc.pickaxe_use
+
+# Panda
+entity.panda.ambient: ent.3416.idle1
+entity.panda.death: ent.3416.die
+entity.panda.hurt: ent.3416.hit1
+entity.panda.step: ent.3416.foot1
+entity.panda.eat: ent.3416.eat
+
+# Polar bear
+entity.polar_bear.ambient: ent.3412.idle1
+entity.polar_bear.ambient_baby: ent.3412.idle1
+entity.polar_bear.death: ent.3412.die
+entity.polar_bear.hurt: ent.3412.hit1
+entity.polar_bear.step: ent.3412.foot1
+
+# Llama
+entity.llama.ambient: storehorse.horse1
+entity.llama.death: storehorse.horse3
+entity.llama.hurt: storehorse.horse4
+entity.llama.step: storehorse.horse6
+entity.llama.angry: storehorse.horse2
+
+# Strider
+entity.strider.step_lava: env.lava
+
+# Zombified piglin
+entity.zombified_piglin.ambient: ent.3101.idle1
+entity.zombified_piglin.death: ent.3101.die
+entity.zombified_piglin.hurt: ent.3101.hit1
+
+# Zombie horse
+entity.zombie_horse.ambient: ent.3101.idle1
+entity.zombie_horse.death: ent.3101.die
+entity.zombie_horse.hurt: ent.3101.hit1
+
+# Skeleton horse
+entity.skeleton_horse.ambient: ent.3102.idle1
+entity.skeleton_horse.ambient_water: ent.3102.idle1
+entity.skeleton_horse.death: ent.3102.die
+entity.skeleton_horse.hurt: ent.3102.hit1
+entity.skeleton_horse.step_water: env.splash
+
+# Turtle
+entity.turtle.ambient_land: ent.3410.idle1
+entity.turtle.death: ent.3410.die
+entity.turtle.death_baby: ent.3410.die
+entity.turtle.hurt: ent.3410.hit1
+entity.turtle.hurt_baby: ent.3410.hit1
+
+# Parrot
+entity.parrot.ambient: ent.3433.idle1
+entity.parrot.death: ent.3433.die
+entity.parrot.hurt: ent.3433.hit1
+entity.parrot.step: ent.3433.foot1
+
+# Shulker
+entity.shulker.hurt_closed: ent.3103.hit1
+entity.shulker_bullet.hurt: misc.hit1
+
+# Snow golem
+entity.snow_golem.ambient: ent.3102.idle1
+entity.snow_golem.death: ent.3102.die
+entity.snow_golem.hurt: ent.3102.hit1
+entity.snow_golem.shoot: misc.slingshot
+
+# Villager / Wandering trader
+entity.villager.ambient: npc.need
+entity.villager.death: npc.sleep
+entity.villager.hurt: npc.eat
+entity.villager.yes: npc.deal_succeed
+entity.villager.no: npc.deal_defeated
+entity.villager.trade: npc.crafting
+entity.villager.work: npc.crafted
+entity.wandering_trader.ambient: npc.need
+entity.wandering_trader.death: npc.sleep
+entity.wandering_trader.hurt: npc.eat
+entity.wandering_trader.yes: npc.deal_succeed
+entity.wandering_trader.no: npc.deal_defeated
+entity.wandering_trader.trade: npc.crafting
+
+# Evoker / Vindicator / Pillager / Ravager / Witch
+entity.evoker.ambient: ent.3101.idle1
+entity.evoker.death: ent.3101.die
+entity.evoker.hurt: ent.3101.hit1
+entity.vindicator.ambient: ent.3101.idle1
+entity.vindicator.death: ent.3101.die
+entity.vindicator.hurt: ent.3101.hit1
+entity.pillager.ambient: ent.3101.idle1
+entity.pillager.death: ent.3101.die
+entity.pillager.hurt: ent.3101.hit1
+entity.ravager.ambient: ent.3130.idle1
+entity.ravager.death: ent.3130.die
+entity.ravager.hurt: ent.3130.hit1
+entity.ravager.step: ent.3130.foot1
+entity.ravager.attack: ent.3130.hit1
+entity.witch.ambient: ent.3101.idle1
+entity.witch.death: ent.3101.die
+entity.witch.hurt: ent.3101.hit1
+entity.witch.drink: misc.eat1
+entity.witch.throw: misc.throw
+
+# Guardian / Elder guardian
+entity.guardian.ambient: ent.3103.idle1
+entity.guardian.death: ent.3103.die
+entity.guardian.hurt: ent.3103.hit1
+entity.guardian.attack: ent.3103.hit2
+entity.elder_guardian.ambient: ent.3103.idle1
+entity.elder_guardian.death: ent.3103.die
+entity.elder_guardian.hurt: ent.3103.hit1
+entity.elder_guardian.curse: ent.3103.magic
+
+# Shulker
+entity.shulker.ambient: ent.3103.idle1
+entity.shulker.death: ent.3103.die
+entity.shulker.hurt: ent.3103.hit1
+entity.shulker.shoot: misc.slingshot
+
+# Phantom
+entity.phantom.ambient: ent.3433.idle1
+entity.phantom.death: ent.3433.die
+entity.phantom.hurt: ent.3433.hit1
+entity.phantom.bite: misc.bodyshot
+
+# Vex
+entity.vex.ambient: ent.3433.idle1
+entity.vex.death: ent.3433.die
+entity.vex.hurt: ent.3433.hit1
+entity.vex.charge: misc.throw
+
+# Allay
+entity.allay.ambient_with_item: npc.deal_succeed
+entity.allay.ambient_without_item: npc.need
+entity.allay.death: npc.sleep
+entity.allay.hurt: npc.eat
+entity.allay.item_given: npc.pick
+entity.allay.item_taken: npc.pick
+
+# Sniffer
+entity.sniffer.ambient: ent.3416.idle1
+entity.sniffer.death: ent.3416.die
+entity.sniffer.hurt: ent.3416.hit1
+entity.sniffer.step: ent.3416.foot1
+entity.sniffer.eat: ent.3416.eat
+entity.sniffer.dig: misc.pickaxe_use
+entity.sniffer.sniff: ent.3416.hunger
+
+# Camel
+entity.camel.ambient: storehorse.horse1
+entity.camel.death: storehorse.horse3
+entity.camel.hurt: storehorse.horse4
+entity.camel.step: storehorse.horse6
+entity.camel.dash: storehorse.horse5
+
+# Armadillo
+entity.armadillo.ambient: ent.3409.idle1
+entity.armadillo.death: ent.3409.die
+entity.armadillo.hurt: ent.3409.hit1
+entity.armadillo.step: ent.3409.foot1
+
+# Breeze
+entity.breeze.ambient: env.portal
+entity.breeze.death: env.portal
+entity.breeze.hurt: env.portal
+entity.breeze.shoot: misc.throw
+entity.breeze.jump: misc.throw
+
+# Creaking
+entity.creaking.ambient: ent.3101.idle1
+entity.creaking.death: blockd.wood1
+entity.creaking.attack: ent.3101.hit1
+entity.creaking.step: blocks.wood1
+
+# Tadpole / Axolotl (use generic aquatic sounds)
+entity.tadpole.ambient: env.swim1
+entity.tadpole.death: env.splash
+entity.tadpole.hurt: env.splash
+entity.axolotl.ambient: env.swim1
+entity.axolotl.death: env.splash
+entity.axolotl.hurt: env.splash
+entity.axolotl.splash: env.splash
+entity.axolotl.swim: env.swim1
+entity.axolotl.attack: env.splash
+
+# === Additional Item sounds ===
+
+# Bow / Crossbow
+item.crossbow.shoot: misc.bow
+item.crossbow.hit: misc.bowhit1
+item.crossbow.loading_start: misc.bow
+item.crossbow.loading_middle: misc.bow
+item.crossbow.loading_end: misc.bow
+item.crossbow.quick_charge_1: misc.bow
+item.crossbow.quick_charge_2: misc.bow
+item.crossbow.quick_charge_3: misc.bow
+entity.arrow.hit: misc.bowhit1
+entity.arrow.hit_player: misc.bowhit1
+entity.arrow.shoot: misc.bow
+
+# Trident
+entity.trident.throw: misc.throw_spear
+entity.trident.hit: misc.bowhit1
+entity.trident.hit_ground: misc.bowhit1
+entity.trident.return: misc.throw_spear
+item.trident.throw: misc.throw_spear
+item.trident.riptide: misc.throw_spear
+item.trident.thunder: misc.throw_spear
+item.trident.attack: misc.throw_spear
+item.trident.riptide_1: misc.throw_spear
+item.trident.riptide_2: misc.throw_spear
+item.trident.riptide_3: misc.throw_spear
+
+# Fishing
+entity.fishing_bobber.throw: misc.throw
+entity.fishing_bobber.splash: env.splash
+entity.fishing_bobber.retrieve: misc.click
+
+# Bucket
+item.bucket.empty: env.splash
+item.bucket.fill: env.splash
+item.bucket.empty_lava: env.lavapop
+item.bucket.fill_lava: env.lavapop
+item.bucket.empty_axolotl: env.splash
+item.bucket.fill_axolotl: env.splash
+item.bucket.empty_fish: env.splash
+item.bucket.fill_fish: env.splash
+item.bucket.empty_powder_snow: blocks.snow1
+item.bucket.fill_powder_snow: blocks.snow1
+item.bucket.empty_tadpole: env.splash
+item.bucket.fill_tadpole: env.splash
+
+# Bottle
+item.bottle.empty: env.splash
+item.bottle.fill: env.splash
+item.bottle.fill_dragonbreath: env.splash
+
+# Armor equip
+item.armor.equip_generic: misc.click
+item.armor.equip_chain: misc.click
+item.armor.equip_copper: misc.click
+item.armor.equip_diamond: misc.click
+item.armor.equip_elytra: misc.click
+item.armor.equip_gold: misc.click
+item.armor.equip_iron: misc.click
+item.armor.equip_leather: misc.click
+item.armor.equip_nautilus: misc.click
+item.armor.equip_netherite: misc.click
+item.armor.equip_turtle: misc.click
+item.armor.equip_wolf: misc.click
+item.armor.unequip_nautilus: misc.click
+item.armor.unequip_wolf: misc.click
+
+# Flint and steel / Fire charge
+item.flintandsteel.use: misc.ignite
+item.firecharge.use: misc.fire
+
+# Totem of undying
+item.totem.use: ui.info.experience_star
+
+# Eating / Drinking
+entity.generic.eat: misc.eat1
+entity.generic.drink: misc.eat1
+item.honey_bottle.drink: misc.eat1
+
+# Experience orb
+entity.experience_orb.pickup: npc.pick
+
+# Firework
+entity.firework_rocket.launch: misc.fireworks_1
+entity.firework_rocket.blast: misc.explode1
+entity.firework_rocket.blast_far: misc.explode1
+entity.firework_rocket.large_blast: misc.explode1
+entity.firework_rocket.twinkle: misc.fireworks_1
+
+# Minecart
+entity.minecart.riding: blocks.stone1
+entity.minecart.inside: blocks.stone1
+
+# Boat
+entity.boat.paddle_water: env.swim1
+entity.boat.paddle_land: blocks.grass1
+
+# Lead
+item.lead.tied: misc.click
+item.lead.untied: misc.click
+item.lead.break: misc.break
+
+# Spyglass
+item.spyglass.use: misc.click
+item.spyglass.stop_using: misc.click
+
+# Brush
+item.brush.brushing.generic: blocks.cloth1
+item.brush.brushing.sand: blocks.sand1
+item.brush.brushing.gravel: blocks.gravel1
+
+# Bone meal
+item.bone_meal.use: blocks.grass1
+
+# Dye / Ink / Glow ink
+item.dye.use: misc.fizz
+item.ink_sac.use: misc.fizz
+item.glow_ink_sac.use: misc.fizz
+
+# Book
+item.book.page_turn: ui.button.button_click
+item.book.put: ui.button.button_click
+
+# Honeycomb
+item.honeycomb.wax_on: misc.candle
+
+# Axe / Hoe
+item.axe.strip: misc.axe_use
+item.axe.scrape: misc.axe_use
+item.axe.wax_off: misc.axe_use
+item.hoe.till: misc.pickaxe_use
+
+# Goat horn
+item.goat_horn.sound.0: misc.horn
+item.goat_horn.sound.1: misc.horn
+item.goat_horn.sound.2: misc.horn
+item.goat_horn.sound.3: misc.horn
+
+# Bundle
+item.bundle.insert: npc.pick
+item.bundle.remove_one: npc.pick
+item.bundle.drop_contents: misc.break
+
+# Wind charge
+entity.wind_charge.throw: misc.throw
+entity.wind_charge.burst: misc.explode1
+
+# Mace
+item.mace.smash_air: misc.fallbig
+item.mace.smash_ground: misc.explode1
+item.mace.smash_ground_heavy: misc.explode1
+
+# === Additional Environment sounds ===
+
+# Underwater
+ambient.underwater.loop.additions: env.underwater
+ambient.underwater.enter: env.splash
+ambient.underwater.exit: env.splash
+
+# Portal
+entity.ender_eye.launch: env.portal
+entity.ender_eye.death: env.portal
+block.end_portal.spawn: env.portal
+entity.chorus_fruit.teleport: env.transfer
+
+# Nether ambient
+ambient.nether_wastes.loop: env.lava
+ambient.basalt_deltas.loop: env.lava
+ambient.crimson_forest.loop: env.lava
+ambient.soul_sand_valley.loop: env.portal
+ambient.warped_forest.loop: env.portal
+
+# Bubble column
+block.bubble_column.bubble_pop: env.splash
+block.bubble_column.upwards_ambient: env.water
+block.bubble_column.whirlpool_ambient: env.water
+
+# Dripstone drip
+block.pointed_dripstone.drip_water: env.splash
+block.pointed_dripstone.drip_lava: env.lavapop
+
+# Campfire / Furnace
+block.campfire.crackle: env.lava
+block.furnace.fire_crackle: env.lava
+block.blastfurnace.fire_crackle: env.lava
+
+# Beacon ambient
+block.beacon.ambient: env.portal
+block.conduit.ambient: env.water
+
+# Big dripleaf tilt
+block.big_dripleaf.tilt_down: blocks.grass1
+block.big_dripleaf.tilt_up: blocks.grass1
+
+# === Additional UI sounds ===
+
+# HUD
+ui.hud.bubble_pop: env.splash
+
+# Barrel / Shulker box
+block.shulker_box.close: misc.chest_close
+block.shulker_box.open: misc.chest_open
+
+# Crafting
+block.crafter.craft: npc.crafting
+block.crafter.fail: npc.deal_defeated
+
+# === Generic fallbacks ===
+
+# Fallback for hostile mobs without specific mapping
+entity.hostile.death: ent.3101.die
+entity.hostile.hurt: ent.3101.hit1
+entity.hostile.step: ent.3101.foot1
+entity.hostile.big_fall: misc.fallbig
+entity.hostile.small_fall: misc.fallsmall
+entity.hostile.splash: env.splash
+entity.hostile.swim: env.swim1
+
+# Fallback for passive mobs without specific mapping
+entity.passive.death: ent.3400.die
+entity.passive.hurt: ent.3400.hit1
+entity.passive.step: ent.3400.foot1
+
+# Creaking freeze/unfreeze
+entity.creaking.freeze: misc.freeze
+entity.creaking.unfreeze: misc.freezebreak
