@@ -17,7 +17,7 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
     swap = proto.ch.PB_BackPackGridSwapCH()
     swap.ParseFromString(mcp.data)
 
-    if swap.ToGridId == 978:  # ???
+    if swap.ToGridId in [978, 1261, 1255]:  # ???
         return
 
     if swap.FromGridId == 7000:
@@ -26,16 +26,15 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
             {
                 "windowId": player.mcclient.window_id,
                 "stateId": player.mcclient.container_sequence,
-                "slot": slotid_mapping.mini_to_mc(
-                    player.mcclient.inventory_type, swap.ToGridId
-                ),
+                "slot": slotid_mapping.mini_to_mc(player.mcclient.inventory_type, swap.ToGridId),
                 "mode": 0,
                 "mouseButton": 0,
                 "changedSlots": [],
             },
         )
     else:
-        if (999 > swap.ToGridId > 1010) or (999 > swap.FromGridId > 1010):
+        # FromGridId = shortcut slot (number key), ToGridId = to slot
+        if 999 < swap.FromGridId < 1010:
             player.mcclient.send(
                 "window_click",
                 {
@@ -43,14 +42,50 @@ async def on_recv(player: MiniPlayer, mcp: MiniClientPacket) -> None:
                     "stateId": player.mcclient.container_sequence,
                     "slot": slotid_mapping.mini_to_mc(
                         player.mcclient.inventory_type,
-                        swap.ToGridId
-                        if 999 > swap.ToGridId > 1010
-                        else swap.FromGridId,
+                        swap.ToGridId,
                     ),
                     "mode": 2,
-                    "mouseButton": swap.FromGridId - 1000
-                    if 999 > swap.FromGridId > 1010
-                    else swap.ToGridId - 1000,
+                    "mouseButton": swap.FromGridId - 1000,
+                    "changedSlots": [],
+                },
+            )
+        # FromGridId = to slot, ToGridId = shortcut slot (number key)
+        elif 999 < swap.ToGridId < 1010:
+            player.mcclient.send(
+                "window_click",
+                {
+                    "windowId": player.mcclient.window_id,
+                    "stateId": player.mcclient.container_sequence,
+                    "slot": slotid_mapping.mini_to_mc(
+                        player.mcclient.inventory_type,
+                        swap.FromGridId,
+                    ),
+                    "mode": 2,
+                    "mouseButton": swap.ToGridId - 1000,
+                    "changedSlots": [],
+                },
+            )
+        # simulate mouse clicking
+        else:
+            player.mcclient.send(
+                "window_click",
+                {
+                    "windowId": player.mcclient.window_id,
+                    "stateId": player.mcclient.container_sequence,
+                    "slot": slotid_mapping.mini_to_mc(player.mcclient.inventory_type, swap.FromGridId),
+                    "mode": 0,
+                    "mouseButton": 0,
+                    "changedSlots": [],
+                },
+            )
+            player.mcclient.send(
+                "window_click",
+                {
+                    "windowId": player.mcclient.window_id,
+                    "stateId": player.mcclient.container_sequence,
+                    "slot": slotid_mapping.mini_to_mc(player.mcclient.inventory_type, swap.ToGridId),
+                    "mode": 0,
+                    "mouseButton": 0,
                     "changedSlots": [],
                 },
             )
