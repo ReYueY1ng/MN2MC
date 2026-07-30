@@ -1008,12 +1008,6 @@ class PB_PlayerSelectShortcutCH(_message.Message):
     index: int
     def __init__(self, objid: _Optional[int] = ..., index: _Optional[int] = ...) -> None: ...
 
-class PB_TRIGGERPLAYERATTRICH(_message.Message):
-    __slots__ = ("ObActorAttrList",)
-    OBACTORATTRLIST_FIELD_NUMBER: _ClassVar[int]
-    ObActorAttrList: _containers.RepeatedScalarFieldContainer[int]
-    def __init__(self, ObActorAttrList: _Optional[_Iterable[int]] = ...) -> None: ...
-
 class PB_ReqDownLoadResUrlCH(_message.Message):
     __slots__ = ("Type", "ExternData")
     TYPE_FIELD_NUMBER: _ClassVar[int]
@@ -1756,12 +1750,14 @@ class PB_ChangeQQMusicPlayerCH(_message.Message):
     def __init__(self, type: _Optional[int] = ..., musicId: _Optional[int] = ..., state: _Optional[bool] = ..., volume: _Optional[int] = ..., playMode: _Optional[int] = ..., isOpen: _Optional[bool] = ...) -> None: ...
 
 class PB_PlayeCloseUICH(_message.Message):
-    __slots__ = ("uiName", "uiParam")
+    __slots__ = ("uiName", "uiParam", "mapId")
     UINAME_FIELD_NUMBER: _ClassVar[int]
     UIPARAM_FIELD_NUMBER: _ClassVar[int]
+    MAPID_FIELD_NUMBER: _ClassVar[int]
     uiName: str
     uiParam: str
-    def __init__(self, uiName: _Optional[str] = ..., uiParam: _Optional[str] = ...) -> None: ...
+    mapId: int
+    def __init__(self, uiName: _Optional[str] = ..., uiParam: _Optional[str] = ..., mapId: _Optional[int] = ...) -> None: ...
 
 class PB_PlaySkinActCH(_message.Message):
     __slots__ = ("ActID", "ActIDTrigger", "InviteUin", "AcceptUin")
@@ -2540,3 +2536,35 @@ class PB_SpellEnhanceOperateCH(_message.Message):
     countNow: int
     opType: int
     def __init__(self, gridIndex: _Optional[int] = ..., slotIndex: _Optional[int] = ..., countNow: _Optional[int] = ..., opType: _Optional[int] = ...) -> None: ...
+
+class PB_SetPersonalCloudCardInfoCH(_message.Message):
+    __slots__ = ("cardNum",)
+    CARDNUM_FIELD_NUMBER: _ClassVar[int]
+    cardNum: int
+    def __init__(self, cardNum: _Optional[int] = ...) -> None: ...
+
+class PB_SpacePortalTeleportReqCH(_message.Message):
+    __slots__ = ("buf",)
+    BUF_FIELD_NUMBER: _ClassVar[int]
+    buf: bytes
+    def __init__(self, buf: _Optional[bytes] = ...) -> None: ...
+
+class PB_SpacePortalChunkReqCH(_message.Message):
+    __slots__ = ("buf",)
+    BUF_FIELD_NUMBER: _ClassVar[int]
+    buf: bytes
+    def __init__(self, buf: _Optional[bytes] = ...) -> None: ...
+
+class PB_PlayerWorldReadyCH(_message.Message):
+    __slots__ = ("MapID", "ChunkBootstrapSeq")
+    MAPID_FIELD_NUMBER: _ClassVar[int]
+    CHUNKBOOTSTRAPSEQ_FIELD_NUMBER: _ClassVar[int]
+    MapID: int
+    ChunkBootstrapSeq: int
+    def __init__(self, MapID: _Optional[int] = ..., ChunkBootstrapSeq: _Optional[int] = ...) -> None: ...
+
+class PB_SpacePortalAnchorListReqCH(_message.Message):
+    __slots__ = ("buf",)
+    BUF_FIELD_NUMBER: _ClassVar[int]
+    buf: bytes
+    def __init__(self, buf: _Optional[bytes] = ...) -> None: ...

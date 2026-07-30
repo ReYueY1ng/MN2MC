@@ -109,7 +109,7 @@ class PB_SkillplaybodyeffectHC(_message.Message):
     def __init__(self, objid: _Optional[int] = ..., path: _Optional[str] = ..., loopPlayTime: _Optional[float] = ..., OffsetPosition: _Optional[_Iterable[int]] = ..., rote: _Optional[_Iterable[int]] = ..., scale: _Optional[_Iterable[int]] = ..., loop: _Optional[bool] = ..., motionclass: _Optional[int] = ...) -> None: ...
 
 class PB_SkillworldplaybodyeffectHC(_message.Message):
-    __slots__ = ("uin", "path", "ptime", "isLoop", "x", "y", "z", "yaw", "pitch", "roll", "sx", "sy", "sz", "maxtdist")
+    __slots__ = ("uin", "path", "ptime", "isLoop", "x", "y", "z", "yaw", "pitch", "roll", "sx", "sy", "sz", "maxtdist", "isPersistentUpdate")
     UIN_FIELD_NUMBER: _ClassVar[int]
     PATH_FIELD_NUMBER: _ClassVar[int]
     PTIME_FIELD_NUMBER: _ClassVar[int]
@@ -124,6 +124,7 @@ class PB_SkillworldplaybodyeffectHC(_message.Message):
     SY_FIELD_NUMBER: _ClassVar[int]
     SZ_FIELD_NUMBER: _ClassVar[int]
     MAXTDIST_FIELD_NUMBER: _ClassVar[int]
+    ISPERSISTENTUPDATE_FIELD_NUMBER: _ClassVar[int]
     uin: int
     path: str
     ptime: int
@@ -138,7 +139,8 @@ class PB_SkillworldplaybodyeffectHC(_message.Message):
     sy: float
     sz: float
     maxtdist: int
-    def __init__(self, uin: _Optional[int] = ..., path: _Optional[str] = ..., ptime: _Optional[int] = ..., isLoop: _Optional[int] = ..., x: _Optional[int] = ..., y: _Optional[int] = ..., z: _Optional[int] = ..., yaw: _Optional[float] = ..., pitch: _Optional[float] = ..., roll: _Optional[float] = ..., sx: _Optional[float] = ..., sy: _Optional[float] = ..., sz: _Optional[float] = ..., maxtdist: _Optional[int] = ...) -> None: ...
+    isPersistentUpdate: bool
+    def __init__(self, uin: _Optional[int] = ..., path: _Optional[str] = ..., ptime: _Optional[int] = ..., isLoop: _Optional[int] = ..., x: _Optional[int] = ..., y: _Optional[int] = ..., z: _Optional[int] = ..., yaw: _Optional[float] = ..., pitch: _Optional[float] = ..., roll: _Optional[float] = ..., sx: _Optional[float] = ..., sy: _Optional[float] = ..., sz: _Optional[float] = ..., maxtdist: _Optional[int] = ..., isPersistentUpdate: _Optional[bool] = ...) -> None: ...
 
 class PB_AccumulatorHC(_message.Message):
     __slots__ = ("uin", "progress")

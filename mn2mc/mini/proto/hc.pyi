@@ -57,6 +57,12 @@ class PB_RoomExtraInfoHC(_message.Message):
     regionfile_info: _containers.RepeatedCompositeFieldContainer[PB_regionfileInfo]
     def __init__(self, room_extra: _Optional[bytes] = ..., CMURL: _Optional[str] = ..., MapMD5: _Optional[str] = ..., MapID: _Optional[int] = ..., regionfile_info: _Optional[_Iterable[_Union[PB_regionfileInfo, _Mapping]]] = ...) -> None: ...
 
+class PB_SpacePortalPreviewSyncHC(_message.Message):
+    __slots__ = ("buf",)
+    BUF_FIELD_NUMBER: _ClassVar[int]
+    buf: bytes
+    def __init__(self, buf: _Optional[bytes] = ...) -> None: ...
+
 class PB_SyncChunkDataHC(_message.Message):
     __slots__ = ("SectionFlags", "Initialize", "ChunkData")
     SECTIONFLAGS_FIELD_NUMBER: _ClassVar[int]
@@ -106,7 +112,7 @@ class PB_BlockUpdateHC(_message.Message):
     def __init__(self, ChunkX: _Optional[int] = ..., ChunkZ: _Optional[int] = ..., MapID: _Optional[int] = ..., Blocks: _Optional[_Iterable[int]] = ..., ContainerBuf: _Optional[str] = ..., BlocksEx: _Optional[_Iterable[int]] = ..., ContainerBufUnzipLen: _Optional[int] = ..., BlockStateIndex: _Optional[_Iterable[int]] = ...) -> None: ...
 
 class PB_RoleEnterWorldHC(_message.Message):
-    __slots__ = ("Uin", "PlayerInfo", "GlobalInfo", "WorldDesc", "SkillCDData", "UnlockItems", "Url", "HasRole", "SkillExpandCDDataGather", "TeleportMsg", "MoveSyncType", "ActorSyncFrequency")
+    __slots__ = ("Uin", "PlayerInfo", "GlobalInfo", "WorldDesc", "SkillCDData", "UnlockItems", "Url", "HasRole", "SkillExpandCDDataGather", "TeleportMsg", "MoveSyncType", "ActorSyncFrequency", "CurWorldScriptComponentSnapshot")
     UIN_FIELD_NUMBER: _ClassVar[int]
     PLAYERINFO_FIELD_NUMBER: _ClassVar[int]
     GLOBALINFO_FIELD_NUMBER: _ClassVar[int]
@@ -119,6 +125,7 @@ class PB_RoleEnterWorldHC(_message.Message):
     TELEPORTMSG_FIELD_NUMBER: _ClassVar[int]
     MOVESYNCTYPE_FIELD_NUMBER: _ClassVar[int]
     ACTORSYNCFREQUENCY_FIELD_NUMBER: _ClassVar[int]
+    CURWORLDSCRIPTCOMPONENTSNAPSHOT_FIELD_NUMBER: _ClassVar[int]
     Uin: int
     PlayerInfo: _proto_common_pb2.PB_PlayerInfo
     GlobalInfo: _proto_common_pb2.PB_OWGlobal
@@ -131,7 +138,8 @@ class PB_RoleEnterWorldHC(_message.Message):
     TeleportMsg: str
     MoveSyncType: int
     ActorSyncFrequency: int
-    def __init__(self, Uin: _Optional[int] = ..., PlayerInfo: _Optional[_Union[_proto_common_pb2.PB_PlayerInfo, _Mapping]] = ..., GlobalInfo: _Optional[_Union[_proto_common_pb2.PB_OWGlobal, _Mapping]] = ..., WorldDesc: _Optional[_Union[_proto_common_pb2.PB_WorldDesc, _Mapping]] = ..., SkillCDData: _Optional[_Union[_proto_common_pb2.PB_SkillCDData, _Mapping]] = ..., UnlockItems: _Optional[_Iterable[int]] = ..., Url: _Optional[str] = ..., HasRole: _Optional[bool] = ..., SkillExpandCDDataGather: _Optional[_Union[_proto_common_pb2.PB_SkillExpandCDDataGather, _Mapping]] = ..., TeleportMsg: _Optional[str] = ..., MoveSyncType: _Optional[int] = ..., ActorSyncFrequency: _Optional[int] = ...) -> None: ...
+    CurWorldScriptComponentSnapshot: bytes
+    def __init__(self, Uin: _Optional[int] = ..., PlayerInfo: _Optional[_Union[_proto_common_pb2.PB_PlayerInfo, _Mapping]] = ..., GlobalInfo: _Optional[_Union[_proto_common_pb2.PB_OWGlobal, _Mapping]] = ..., WorldDesc: _Optional[_Union[_proto_common_pb2.PB_WorldDesc, _Mapping]] = ..., SkillCDData: _Optional[_Union[_proto_common_pb2.PB_SkillCDData, _Mapping]] = ..., UnlockItems: _Optional[_Iterable[int]] = ..., Url: _Optional[str] = ..., HasRole: _Optional[bool] = ..., SkillExpandCDDataGather: _Optional[_Union[_proto_common_pb2.PB_SkillExpandCDDataGather, _Mapping]] = ..., TeleportMsg: _Optional[str] = ..., MoveSyncType: _Optional[int] = ..., ActorSyncFrequency: _Optional[int] = ..., CurWorldScriptComponentSnapshot: _Optional[bytes] = ...) -> None: ...
 
 class PB_RoleLeaveWorldHC(_message.Message):
     __slots__ = ("Uin",)
@@ -140,7 +148,7 @@ class PB_RoleLeaveWorldHC(_message.Message):
     def __init__(self, Uin: _Optional[int] = ...) -> None: ...
 
 class PB_ActorEnterAOIHC(_message.Message):
-    __slots__ = ("ObjID", "ActorType", "ActorInfo", "Spectator_Mode", "Spectator_Type", "HookID", "PlayMode", "PlayOperate", "childUUID", "TeamID", "ActorCompData", "hitBoundW", "hitBoundH", "BoundW", "BoundH", "laserPointerPos")
+    __slots__ = ("ObjID", "ActorType", "ActorInfo", "Spectator_Mode", "Spectator_Type", "HookID", "PlayMode", "PlayOperate", "childUUID", "TeamID", "ActorCompData", "hitBoundW", "hitBoundH", "BoundW", "BoundH", "laserPointerPos", "RuntimeSoundList", "PortalPreview", "PortalPreviewMapId")
     OBJID_FIELD_NUMBER: _ClassVar[int]
     ACTORTYPE_FIELD_NUMBER: _ClassVar[int]
     ACTORINFO_FIELD_NUMBER: _ClassVar[int]
@@ -157,6 +165,9 @@ class PB_ActorEnterAOIHC(_message.Message):
     BOUNDW_FIELD_NUMBER: _ClassVar[int]
     BOUNDH_FIELD_NUMBER: _ClassVar[int]
     LASERPOINTERPOS_FIELD_NUMBER: _ClassVar[int]
+    RUNTIMESOUNDLIST_FIELD_NUMBER: _ClassVar[int]
+    PORTALPREVIEW_FIELD_NUMBER: _ClassVar[int]
+    PORTALPREVIEWMAPID_FIELD_NUMBER: _ClassVar[int]
     ObjID: int
     ActorType: int
     ActorInfo: _proto_common_pb2.PB_ActorInfo
@@ -173,10 +184,13 @@ class PB_ActorEnterAOIHC(_message.Message):
     BoundW: int
     BoundH: int
     laserPointerPos: _proto_common_pb2.PB_Vector3
-    def __init__(self, ObjID: _Optional[int] = ..., ActorType: _Optional[int] = ..., ActorInfo: _Optional[_Union[_proto_common_pb2.PB_ActorInfo, _Mapping]] = ..., Spectator_Mode: _Optional[int] = ..., Spectator_Type: _Optional[int] = ..., HookID: _Optional[int] = ..., PlayMode: _Optional[int] = ..., PlayOperate: _Optional[int] = ..., childUUID: _Optional[int] = ..., TeamID: _Optional[int] = ..., ActorCompData: _Optional[_Union[_proto_common_pb2.PB_ActorCompData, _Mapping]] = ..., hitBoundW: _Optional[int] = ..., hitBoundH: _Optional[int] = ..., BoundW: _Optional[int] = ..., BoundH: _Optional[int] = ..., laserPointerPos: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ...) -> None: ...
+    RuntimeSoundList: _containers.RepeatedCompositeFieldContainer[_proto_common_pb2.PB_EffectSoundNew_V2]
+    PortalPreview: bool
+    PortalPreviewMapId: int
+    def __init__(self, ObjID: _Optional[int] = ..., ActorType: _Optional[int] = ..., ActorInfo: _Optional[_Union[_proto_common_pb2.PB_ActorInfo, _Mapping]] = ..., Spectator_Mode: _Optional[int] = ..., Spectator_Type: _Optional[int] = ..., HookID: _Optional[int] = ..., PlayMode: _Optional[int] = ..., PlayOperate: _Optional[int] = ..., childUUID: _Optional[int] = ..., TeamID: _Optional[int] = ..., ActorCompData: _Optional[_Union[_proto_common_pb2.PB_ActorCompData, _Mapping]] = ..., hitBoundW: _Optional[int] = ..., hitBoundH: _Optional[int] = ..., BoundW: _Optional[int] = ..., BoundH: _Optional[int] = ..., laserPointerPos: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ..., RuntimeSoundList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_EffectSoundNew_V2, _Mapping]]] = ..., PortalPreview: _Optional[bool] = ..., PortalPreviewMapId: _Optional[int] = ...) -> None: ...
 
 class PB_GeneralEnterAOIHC(_message.Message):
-    __slots__ = ("ObjID", "MapId", "effectList", "soundList", "ActorMob", "ActorItem", "ActorNpc", "ActorAquaticMob", "ActorFlyBlock", "ActorProjectile", "ActorFlyMob", "ActorGhost", "ActorThornBall", "ActorFishhook", "ActorPipeline", "ActorSnowHare", "ActorObj", "ActorCompData", "ActorBlockStruct", "ActorBlockStructWormTab", "ActorBlockAwaken", "ActorEmitterProjectile")
+    __slots__ = ("ObjID", "MapId", "effectList", "soundList", "ActorMob", "ActorItem", "ActorNpc", "ActorAquaticMob", "ActorFlyBlock", "ActorProjectile", "ActorFlyMob", "ActorGhost", "ActorThornBall", "ActorFishhook", "ActorPipeline", "ActorSnowHare", "ActorObj", "ActorCompData", "ActorBlockStruct", "ActorBlockStructWormTab", "ActorBlockAwaken", "ActorEmitterProjectile", "RuntimeSoundList", "ActorBoss", "portalpreview", "portalpreviewmapid")
     OBJID_FIELD_NUMBER: _ClassVar[int]
     MAPID_FIELD_NUMBER: _ClassVar[int]
     EFFECTLIST_FIELD_NUMBER: _ClassVar[int]
@@ -199,6 +213,10 @@ class PB_GeneralEnterAOIHC(_message.Message):
     ACTORBLOCKSTRUCTWORMTAB_FIELD_NUMBER: _ClassVar[int]
     ACTORBLOCKAWAKEN_FIELD_NUMBER: _ClassVar[int]
     ACTOREMITTERPROJECTILE_FIELD_NUMBER: _ClassVar[int]
+    RUNTIMESOUNDLIST_FIELD_NUMBER: _ClassVar[int]
+    ACTORBOSS_FIELD_NUMBER: _ClassVar[int]
+    PORTALPREVIEW_FIELD_NUMBER: _ClassVar[int]
+    PORTALPREVIEWMAPID_FIELD_NUMBER: _ClassVar[int]
     ObjID: int
     MapId: int
     effectList: _containers.RepeatedCompositeFieldContainer[_proto_common_pb2.PB_AOIBodyEffectBrief]
@@ -221,7 +239,11 @@ class PB_GeneralEnterAOIHC(_message.Message):
     ActorBlockStructWormTab: _proto_common_pb2.PB_ActorBlockStructWormTab
     ActorBlockAwaken: _proto_common_pb2.PB_ActorBlockAwaken
     ActorEmitterProjectile: _proto_common_pb2.PB_ActorEmitterProjectile
-    def __init__(self, ObjID: _Optional[int] = ..., MapId: _Optional[int] = ..., effectList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_AOIBodyEffectBrief, _Mapping]]] = ..., soundList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_AOIEffectTriggerSound, _Mapping]]] = ..., ActorMob: _Optional[_Union[_proto_common_pb2.PB_ActorMob, _Mapping]] = ..., ActorItem: _Optional[_Union[_proto_common_pb2.PB_ActorItem, _Mapping]] = ..., ActorNpc: _Optional[_Union[_proto_common_pb2.PB_ActorMob, _Mapping]] = ..., ActorAquaticMob: _Optional[_Union[_proto_common_pb2.PB_ActorAquaticMob, _Mapping]] = ..., ActorFlyBlock: _Optional[_Union[_proto_common_pb2.PB_ActorFlyBlock, _Mapping]] = ..., ActorProjectile: _Optional[_Union[_proto_common_pb2.PB_ActorProjectile, _Mapping]] = ..., ActorFlyMob: _Optional[_Union[_proto_common_pb2.PB_ActorFlyMob, _Mapping]] = ..., ActorGhost: _Optional[_Union[_proto_common_pb2.PB_ActorGhost, _Mapping]] = ..., ActorThornBall: _Optional[_Union[_proto_common_pb2.PB_ActorThornBall, _Mapping]] = ..., ActorFishhook: _Optional[_Union[_proto_common_pb2.PB_ActorFishhook, _Mapping]] = ..., ActorPipeline: _Optional[_Union[_proto_common_pb2.PB_ActorPipeline, _Mapping]] = ..., ActorSnowHare: _Optional[_Union[_proto_common_pb2.PB_ActorSnowHare, _Mapping]] = ..., ActorObj: _Optional[_Union[_proto_common_pb2.PB_ActorObj, _Mapping]] = ..., ActorCompData: _Optional[_Union[_proto_common_pb2.PB_ActorCompData, _Mapping]] = ..., ActorBlockStruct: _Optional[_Union[_proto_common_pb2.PB_ActorBlockStruct, _Mapping]] = ..., ActorBlockStructWormTab: _Optional[_Union[_proto_common_pb2.PB_ActorBlockStructWormTab, _Mapping]] = ..., ActorBlockAwaken: _Optional[_Union[_proto_common_pb2.PB_ActorBlockAwaken, _Mapping]] = ..., ActorEmitterProjectile: _Optional[_Union[_proto_common_pb2.PB_ActorEmitterProjectile, _Mapping]] = ...) -> None: ...
+    RuntimeSoundList: _containers.RepeatedCompositeFieldContainer[_proto_common_pb2.PB_EffectSoundNew_V2]
+    ActorBoss: _proto_common_pb2.PB_ActorBoss
+    portalpreview: bool
+    portalpreviewmapid: int
+    def __init__(self, ObjID: _Optional[int] = ..., MapId: _Optional[int] = ..., effectList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_AOIBodyEffectBrief, _Mapping]]] = ..., soundList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_AOIEffectTriggerSound, _Mapping]]] = ..., ActorMob: _Optional[_Union[_proto_common_pb2.PB_ActorMob, _Mapping]] = ..., ActorItem: _Optional[_Union[_proto_common_pb2.PB_ActorItem, _Mapping]] = ..., ActorNpc: _Optional[_Union[_proto_common_pb2.PB_ActorMob, _Mapping]] = ..., ActorAquaticMob: _Optional[_Union[_proto_common_pb2.PB_ActorAquaticMob, _Mapping]] = ..., ActorFlyBlock: _Optional[_Union[_proto_common_pb2.PB_ActorFlyBlock, _Mapping]] = ..., ActorProjectile: _Optional[_Union[_proto_common_pb2.PB_ActorProjectile, _Mapping]] = ..., ActorFlyMob: _Optional[_Union[_proto_common_pb2.PB_ActorFlyMob, _Mapping]] = ..., ActorGhost: _Optional[_Union[_proto_common_pb2.PB_ActorGhost, _Mapping]] = ..., ActorThornBall: _Optional[_Union[_proto_common_pb2.PB_ActorThornBall, _Mapping]] = ..., ActorFishhook: _Optional[_Union[_proto_common_pb2.PB_ActorFishhook, _Mapping]] = ..., ActorPipeline: _Optional[_Union[_proto_common_pb2.PB_ActorPipeline, _Mapping]] = ..., ActorSnowHare: _Optional[_Union[_proto_common_pb2.PB_ActorSnowHare, _Mapping]] = ..., ActorObj: _Optional[_Union[_proto_common_pb2.PB_ActorObj, _Mapping]] = ..., ActorCompData: _Optional[_Union[_proto_common_pb2.PB_ActorCompData, _Mapping]] = ..., ActorBlockStruct: _Optional[_Union[_proto_common_pb2.PB_ActorBlockStruct, _Mapping]] = ..., ActorBlockStructWormTab: _Optional[_Union[_proto_common_pb2.PB_ActorBlockStructWormTab, _Mapping]] = ..., ActorBlockAwaken: _Optional[_Union[_proto_common_pb2.PB_ActorBlockAwaken, _Mapping]] = ..., ActorEmitterProjectile: _Optional[_Union[_proto_common_pb2.PB_ActorEmitterProjectile, _Mapping]] = ..., RuntimeSoundList: _Optional[_Iterable[_Union[_proto_common_pb2.PB_EffectSoundNew_V2, _Mapping]]] = ..., ActorBoss: _Optional[_Union[_proto_common_pb2.PB_ActorBoss, _Mapping]] = ..., portalpreview: _Optional[bool] = ..., portalpreviewmapid: _Optional[int] = ...) -> None: ...
 
 class PB_BlockStructUpdateHC(_message.Message):
     __slots__ = ("objid", "blockstructdata")
@@ -276,10 +298,14 @@ class PB_VehicleAssembleBlockAllHC(_message.Message):
     def __init__(self, ObjID: _Optional[int] = ..., UnzipLen: _Optional[int] = ..., BlobLen: _Optional[int] = ..., BlobDetail: _Optional[str] = ..., BlockVersion: _Optional[int] = ..., ChassisPos: _Optional[_Iterable[_Union[PB_VehiclePosDesc, _Mapping]]] = ..., WheelPos: _Optional[_Iterable[_Union[PB_VehiclePosDesc, _Mapping]]] = ...) -> None: ...
 
 class PB_ActorLeaveAOIHC(_message.Message):
-    __slots__ = ("ObjID",)
+    __slots__ = ("ObjID", "PortalPreview", "PortalPreviewMapId")
     OBJID_FIELD_NUMBER: _ClassVar[int]
+    PORTALPREVIEW_FIELD_NUMBER: _ClassVar[int]
+    PORTALPREVIEWMAPID_FIELD_NUMBER: _ClassVar[int]
     ObjID: int
-    def __init__(self, ObjID: _Optional[int] = ...) -> None: ...
+    PortalPreview: bool
+    PortalPreviewMapId: int
+    def __init__(self, ObjID: _Optional[int] = ..., PortalPreview: _Optional[bool] = ..., PortalPreviewMapId: _Optional[int] = ...) -> None: ...
 
 class PB_ActorModelChange(_message.Message):
     __slots__ = ("ObjID", "modelcomponent")
@@ -350,14 +376,18 @@ class PB_TrainMoveHC(_message.Message):
     def __init__(self, ObjID: _Optional[int] = ..., MapID: _Optional[int] = ..., CurveT: _Optional[float] = ..., CarReverse: _Optional[int] = ..., HeadCar: _Optional[int] = ..., TailCar: _Optional[int] = ..., OutIndex: _Optional[int] = ..., RailKnot: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ...) -> None: ...
 
 class PB_ActorTeleportHC(_message.Message):
-    __slots__ = ("ObjID", "TargetMap", "TargetPos")
+    __slots__ = ("ObjID", "TargetMap", "TargetPos", "CurWorldScriptComponentSnapshot", "ChunkBootstrapSeq")
     OBJID_FIELD_NUMBER: _ClassVar[int]
     TARGETMAP_FIELD_NUMBER: _ClassVar[int]
     TARGETPOS_FIELD_NUMBER: _ClassVar[int]
+    CURWORLDSCRIPTCOMPONENTSNAPSHOT_FIELD_NUMBER: _ClassVar[int]
+    CHUNKBOOTSTRAPSEQ_FIELD_NUMBER: _ClassVar[int]
     ObjID: int
     TargetMap: int
     TargetPos: _proto_common_pb2.PB_Vector3
-    def __init__(self, ObjID: _Optional[int] = ..., TargetMap: _Optional[int] = ..., TargetPos: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ...) -> None: ...
+    CurWorldScriptComponentSnapshot: bytes
+    ChunkBootstrapSeq: int
+    def __init__(self, ObjID: _Optional[int] = ..., TargetMap: _Optional[int] = ..., TargetPos: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ..., CurWorldScriptComponentSnapshot: _Optional[bytes] = ..., ChunkBootstrapSeq: _Optional[int] = ...) -> None: ...
 
 class PB_ActorMotionHC(_message.Message):
     __slots__ = ("ObjID", "x", "y", "z", "isChangePos")
@@ -1377,11 +1407,21 @@ class PB_AttractAttribChangeHC(_message.Message):
     blockExID: int
     def __init__(self, ObjID: _Optional[int] = ..., State: _Optional[int] = ..., blockID: _Optional[int] = ..., blockExID: _Optional[int] = ...) -> None: ...
 
+class PB_MapWorldTimeItem(_message.Message):
+    __slots__ = ("MapId", "Time")
+    MAPID_FIELD_NUMBER: _ClassVar[int]
+    TIME_FIELD_NUMBER: _ClassVar[int]
+    MapId: int
+    Time: int
+    def __init__(self, MapId: _Optional[int] = ..., Time: _Optional[int] = ...) -> None: ...
+
 class PB_WorldTimesHC(_message.Message):
-    __slots__ = ("Times",)
+    __slots__ = ("Times", "MapTimes")
     TIMES_FIELD_NUMBER: _ClassVar[int]
+    MAPTIMES_FIELD_NUMBER: _ClassVar[int]
     Times: _containers.RepeatedScalarFieldContainer[int]
-    def __init__(self, Times: _Optional[_Iterable[int]] = ...) -> None: ...
+    MapTimes: _containers.RepeatedCompositeFieldContainer[PB_MapWorldTimeItem]
+    def __init__(self, Times: _Optional[_Iterable[int]] = ..., MapTimes: _Optional[_Iterable[_Union[PB_MapWorldTimeItem, _Mapping]]] = ...) -> None: ...
 
 class PB_StatisticHC(_message.Message):
     __slots__ = ("EventID", "WorldType", "FristName", "Param1", "Param2", "Param3", "Param4", "Param5", "Param6", "Param7")
@@ -3003,26 +3043,30 @@ class PB_ChangeQQMusicPlayerHC(_message.Message):
     def __init__(self, type: _Optional[int] = ..., musicId: _Optional[int] = ..., state: _Optional[bool] = ..., volume: _Optional[int] = ..., uin: _Optional[int] = ..., musicList: _Optional[_Iterable[int]] = ..., uinList: _Optional[_Iterable[int]] = ..., startPos: _Optional[int] = ..., duration: _Optional[int] = ..., playMode: _Optional[int] = ..., isPaused: _Optional[bool] = ..., isOpen: _Optional[bool] = ..., nameList: _Optional[_Iterable[str]] = ...) -> None: ...
 
 class PB_SetTiangouHC(_message.Message):
-    __slots__ = ("strID", "moonPhase", "moonRes", "defaultControlMoon", "tiangouStart")
+    __slots__ = ("strID", "moonPhase", "moonRes", "defaultControlMoon", "tiangouStart", "mapId")
     STRID_FIELD_NUMBER: _ClassVar[int]
     MOONPHASE_FIELD_NUMBER: _ClassVar[int]
     MOONRES_FIELD_NUMBER: _ClassVar[int]
     DEFAULTCONTROLMOON_FIELD_NUMBER: _ClassVar[int]
     TIANGOUSTART_FIELD_NUMBER: _ClassVar[int]
+    MAPID_FIELD_NUMBER: _ClassVar[int]
     strID: int
     moonPhase: int
     moonRes: str
     defaultControlMoon: bool
     tiangouStart: bool
-    def __init__(self, strID: _Optional[int] = ..., moonPhase: _Optional[int] = ..., moonRes: _Optional[str] = ..., defaultControlMoon: _Optional[bool] = ..., tiangouStart: _Optional[bool] = ...) -> None: ...
+    mapId: int
+    def __init__(self, strID: _Optional[int] = ..., moonPhase: _Optional[int] = ..., moonRes: _Optional[str] = ..., defaultControlMoon: _Optional[bool] = ..., tiangouStart: _Optional[bool] = ..., mapId: _Optional[int] = ...) -> None: ...
 
 class PB_PlayerOpenUIHC(_message.Message):
-    __slots__ = ("uiName", "uiParam")
+    __slots__ = ("uiName", "uiParam", "mapId")
     UINAME_FIELD_NUMBER: _ClassVar[int]
     UIPARAM_FIELD_NUMBER: _ClassVar[int]
+    MAPID_FIELD_NUMBER: _ClassVar[int]
     uiName: str
     uiParam: str
-    def __init__(self, uiName: _Optional[str] = ..., uiParam: _Optional[str] = ...) -> None: ...
+    mapId: int
+    def __init__(self, uiName: _Optional[str] = ..., uiParam: _Optional[str] = ..., mapId: _Optional[int] = ...) -> None: ...
 
 class PB_RideInvisibleHC(_message.Message):
     __slots__ = ("invisible", "ObjIDList")
@@ -3031,6 +3075,14 @@ class PB_RideInvisibleHC(_message.Message):
     invisible: bool
     ObjIDList: _containers.RepeatedScalarFieldContainer[int]
     def __init__(self, invisible: _Optional[bool] = ..., ObjIDList: _Optional[_Iterable[int]] = ...) -> None: ...
+
+class PB_SetHPVisibleHC(_message.Message):
+    __slots__ = ("objid", "visible")
+    OBJID_FIELD_NUMBER: _ClassVar[int]
+    VISIBLE_FIELD_NUMBER: _ClassVar[int]
+    objid: int
+    visible: bool
+    def __init__(self, objid: _Optional[int] = ..., visible: _Optional[bool] = ...) -> None: ...
 
 class PB_PlaySkinActHC(_message.Message):
     __slots__ = ("ActID", "ActIDTrigger", "InviteUin", "AcceptUin")
@@ -3509,7 +3561,7 @@ class PB_ModBlockColorAnimHC(_message.Message):
     def __init__(self, mapid: _Optional[int] = ..., targetpos: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ..., interval: _Optional[float] = ..., color: _Optional[int] = ..., changetimes: _Optional[int] = ...) -> None: ...
 
 class PB_WeatherHC(_message.Message):
-    __slots__ = ("groupID", "weatherID", "isCome", "strength", "weatherTime", "duststorm", "tempest", "blizzard")
+    __slots__ = ("groupID", "weatherID", "isCome", "strength", "weatherTime", "duststorm", "tempest", "blizzard", "mapId")
     GROUPID_FIELD_NUMBER: _ClassVar[int]
     WEATHERID_FIELD_NUMBER: _ClassVar[int]
     ISCOME_FIELD_NUMBER: _ClassVar[int]
@@ -3518,6 +3570,7 @@ class PB_WeatherHC(_message.Message):
     DUSTSTORM_FIELD_NUMBER: _ClassVar[int]
     TEMPEST_FIELD_NUMBER: _ClassVar[int]
     BLIZZARD_FIELD_NUMBER: _ClassVar[int]
+    MAPID_FIELD_NUMBER: _ClassVar[int]
     groupID: int
     weatherID: int
     isCome: bool
@@ -3526,7 +3579,8 @@ class PB_WeatherHC(_message.Message):
     duststorm: PB_SandDuststormWeatherHC
     tempest: PB_TempestWeatherHC
     blizzard: PB_BlizzardWeatherHC
-    def __init__(self, groupID: _Optional[int] = ..., weatherID: _Optional[int] = ..., isCome: _Optional[bool] = ..., strength: _Optional[float] = ..., weatherTime: _Optional[int] = ..., duststorm: _Optional[_Union[PB_SandDuststormWeatherHC, _Mapping]] = ..., tempest: _Optional[_Union[PB_TempestWeatherHC, _Mapping]] = ..., blizzard: _Optional[_Union[PB_BlizzardWeatherHC, _Mapping]] = ...) -> None: ...
+    mapId: int
+    def __init__(self, groupID: _Optional[int] = ..., weatherID: _Optional[int] = ..., isCome: _Optional[bool] = ..., strength: _Optional[float] = ..., weatherTime: _Optional[int] = ..., duststorm: _Optional[_Union[PB_SandDuststormWeatherHC, _Mapping]] = ..., tempest: _Optional[_Union[PB_TempestWeatherHC, _Mapping]] = ..., blizzard: _Optional[_Union[PB_BlizzardWeatherHC, _Mapping]] = ..., mapId: _Optional[int] = ...) -> None: ...
 
 class PB_SandDuststormWeatherHC(_message.Message):
     __slots__ = ("dir", "initPosX", "initPosZ", "movePosX", "movePosZ", "isUpEnd", "allTick")
@@ -4018,11 +4072,17 @@ class PB_UpdateLaserPointerHC(_message.Message):
     uin: int
     def __init__(self, enable: _Optional[bool] = ..., pos: _Optional[_Union[_proto_common_pb2.PB_Vector3, _Mapping]] = ..., uin: _Optional[int] = ...) -> None: ...
 
-class PB_EmitterRayHC(_message.Message):
-    __slots__ = ("rays",)
-    RAYS_FIELD_NUMBER: _ClassVar[int]
-    rays: _containers.RepeatedCompositeFieldContainer[_proto_common_pb2.PB_EmitterRay]
-    def __init__(self, rays: _Optional[_Iterable[_Union[_proto_common_pb2.PB_EmitterRay, _Mapping]]] = ...) -> None: ...
+class PB_EmitterPresentationHC(_message.Message):
+    __slots__ = ("emitters",)
+    EMITTERS_FIELD_NUMBER: _ClassVar[int]
+    emitters: _containers.RepeatedCompositeFieldContainer[_proto_common_pb2.PB_EmitterPresentation]
+    def __init__(self, emitters: _Optional[_Iterable[_Union[_proto_common_pb2.PB_EmitterPresentation, _Mapping]]] = ...) -> None: ...
+
+class PB_BossGroupLinkLineHC(_message.Message):
+    __slots__ = ("lines",)
+    LINES_FIELD_NUMBER: _ClassVar[int]
+    lines: _containers.RepeatedCompositeFieldContainer[_proto_common_pb2.PB_BossGroupLinkLine]
+    def __init__(self, lines: _Optional[_Iterable[_Union[_proto_common_pb2.PB_BossGroupLinkLine, _Mapping]]] = ...) -> None: ...
 
 class PB_UpdateNewTameDataHC(_message.Message):
     __slots__ = ("targetId", "ownerUin", "follow")
@@ -4217,3 +4277,23 @@ class PB_MineralProspectBlock_HC(_message.Message):
     duration: int
     radius: int
     def __init__(self, blockInfos: _Optional[_Iterable[_Union[PB_MineralProspectBlockInfo, _Mapping]]] = ..., duration: _Optional[int] = ..., radius: _Optional[int] = ...) -> None: ...
+
+class PB_GetPersonalCloudCardInfoHC(_message.Message):
+    __slots__ = ("preCardNum", "usedCardNum")
+    PRECARDNUM_FIELD_NUMBER: _ClassVar[int]
+    USEDCARDNUM_FIELD_NUMBER: _ClassVar[int]
+    preCardNum: int
+    usedCardNum: int
+    def __init__(self, preCardNum: _Optional[int] = ..., usedCardNum: _Optional[int] = ...) -> None: ...
+
+class PB_SpacePortalAnchorListRspHC(_message.Message):
+    __slots__ = ("buf",)
+    BUF_FIELD_NUMBER: _ClassVar[int]
+    buf: bytes
+    def __init__(self, buf: _Optional[bytes] = ...) -> None: ...
+
+class PB_SpacePortalTeleportRspHC(_message.Message):
+    __slots__ = ("buf",)
+    BUF_FIELD_NUMBER: _ClassVar[int]
+    buf: bytes
+    def __init__(self, buf: _Optional[bytes] = ...) -> None: ...

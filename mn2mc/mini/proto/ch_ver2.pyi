@@ -17,20 +17,22 @@ class PB_ThornBallCH(_message.Message):
     def __init__(self, atkpoints: _Optional[int] = ..., num: _Optional[int] = ..., dir: _Optional[int] = ...) -> None: ...
 
 class PB_ActorOperationCH(_message.Message):
-    __slots__ = ("blockid", "pos", "blockdata", "dropitem", "waterPress", "lowerWaterPress")
+    __slots__ = ("blockid", "pos", "blockdata", "dropitem", "waterPress", "lowerWaterPress", "mapid")
     BLOCKID_FIELD_NUMBER: _ClassVar[int]
     POS_FIELD_NUMBER: _ClassVar[int]
     BLOCKDATA_FIELD_NUMBER: _ClassVar[int]
     DROPITEM_FIELD_NUMBER: _ClassVar[int]
     WATERPRESS_FIELD_NUMBER: _ClassVar[int]
     LOWERWATERPRESS_FIELD_NUMBER: _ClassVar[int]
+    MAPID_FIELD_NUMBER: _ClassVar[int]
     blockid: int
     pos: _containers.RepeatedScalarFieldContainer[int]
     blockdata: int
     dropitem: bool
     waterPress: int
     lowerWaterPress: int
-    def __init__(self, blockid: _Optional[int] = ..., pos: _Optional[_Iterable[int]] = ..., blockdata: _Optional[int] = ..., dropitem: _Optional[bool] = ..., waterPress: _Optional[int] = ..., lowerWaterPress: _Optional[int] = ...) -> None: ...
+    mapid: int
+    def __init__(self, blockid: _Optional[int] = ..., pos: _Optional[_Iterable[int]] = ..., blockdata: _Optional[int] = ..., dropitem: _Optional[bool] = ..., waterPress: _Optional[int] = ..., lowerWaterPress: _Optional[int] = ..., mapid: _Optional[int] = ...) -> None: ...
 
 class PB_StorageBoxPutAllCH(_message.Message):
     __slots__ = ("playeruin", "baseindex", "blockid", "pos")

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import mn2mc
+import mn2mc.mini
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.entity import MCEntity, entitytypes
 from mn2mc.mc.packet import add_event
@@ -20,7 +21,7 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     client.client.registerChannel("minecraft:brand", ["string", []])
     client.client.writeChannel(
         "minecraft:brand",
-        f"Mini World {client.miniplayer.cltversion} | MN2MC {mn2mc.version}",
+        f"Mini World {mn2mc.mini.version} | MN2MC {mn2mc.version}",
     )
     client.entityid = jsondata['entityId']
     client.entities[client.entityid] = MCEntity(Vector3f(), Angle(0,0), entitytypes.get('player', 0), uin=client.miniplayer.uin)

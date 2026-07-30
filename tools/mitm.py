@@ -17,7 +17,7 @@ def request(flow: http.HTTPFlow) -> None:
             "mod_url": "",
             "room_mods": "",
             "room_ui_libs": "",
-            "room_ver": "1.57.1",
+            "room_ver": "1.58.0",
             "room_name": "MN2MC",
             "room_audio_config": '{"editorSceneSwitch":0,"worldtype":4}',
             "room_translate": "",

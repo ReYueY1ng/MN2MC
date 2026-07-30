@@ -300,9 +300,12 @@ class ePBMsgCode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     PB_EXTRACT_STORE_ITEM_CH: _ClassVar[ePBMsgCode]
     PB_UPLOAD_CLIENT_INFO_CH: _ClassVar[ePBMsgCode]
     PB_SYNC_PLAYER_POS_CH: _ClassVar[ePBMsgCode]
+    PB_GET_PERSONAL_CLOUD_CARD_INFO_CH: _ClassVar[ePBMsgCode]
+    PB_GET_PERSONAL_CLOUD_CARD_INFO_HC: _ClassVar[ePBMsgCode]
+    PB_SET_PERSONAL_CLOUD_CARD_INFO_CH: _ClassVar[ePBMsgCode]
+    PB_SET_PERSONAL_CLOUD_CARD_INFO_HC: _ClassVar[ePBMsgCode]
     PB_TRIGGER_TIMER_HC: _ClassVar[ePBMsgCode]
     PB_WORKSHOP_BUILD_HC: _ClassVar[ePBMsgCode]
-    PB_TRIGGER_PLAYER_ATTRI_CH: _ClassVar[ePBMsgCode]
     PB_PLAYER_ATTR_SCALE_HC: _ClassVar[ePBMsgCode]
     PB_PLAYER_ATTR_SCALE_CH: _ClassVar[ePBMsgCode]
     PB_PLAYER_NAVIGATE_HC: _ClassVar[ePBMsgCode]
@@ -616,7 +619,13 @@ class ePBMsgCode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     PB_CUSTOM_PBC_HC: _ClassVar[ePBMsgCode]
     PB_UPDATE_LASER_POINTER_HC: _ClassVar[ePBMsgCode]
     PB_UPDATE_LASER_POINTER_CH: _ClassVar[ePBMsgCode]
-    PB_EMITTER_RAY_HC: _ClassVar[ePBMsgCode]
+    PB_EMITTER_HC: _ClassVar[ePBMsgCode]
+    PB_SPACE_PORTAL_PREVIEW_SYNC_HC: _ClassVar[ePBMsgCode]
+    PB_SPACE_PORTAL_TELEPORT_REQ_CH: _ClassVar[ePBMsgCode]
+    PB_SPACE_PORTAL_CHUNK_REQ_CH: _ClassVar[ePBMsgCode]
+    PB_SPACE_PORTAL_ANCHOR_LIST_REQ_CH: _ClassVar[ePBMsgCode]
+    PB_SPACE_PORTAL_ANCHOR_LIST_RSP_HC: _ClassVar[ePBMsgCode]
+    PB_SPACE_PORTAL_TELEPORT_RSP_HC: _ClassVar[ePBMsgCode]
     PB_PHYSICS_INPUT_FRAME: _ClassVar[ePBMsgCode]
     PB_PHYSICS_ASYNC_TIMESTAMP: _ClassVar[ePBMsgCode]
     PB_PHYSICS_SETUP_TIMESTAMP: _ClassVar[ePBMsgCode]
@@ -701,9 +710,11 @@ class ePBMsgCode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     PB_ACTOR_PLAYANIM_FINISH_CH: _ClassVar[ePBMsgCode]
     PB_TIMELINE_CMD_HC: _ClassVar[ePBMsgCode]
     PB_TIMELINE_REPORT_CH: _ClassVar[ePBMsgCode]
+    PB_BOSSGROUP_LINK_LINE_HC: _ClassVar[ePBMsgCode]
     PB_LIVING_TIMERXRAYEFFECT_HC: _ClassVar[ePBMsgCode]
     PB_BLOCK_MINERALPROSPECT_HC: _ClassVar[ePBMsgCode]
     PB_WORLD_SYNC_SAVE_HC: _ClassVar[ePBMsgCode]
+    PB_PLAYER_WORLD_READY_CH: _ClassVar[ePBMsgCode]
     PB_MAX_MSG_CODE: _ClassVar[ePBMsgCode]
 
 class ePBModContainerOp(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
@@ -1055,9 +1066,12 @@ PB_GET_ADSHOP_EXTRA_AWARD_CH: ePBMsgCode
 PB_EXTRACT_STORE_ITEM_CH: ePBMsgCode
 PB_UPLOAD_CLIENT_INFO_CH: ePBMsgCode
 PB_SYNC_PLAYER_POS_CH: ePBMsgCode
+PB_GET_PERSONAL_CLOUD_CARD_INFO_CH: ePBMsgCode
+PB_GET_PERSONAL_CLOUD_CARD_INFO_HC: ePBMsgCode
+PB_SET_PERSONAL_CLOUD_CARD_INFO_CH: ePBMsgCode
+PB_SET_PERSONAL_CLOUD_CARD_INFO_HC: ePBMsgCode
 PB_TRIGGER_TIMER_HC: ePBMsgCode
 PB_WORKSHOP_BUILD_HC: ePBMsgCode
-PB_TRIGGER_PLAYER_ATTRI_CH: ePBMsgCode
 PB_PLAYER_ATTR_SCALE_HC: ePBMsgCode
 PB_PLAYER_ATTR_SCALE_CH: ePBMsgCode
 PB_PLAYER_NAVIGATE_HC: ePBMsgCode
@@ -1371,7 +1385,13 @@ PB_CUSTOM_PBC_CH: ePBMsgCode
 PB_CUSTOM_PBC_HC: ePBMsgCode
 PB_UPDATE_LASER_POINTER_HC: ePBMsgCode
 PB_UPDATE_LASER_POINTER_CH: ePBMsgCode
-PB_EMITTER_RAY_HC: ePBMsgCode
+PB_EMITTER_HC: ePBMsgCode
+PB_SPACE_PORTAL_PREVIEW_SYNC_HC: ePBMsgCode
+PB_SPACE_PORTAL_TELEPORT_REQ_CH: ePBMsgCode
+PB_SPACE_PORTAL_CHUNK_REQ_CH: ePBMsgCode
+PB_SPACE_PORTAL_ANCHOR_LIST_REQ_CH: ePBMsgCode
+PB_SPACE_PORTAL_ANCHOR_LIST_RSP_HC: ePBMsgCode
+PB_SPACE_PORTAL_TELEPORT_RSP_HC: ePBMsgCode
 PB_PHYSICS_INPUT_FRAME: ePBMsgCode
 PB_PHYSICS_ASYNC_TIMESTAMP: ePBMsgCode
 PB_PHYSICS_SETUP_TIMESTAMP: ePBMsgCode
@@ -1456,9 +1476,11 @@ PB_PLAYER_PLAY_DIG_BLOCK_EFFECT_HC: ePBMsgCode
 PB_ACTOR_PLAYANIM_FINISH_CH: ePBMsgCode
 PB_TIMELINE_CMD_HC: ePBMsgCode
 PB_TIMELINE_REPORT_CH: ePBMsgCode
+PB_BOSSGROUP_LINK_LINE_HC: ePBMsgCode
 PB_LIVING_TIMERXRAYEFFECT_HC: ePBMsgCode
 PB_BLOCK_MINERALPROSPECT_HC: ePBMsgCode
 PB_WORLD_SYNC_SAVE_HC: ePBMsgCode
+PB_PLAYER_WORLD_READY_CH: ePBMsgCode
 PB_MAX_MSG_CODE: ePBMsgCode
 PB_MODCONTAINER_MODELPART: ePBModContainerOp
 PB_MODCONTAINER_MODELPART_ADD: ePBModContainerModelPartOp
@@ -1532,6 +1554,12 @@ class PB_Vector3f(_message.Message):
     Y: float
     Z: float
     def __init__(self, X: _Optional[float] = ..., Y: _Optional[float] = ..., Z: _Optional[float] = ...) -> None: ...
+
+class PB_Vector3fArray(_message.Message):
+    __slots__ = ("value",)
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    value: _containers.RepeatedCompositeFieldContainer[PB_Vector3f]
+    def __init__(self, value: _Optional[_Iterable[_Union[PB_Vector3f, _Mapping]]] = ...) -> None: ...
 
 class PB_Quaternion(_message.Message):
     __slots__ = ("X", "Y", "Z", "W")
@@ -2397,6 +2425,24 @@ class PB_ActorFlyMob(_message.Message):
     luadata: str
     def __init__(self, mobdata: _Optional[_Union[PB_ActorMob, _Mapping]] = ..., moveTarget: _Optional[_Union[PB_Vector3, _Mapping]] = ..., luadata: _Optional[str] = ...) -> None: ...
 
+class PB_ActorBoss(_message.Message):
+    __slots__ = ("basedata", "defid", "hp", "missionflags", "maxhp", "spawnpoint", "moveTarget")
+    BASEDATA_FIELD_NUMBER: _ClassVar[int]
+    DEFID_FIELD_NUMBER: _ClassVar[int]
+    HP_FIELD_NUMBER: _ClassVar[int]
+    MISSIONFLAGS_FIELD_NUMBER: _ClassVar[int]
+    MAXHP_FIELD_NUMBER: _ClassVar[int]
+    SPAWNPOINT_FIELD_NUMBER: _ClassVar[int]
+    MOVETARGET_FIELD_NUMBER: _ClassVar[int]
+    basedata: PB_ActorCommon
+    defid: int
+    hp: int
+    missionflags: int
+    maxhp: int
+    spawnpoint: PB_Vector3
+    moveTarget: PB_Vector3
+    def __init__(self, basedata: _Optional[_Union[PB_ActorCommon, _Mapping]] = ..., defid: _Optional[int] = ..., hp: _Optional[int] = ..., missionflags: _Optional[int] = ..., maxhp: _Optional[int] = ..., spawnpoint: _Optional[_Union[PB_Vector3, _Mapping]] = ..., moveTarget: _Optional[_Union[PB_Vector3, _Mapping]] = ...) -> None: ...
+
 class PB_ActorGhost(_message.Message):
     __slots__ = ("basedata", "defid", "hp", "missionflags")
     BASEDATA_FIELD_NUMBER: _ClassVar[int]
@@ -2631,8 +2677,8 @@ class PB_ActorEmitterProjectile(_message.Message):
     dynamicEmitterParamsJson: str
     def __init__(self, actorObj: _Optional[_Union[PB_ActorObj, _Mapping]] = ..., emitterGroupId: _Optional[int] = ..., emitterIndex: _Optional[int] = ..., elapsedTime: _Optional[float] = ..., lifeTime: _Optional[float] = ..., shooterObjId: _Optional[int] = ..., targetObjId: _Optional[int] = ..., dynamicEmitterParamsJson: _Optional[str] = ...) -> None: ...
 
-class PB_EmitterRay(_message.Message):
-    __slots__ = ("rayObjId", "emitterGroupId", "emitterIndex", "shooterObjId", "targetObjId", "worldOrigin", "worldEnd", "localOriginOffset", "localDirection", "range", "elapsedTime", "lifeTime", "rayWidth", "color", "materialId", "stop", "dynamicEmitterParamsJson")
+class PB_EmitterPresentation(_message.Message):
+    __slots__ = ("rayObjId", "emitterGroupId", "emitterIndex", "shooterObjId", "targetObjId", "worldOrigin", "worldEnd", "localOriginOffset", "localDirection", "range", "elapsedTime", "lifeTime", "rayWidth", "color", "materialId", "stop", "dynamicEmitterParamsJson", "emitterType")
     RAYOBJID_FIELD_NUMBER: _ClassVar[int]
     EMITTERGROUPID_FIELD_NUMBER: _ClassVar[int]
     EMITTERINDEX_FIELD_NUMBER: _ClassVar[int]
@@ -2650,6 +2696,7 @@ class PB_EmitterRay(_message.Message):
     MATERIALID_FIELD_NUMBER: _ClassVar[int]
     STOP_FIELD_NUMBER: _ClassVar[int]
     DYNAMICEMITTERPARAMSJSON_FIELD_NUMBER: _ClassVar[int]
+    EMITTERTYPE_FIELD_NUMBER: _ClassVar[int]
     rayObjId: int
     emitterGroupId: int
     emitterIndex: int
@@ -2667,7 +2714,28 @@ class PB_EmitterRay(_message.Message):
     materialId: int
     stop: bool
     dynamicEmitterParamsJson: str
-    def __init__(self, rayObjId: _Optional[int] = ..., emitterGroupId: _Optional[int] = ..., emitterIndex: _Optional[int] = ..., shooterObjId: _Optional[int] = ..., targetObjId: _Optional[int] = ..., worldOrigin: _Optional[_Union[PB_Vector3, _Mapping]] = ..., worldEnd: _Optional[_Union[PB_Vector3, _Mapping]] = ..., localOriginOffset: _Optional[_Union[PB_Vector3, _Mapping]] = ..., localDirection: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., range: _Optional[float] = ..., elapsedTime: _Optional[float] = ..., lifeTime: _Optional[float] = ..., rayWidth: _Optional[float] = ..., color: _Optional[int] = ..., materialId: _Optional[int] = ..., stop: _Optional[bool] = ..., dynamicEmitterParamsJson: _Optional[str] = ...) -> None: ...
+    emitterType: int
+    def __init__(self, rayObjId: _Optional[int] = ..., emitterGroupId: _Optional[int] = ..., emitterIndex: _Optional[int] = ..., shooterObjId: _Optional[int] = ..., targetObjId: _Optional[int] = ..., worldOrigin: _Optional[_Union[PB_Vector3, _Mapping]] = ..., worldEnd: _Optional[_Union[PB_Vector3, _Mapping]] = ..., localOriginOffset: _Optional[_Union[PB_Vector3, _Mapping]] = ..., localDirection: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., range: _Optional[float] = ..., elapsedTime: _Optional[float] = ..., lifeTime: _Optional[float] = ..., rayWidth: _Optional[float] = ..., color: _Optional[int] = ..., materialId: _Optional[int] = ..., stop: _Optional[bool] = ..., dynamicEmitterParamsJson: _Optional[str] = ..., emitterType: _Optional[int] = ...) -> None: ...
+
+class PB_BossGroupLinkLine(_message.Message):
+    __slots__ = ("bossObjId", "slotId", "lineGeneration", "active", "childActorObjId")
+    BOSSOBJID_FIELD_NUMBER: _ClassVar[int]
+    SLOTID_FIELD_NUMBER: _ClassVar[int]
+    LINEGENERATION_FIELD_NUMBER: _ClassVar[int]
+    ACTIVE_FIELD_NUMBER: _ClassVar[int]
+    CHILDACTOROBJID_FIELD_NUMBER: _ClassVar[int]
+    bossObjId: int
+    slotId: int
+    lineGeneration: int
+    active: bool
+    childActorObjId: int
+    def __init__(self, bossObjId: _Optional[int] = ..., slotId: _Optional[int] = ..., lineGeneration: _Optional[int] = ..., active: _Optional[bool] = ..., childActorObjId: _Optional[int] = ...) -> None: ...
+
+class PB_BossGroupLinkLineCompData(_message.Message):
+    __slots__ = ("lines",)
+    LINES_FIELD_NUMBER: _ClassVar[int]
+    lines: _containers.RepeatedCompositeFieldContainer[PB_BossGroupLinkLine]
+    def __init__(self, lines: _Optional[_Iterable[_Union[PB_BossGroupLinkLine, _Mapping]]] = ...) -> None: ...
 
 class PB_ActorObjArray(_message.Message):
     __slots__ = ("child",)
@@ -3706,7 +3774,7 @@ class PB_EffectSoundNew(_message.Message):
     def __init__(self, Name: _Optional[str] = ..., Volume: _Optional[float] = ..., Pitch: _Optional[float] = ..., SoundType: _Optional[int] = ..., Pos: _Optional[_Union[PB_Vector3, _Mapping]] = ..., ObjId: _Optional[int] = ..., StartTime: _Optional[int] = ..., Duration: _Optional[int] = ..., SoundPos: _Optional[int] = ..., TrackId: _Optional[int] = ..., InstrumentCode: _Optional[int] = ..., Url: _Optional[str] = ..., WorldId: _Optional[int] = ..., ExtraStr: _Optional[str] = ..., IsLoop: _Optional[bool] = ..., NoteCode: _Optional[int] = ..., TpqCount: _Optional[int] = ...) -> None: ...
 
 class PB_EffectSoundNew_V2(_message.Message):
-    __slots__ = ("Name", "Volume", "Pitch", "SoundType", "Pos", "ObjId", "StartTime", "Duration", "SoundPos", "TrackId", "InstrumentCode", "Url", "WorldId", "ExtraStr", "IsLoop", "NoteCode", "TpqCount")
+    __slots__ = ("Name", "Volume", "Pitch", "SoundType", "Pos", "ObjId", "StartTime", "Duration", "SoundPos", "TrackId", "InstrumentCode", "Url", "WorldId", "ExtraStr", "IsLoop", "NoteCode", "TpqCount", "IsPaused")
     NAME_FIELD_NUMBER: _ClassVar[int]
     VOLUME_FIELD_NUMBER: _ClassVar[int]
     PITCH_FIELD_NUMBER: _ClassVar[int]
@@ -3724,6 +3792,7 @@ class PB_EffectSoundNew_V2(_message.Message):
     ISLOOP_FIELD_NUMBER: _ClassVar[int]
     NOTECODE_FIELD_NUMBER: _ClassVar[int]
     TPQCOUNT_FIELD_NUMBER: _ClassVar[int]
+    ISPAUSED_FIELD_NUMBER: _ClassVar[int]
     Name: str
     Volume: float
     Pitch: float
@@ -3741,7 +3810,8 @@ class PB_EffectSoundNew_V2(_message.Message):
     IsLoop: bool
     NoteCode: int
     TpqCount: int
-    def __init__(self, Name: _Optional[str] = ..., Volume: _Optional[float] = ..., Pitch: _Optional[float] = ..., SoundType: _Optional[int] = ..., Pos: _Optional[_Iterable[int]] = ..., ObjId: _Optional[int] = ..., StartTime: _Optional[int] = ..., Duration: _Optional[int] = ..., SoundPos: _Optional[int] = ..., TrackId: _Optional[int] = ..., InstrumentCode: _Optional[int] = ..., Url: _Optional[str] = ..., WorldId: _Optional[int] = ..., ExtraStr: _Optional[str] = ..., IsLoop: _Optional[bool] = ..., NoteCode: _Optional[int] = ..., TpqCount: _Optional[int] = ...) -> None: ...
+    IsPaused: bool
+    def __init__(self, Name: _Optional[str] = ..., Volume: _Optional[float] = ..., Pitch: _Optional[float] = ..., SoundType: _Optional[int] = ..., Pos: _Optional[_Iterable[int]] = ..., ObjId: _Optional[int] = ..., StartTime: _Optional[int] = ..., Duration: _Optional[int] = ..., SoundPos: _Optional[int] = ..., TrackId: _Optional[int] = ..., InstrumentCode: _Optional[int] = ..., Url: _Optional[str] = ..., WorldId: _Optional[int] = ..., ExtraStr: _Optional[str] = ..., IsLoop: _Optional[bool] = ..., NoteCode: _Optional[int] = ..., TpqCount: _Optional[int] = ..., IsPaused: _Optional[bool] = ...) -> None: ...
 
 class PB_TeamScore(_message.Message):
     __slots__ = ("teamID", "score", "flags")
@@ -3864,7 +3934,7 @@ class PB_RideOtherInfo(_message.Message):
     def __init__(self, rideID: _Optional[int] = ..., boneId: _Optional[int] = ..., rideoffsetpos: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., ridescale: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., riderote: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., isRote: _Optional[bool] = ...) -> None: ...
 
 class PB_RideCompData(_message.Message):
-    __slots__ = ("otherinfos", "isRote", "triggerAdd", "ridingConditions", "usingItem", "tempriderunable", "temprideendtick")
+    __slots__ = ("otherinfos", "isRote", "triggerAdd", "ridingConditions", "usingItem", "tempriderunable", "temprideendtick", "skillScriptNames", "speedMultiplier", "alignRiderBoneId")
     OTHERINFOS_FIELD_NUMBER: _ClassVar[int]
     ISROTE_FIELD_NUMBER: _ClassVar[int]
     TRIGGERADD_FIELD_NUMBER: _ClassVar[int]
@@ -3872,6 +3942,9 @@ class PB_RideCompData(_message.Message):
     USINGITEM_FIELD_NUMBER: _ClassVar[int]
     TEMPRIDERUNABLE_FIELD_NUMBER: _ClassVar[int]
     TEMPRIDEENDTICK_FIELD_NUMBER: _ClassVar[int]
+    SKILLSCRIPTNAMES_FIELD_NUMBER: _ClassVar[int]
+    SPEEDMULTIPLIER_FIELD_NUMBER: _ClassVar[int]
+    ALIGNRIDERBONEID_FIELD_NUMBER: _ClassVar[int]
     otherinfos: _containers.RepeatedCompositeFieldContainer[PB_RideOtherInfo]
     isRote: bool
     triggerAdd: bool
@@ -3879,7 +3952,10 @@ class PB_RideCompData(_message.Message):
     usingItem: int
     tempriderunable: bool
     temprideendtick: int
-    def __init__(self, otherinfos: _Optional[_Iterable[_Union[PB_RideOtherInfo, _Mapping]]] = ..., isRote: _Optional[bool] = ..., triggerAdd: _Optional[bool] = ..., ridingConditions: _Optional[int] = ..., usingItem: _Optional[int] = ..., tempriderunable: _Optional[bool] = ..., temprideendtick: _Optional[int] = ...) -> None: ...
+    skillScriptNames: _containers.RepeatedScalarFieldContainer[str]
+    speedMultiplier: float
+    alignRiderBoneId: int
+    def __init__(self, otherinfos: _Optional[_Iterable[_Union[PB_RideOtherInfo, _Mapping]]] = ..., isRote: _Optional[bool] = ..., triggerAdd: _Optional[bool] = ..., ridingConditions: _Optional[int] = ..., usingItem: _Optional[int] = ..., tempriderunable: _Optional[bool] = ..., temprideendtick: _Optional[int] = ..., skillScriptNames: _Optional[_Iterable[str]] = ..., speedMultiplier: _Optional[float] = ..., alignRiderBoneId: _Optional[int] = ...) -> None: ...
 
 class PB_IronCompData(_message.Message):
     __slots__ = ("host",)
@@ -3924,7 +4000,7 @@ class PB_PartManagerData(_message.Message):
     def __init__(self, infos: _Optional[_Iterable[_Union[PB_PartData, _Mapping]]] = ...) -> None: ...
 
 class PB_MoveData(_message.Message):
-    __slots__ = ("walkSpeed", "runSpeed", "flySpeed", "swimSpeed", "jumpSpeed", "sprintRatio", "swimmingRatio")
+    __slots__ = ("walkSpeed", "runSpeed", "flySpeed", "swimSpeed", "jumpSpeed", "sprintRatio", "swimmingRatio", "swimEnterAction", "swimLeaveAction", "swimDrowningAction", "enableSuspension", "swimSuspensionAction", "navAdditionalWaterSurface", "navAdditionalWaterInner", "navAdditionalWaterOnly", "flyHoverAction", "flyCurveGroup", "flyGlideAction", "flyGlideCooldown", "flyGlideProbability", "flyGlideDuration", "navForceWaterSurface")
     WALKSPEED_FIELD_NUMBER: _ClassVar[int]
     RUNSPEED_FIELD_NUMBER: _ClassVar[int]
     FLYSPEED_FIELD_NUMBER: _ClassVar[int]
@@ -3932,6 +4008,21 @@ class PB_MoveData(_message.Message):
     JUMPSPEED_FIELD_NUMBER: _ClassVar[int]
     SPRINTRATIO_FIELD_NUMBER: _ClassVar[int]
     SWIMMINGRATIO_FIELD_NUMBER: _ClassVar[int]
+    SWIMENTERACTION_FIELD_NUMBER: _ClassVar[int]
+    SWIMLEAVEACTION_FIELD_NUMBER: _ClassVar[int]
+    SWIMDROWNINGACTION_FIELD_NUMBER: _ClassVar[int]
+    ENABLESUSPENSION_FIELD_NUMBER: _ClassVar[int]
+    SWIMSUSPENSIONACTION_FIELD_NUMBER: _ClassVar[int]
+    NAVADDITIONALWATERSURFACE_FIELD_NUMBER: _ClassVar[int]
+    NAVADDITIONALWATERINNER_FIELD_NUMBER: _ClassVar[int]
+    NAVADDITIONALWATERONLY_FIELD_NUMBER: _ClassVar[int]
+    FLYHOVERACTION_FIELD_NUMBER: _ClassVar[int]
+    FLYCURVEGROUP_FIELD_NUMBER: _ClassVar[int]
+    FLYGLIDEACTION_FIELD_NUMBER: _ClassVar[int]
+    FLYGLIDECOOLDOWN_FIELD_NUMBER: _ClassVar[int]
+    FLYGLIDEPROBABILITY_FIELD_NUMBER: _ClassVar[int]
+    FLYGLIDEDURATION_FIELD_NUMBER: _ClassVar[int]
+    NAVFORCEWATERSURFACE_FIELD_NUMBER: _ClassVar[int]
     walkSpeed: float
     runSpeed: int
     flySpeed: int
@@ -3939,7 +4030,22 @@ class PB_MoveData(_message.Message):
     jumpSpeed: int
     sprintRatio: float
     swimmingRatio: float
-    def __init__(self, walkSpeed: _Optional[float] = ..., runSpeed: _Optional[int] = ..., flySpeed: _Optional[int] = ..., swimSpeed: _Optional[int] = ..., jumpSpeed: _Optional[int] = ..., sprintRatio: _Optional[float] = ..., swimmingRatio: _Optional[float] = ...) -> None: ...
+    swimEnterAction: int
+    swimLeaveAction: int
+    swimDrowningAction: int
+    enableSuspension: bool
+    swimSuspensionAction: int
+    navAdditionalWaterSurface: bool
+    navAdditionalWaterInner: bool
+    navAdditionalWaterOnly: bool
+    flyHoverAction: int
+    flyCurveGroup: _containers.RepeatedCompositeFieldContainer[PB_Vector3fArray]
+    flyGlideAction: int
+    flyGlideCooldown: float
+    flyGlideProbability: float
+    flyGlideDuration: float
+    navForceWaterSurface: bool
+    def __init__(self, walkSpeed: _Optional[float] = ..., runSpeed: _Optional[int] = ..., flySpeed: _Optional[int] = ..., swimSpeed: _Optional[int] = ..., jumpSpeed: _Optional[int] = ..., sprintRatio: _Optional[float] = ..., swimmingRatio: _Optional[float] = ..., swimEnterAction: _Optional[int] = ..., swimLeaveAction: _Optional[int] = ..., swimDrowningAction: _Optional[int] = ..., enableSuspension: _Optional[bool] = ..., swimSuspensionAction: _Optional[int] = ..., navAdditionalWaterSurface: _Optional[bool] = ..., navAdditionalWaterInner: _Optional[bool] = ..., navAdditionalWaterOnly: _Optional[bool] = ..., flyHoverAction: _Optional[int] = ..., flyCurveGroup: _Optional[_Iterable[_Union[PB_Vector3fArray, _Mapping]]] = ..., flyGlideAction: _Optional[int] = ..., flyGlideCooldown: _Optional[float] = ..., flyGlideProbability: _Optional[float] = ..., flyGlideDuration: _Optional[float] = ..., navForceWaterSurface: _Optional[bool] = ...) -> None: ...
 
 class PB_NewTameData(_message.Message):
     __slots__ = ("ownerUin", "tameItemsK", "tameItemsV", "showTameFlag", "tamedModel")
@@ -3974,9 +4080,9 @@ class PB_ReproductionCompData(_message.Message):
     def __init__(self, state: _Optional[int] = ..., isForbidden: _Optional[bool] = ..., itemArray: _Optional[_Iterable[_Union[PB_ReproductionTriggerItem, _Mapping]]] = ...) -> None: ...
 
 class FB_FeedCompData(_message.Message):
-    __slots__ = ("enableFeed", "enableHp", "enablePower", "numItems", "itemId", "addHeal", "addStamina", "addFavor", "enablefeedback", "numExchangeItems", "exchangeItems", "enableFavor")
+    __slots__ = ("enableFeed", "enableHp", "enablePower", "numItems", "itemId", "addHeal", "addStamina", "addFavor", "enablefeedback", "numExchangeItems", "exchangeItems", "enableFavor", "numItemsMutation", "itemIdMutation", "enablefeedback3", "succMutationProb")
     class ExchangeItem(_message.Message):
-        __slots__ = ("itemId", "procMotionId", "procSoundId", "procEffectId", "rewardAfterTime", "enableBeforeTame", "enableSuccFeedback", "groupArray")
+        __slots__ = ("itemId", "procMotionId", "procSoundId", "procEffectId", "rewardAfterTime", "enableBeforeTame", "enableSuccFeedback", "groupArray", "rewardCdTime")
         ITEMID_FIELD_NUMBER: _ClassVar[int]
         PROCMOTIONID_FIELD_NUMBER: _ClassVar[int]
         PROCSOUNDID_FIELD_NUMBER: _ClassVar[int]
@@ -3985,6 +4091,7 @@ class FB_FeedCompData(_message.Message):
         ENABLEBEFORETAME_FIELD_NUMBER: _ClassVar[int]
         ENABLESUCCFEEDBACK_FIELD_NUMBER: _ClassVar[int]
         GROUPARRAY_FIELD_NUMBER: _ClassVar[int]
+        REWARDCDTIME_FIELD_NUMBER: _ClassVar[int]
         itemId: int
         procMotionId: int
         procSoundId: int
@@ -3993,7 +4100,8 @@ class FB_FeedCompData(_message.Message):
         enableBeforeTame: bool
         enableSuccFeedback: bool
         groupArray: _containers.RepeatedCompositeFieldContainer[FB_FeedCompData.ExchangeRewardGroup]
-        def __init__(self, itemId: _Optional[int] = ..., procMotionId: _Optional[int] = ..., procSoundId: _Optional[int] = ..., procEffectId: _Optional[int] = ..., rewardAfterTime: _Optional[int] = ..., enableBeforeTame: _Optional[bool] = ..., enableSuccFeedback: _Optional[bool] = ..., groupArray: _Optional[_Iterable[_Union[FB_FeedCompData.ExchangeRewardGroup, _Mapping]]] = ...) -> None: ...
+        rewardCdTime: int
+        def __init__(self, itemId: _Optional[int] = ..., procMotionId: _Optional[int] = ..., procSoundId: _Optional[int] = ..., procEffectId: _Optional[int] = ..., rewardAfterTime: _Optional[int] = ..., enableBeforeTame: _Optional[bool] = ..., enableSuccFeedback: _Optional[bool] = ..., groupArray: _Optional[_Iterable[_Union[FB_FeedCompData.ExchangeRewardGroup, _Mapping]]] = ..., rewardCdTime: _Optional[int] = ...) -> None: ...
     class ExchangeRewardItem(_message.Message):
         __slots__ = ("type", "itemId", "minNum", "maxNum", "buffId", "weight")
         TYPE_FIELD_NUMBER: _ClassVar[int]
@@ -4030,6 +4138,10 @@ class FB_FeedCompData(_message.Message):
     NUMEXCHANGEITEMS_FIELD_NUMBER: _ClassVar[int]
     EXCHANGEITEMS_FIELD_NUMBER: _ClassVar[int]
     ENABLEFAVOR_FIELD_NUMBER: _ClassVar[int]
+    NUMITEMSMUTATION_FIELD_NUMBER: _ClassVar[int]
+    ITEMIDMUTATION_FIELD_NUMBER: _ClassVar[int]
+    ENABLEFEEDBACK3_FIELD_NUMBER: _ClassVar[int]
+    SUCCMUTATIONPROB_FIELD_NUMBER: _ClassVar[int]
     enableFeed: bool
     enableHp: bool
     enablePower: bool
@@ -4042,7 +4154,11 @@ class FB_FeedCompData(_message.Message):
     numExchangeItems: int
     exchangeItems: _containers.RepeatedCompositeFieldContainer[FB_FeedCompData.ExchangeItem]
     enableFavor: bool
-    def __init__(self, enableFeed: _Optional[bool] = ..., enableHp: _Optional[bool] = ..., enablePower: _Optional[bool] = ..., numItems: _Optional[int] = ..., itemId: _Optional[_Iterable[int]] = ..., addHeal: _Optional[_Iterable[int]] = ..., addStamina: _Optional[_Iterable[int]] = ..., addFavor: _Optional[_Iterable[int]] = ..., enablefeedback: _Optional[_Iterable[bool]] = ..., numExchangeItems: _Optional[int] = ..., exchangeItems: _Optional[_Iterable[_Union[FB_FeedCompData.ExchangeItem, _Mapping]]] = ..., enableFavor: _Optional[bool] = ...) -> None: ...
+    numItemsMutation: int
+    itemIdMutation: _containers.RepeatedScalarFieldContainer[int]
+    enablefeedback3: _containers.RepeatedScalarFieldContainer[bool]
+    succMutationProb: _containers.RepeatedScalarFieldContainer[float]
+    def __init__(self, enableFeed: _Optional[bool] = ..., enableHp: _Optional[bool] = ..., enablePower: _Optional[bool] = ..., numItems: _Optional[int] = ..., itemId: _Optional[_Iterable[int]] = ..., addHeal: _Optional[_Iterable[int]] = ..., addStamina: _Optional[_Iterable[int]] = ..., addFavor: _Optional[_Iterable[int]] = ..., enablefeedback: _Optional[_Iterable[bool]] = ..., numExchangeItems: _Optional[int] = ..., exchangeItems: _Optional[_Iterable[_Union[FB_FeedCompData.ExchangeItem, _Mapping]]] = ..., enableFavor: _Optional[bool] = ..., numItemsMutation: _Optional[int] = ..., itemIdMutation: _Optional[_Iterable[int]] = ..., enablefeedback3: _Optional[_Iterable[bool]] = ..., succMutationProb: _Optional[_Iterable[float]] = ...) -> None: ...
 
 class PB_NewGrowData(_message.Message):
     __slots__ = ("enableItem", "growState", "growthItemId")
@@ -4083,7 +4199,7 @@ class PB_TrainFollowData(_message.Message):
     def __init__(self, prev_actor_id: _Optional[int] = ..., spacing: _Optional[float] = ..., tail_actor_id: _Optional[int] = ...) -> None: ...
 
 class PB_BroomFlyData(_message.Message):
-    __slots__ = ("is_active", "move_speed", "acce_speed", "jump_cd", "bounce_motion_y", "accel_duration", "current_speed", "jump_pitch", "fly_tail_effect_id", "gravity_scale", "model_rotation_transition_duration", "pc_yaw_follow_sharpness", "mobile_yaw_follow_sharpness", "flight_move_pitch_return_duration", "model_rotation_active_duration", "model_rotation_transition_ease_power")
+    __slots__ = ("is_active", "move_speed", "acce_speed", "jump_cd", "bounce_motion_y", "accel_duration", "current_speed", "jump_pitch", "fly_tail_effect_id", "gravity_scale", "model_rotation_transition_duration", "pc_yaw_follow_sharpness", "mobile_yaw_follow_sharpness", "flight_move_pitch_return_duration", "model_rotation_active_duration", "model_rotation_transition_ease_power", "EnableHelicopterMode", "HelicopterSpeed", "EnableStrength", "StrengthUnitTime", "StrengthPerUnit", "PlayerRideAnim", "RideIdleAirAnim", "RideFlyAnim", "RideGlideAnim", "CheckDriverFallBottom")
     IS_ACTIVE_FIELD_NUMBER: _ClassVar[int]
     MOVE_SPEED_FIELD_NUMBER: _ClassVar[int]
     ACCE_SPEED_FIELD_NUMBER: _ClassVar[int]
@@ -4100,6 +4216,16 @@ class PB_BroomFlyData(_message.Message):
     FLIGHT_MOVE_PITCH_RETURN_DURATION_FIELD_NUMBER: _ClassVar[int]
     MODEL_ROTATION_ACTIVE_DURATION_FIELD_NUMBER: _ClassVar[int]
     MODEL_ROTATION_TRANSITION_EASE_POWER_FIELD_NUMBER: _ClassVar[int]
+    ENABLEHELICOPTERMODE_FIELD_NUMBER: _ClassVar[int]
+    HELICOPTERSPEED_FIELD_NUMBER: _ClassVar[int]
+    ENABLESTRENGTH_FIELD_NUMBER: _ClassVar[int]
+    STRENGTHUNITTIME_FIELD_NUMBER: _ClassVar[int]
+    STRENGTHPERUNIT_FIELD_NUMBER: _ClassVar[int]
+    PLAYERRIDEANIM_FIELD_NUMBER: _ClassVar[int]
+    RIDEIDLEAIRANIM_FIELD_NUMBER: _ClassVar[int]
+    RIDEFLYANIM_FIELD_NUMBER: _ClassVar[int]
+    RIDEGLIDEANIM_FIELD_NUMBER: _ClassVar[int]
+    CHECKDRIVERFALLBOTTOM_FIELD_NUMBER: _ClassVar[int]
     is_active: bool
     move_speed: float
     acce_speed: float
@@ -4116,10 +4242,20 @@ class PB_BroomFlyData(_message.Message):
     flight_move_pitch_return_duration: float
     model_rotation_active_duration: float
     model_rotation_transition_ease_power: float
-    def __init__(self, is_active: _Optional[bool] = ..., move_speed: _Optional[float] = ..., acce_speed: _Optional[float] = ..., jump_cd: _Optional[float] = ..., bounce_motion_y: _Optional[float] = ..., accel_duration: _Optional[float] = ..., current_speed: _Optional[float] = ..., jump_pitch: _Optional[float] = ..., fly_tail_effect_id: _Optional[int] = ..., gravity_scale: _Optional[float] = ..., model_rotation_transition_duration: _Optional[float] = ..., pc_yaw_follow_sharpness: _Optional[float] = ..., mobile_yaw_follow_sharpness: _Optional[float] = ..., flight_move_pitch_return_duration: _Optional[float] = ..., model_rotation_active_duration: _Optional[float] = ..., model_rotation_transition_ease_power: _Optional[float] = ...) -> None: ...
+    EnableHelicopterMode: bool
+    HelicopterSpeed: float
+    EnableStrength: bool
+    StrengthUnitTime: float
+    StrengthPerUnit: float
+    PlayerRideAnim: int
+    RideIdleAirAnim: int
+    RideFlyAnim: int
+    RideGlideAnim: int
+    CheckDriverFallBottom: bool
+    def __init__(self, is_active: _Optional[bool] = ..., move_speed: _Optional[float] = ..., acce_speed: _Optional[float] = ..., jump_cd: _Optional[float] = ..., bounce_motion_y: _Optional[float] = ..., accel_duration: _Optional[float] = ..., current_speed: _Optional[float] = ..., jump_pitch: _Optional[float] = ..., fly_tail_effect_id: _Optional[int] = ..., gravity_scale: _Optional[float] = ..., model_rotation_transition_duration: _Optional[float] = ..., pc_yaw_follow_sharpness: _Optional[float] = ..., mobile_yaw_follow_sharpness: _Optional[float] = ..., flight_move_pitch_return_duration: _Optional[float] = ..., model_rotation_active_duration: _Optional[float] = ..., model_rotation_transition_ease_power: _Optional[float] = ..., EnableHelicopterMode: _Optional[bool] = ..., HelicopterSpeed: _Optional[float] = ..., EnableStrength: _Optional[bool] = ..., StrengthUnitTime: _Optional[float] = ..., StrengthPerUnit: _Optional[float] = ..., PlayerRideAnim: _Optional[int] = ..., RideIdleAirAnim: _Optional[int] = ..., RideFlyAnim: _Optional[int] = ..., RideGlideAnim: _Optional[int] = ..., CheckDriverFallBottom: _Optional[bool] = ...) -> None: ...
 
 class PB_ActorCompData(_message.Message):
-    __slots__ = ("atkanim", "boundsize", "boundheight", "hitbound", "walkanim", "runanim", "flyanim", "swimanim", "sneakanim", "phystype", "scale", "jumpanim", "modelKv", "attackdistance", "rideID", "boneId", "rideHp", "rideoffsetpos", "ridescale", "riderote", "carryComp", "ridecomp", "ironInfo", "ironDomeEssenceInfo", "partinfo", "partmanagerinfo", "hitcenter", "moveData", "interact", "newTameData", "repComp", "newGrowData", "feedCompData", "dropItemComp", "sleepData", "trainFollowData", "broomFlyData")
+    __slots__ = ("atkanim", "boundsize", "boundheight", "hitbound", "walkanim", "runanim", "flyanim", "swimanim", "sneakanim", "phystype", "scale", "jumpanim", "modelKv", "attackdistance", "rideID", "boneId", "rideHp", "rideoffsetpos", "ridescale", "riderote", "carryComp", "ridecomp", "ironInfo", "ironDomeEssenceInfo", "partinfo", "partmanagerinfo", "hitcenter", "moveData", "interact", "newTameData", "repComp", "newGrowData", "feedCompData", "dropItemComp", "sleepData", "trainFollowData", "broomFlyData", "bossGroupLinkLineData", "showHP")
     ATKANIM_FIELD_NUMBER: _ClassVar[int]
     BOUNDSIZE_FIELD_NUMBER: _ClassVar[int]
     BOUNDHEIGHT_FIELD_NUMBER: _ClassVar[int]
@@ -4157,6 +4293,8 @@ class PB_ActorCompData(_message.Message):
     SLEEPDATA_FIELD_NUMBER: _ClassVar[int]
     TRAINFOLLOWDATA_FIELD_NUMBER: _ClassVar[int]
     BROOMFLYDATA_FIELD_NUMBER: _ClassVar[int]
+    BOSSGROUPLINKLINEDATA_FIELD_NUMBER: _ClassVar[int]
+    SHOWHP_FIELD_NUMBER: _ClassVar[int]
     atkanim: int
     boundsize: int
     boundheight: int
@@ -4194,7 +4332,9 @@ class PB_ActorCompData(_message.Message):
     sleepData: PB_SleepData
     trainFollowData: PB_TrainFollowData
     broomFlyData: PB_BroomFlyData
-    def __init__(self, atkanim: _Optional[int] = ..., boundsize: _Optional[int] = ..., boundheight: _Optional[int] = ..., hitbound: _Optional[_Union[PB_Vector3, _Mapping]] = ..., walkanim: _Optional[int] = ..., runanim: _Optional[int] = ..., flyanim: _Optional[int] = ..., swimanim: _Optional[int] = ..., sneakanim: _Optional[int] = ..., phystype: _Optional[int] = ..., scale: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., jumpanim: _Optional[int] = ..., modelKv: _Optional[str] = ..., attackdistance: _Optional[float] = ..., rideID: _Optional[int] = ..., boneId: _Optional[int] = ..., rideHp: _Optional[int] = ..., rideoffsetpos: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., ridescale: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., riderote: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., carryComp: _Optional[_Union[CarryCompData, _Mapping]] = ..., ridecomp: _Optional[_Union[PB_RideCompData, _Mapping]] = ..., ironInfo: _Optional[_Union[PB_IronCompData, _Mapping]] = ..., ironDomeEssenceInfo: _Optional[_Union[PB_IronDomeEssenceData, _Mapping]] = ..., partinfo: _Optional[_Union[PB_PartInfoData, _Mapping]] = ..., partmanagerinfo: _Optional[_Union[PB_PartManagerData, _Mapping]] = ..., hitcenter: _Optional[_Union[PB_Vector3, _Mapping]] = ..., moveData: _Optional[_Union[PB_MoveData, _Mapping]] = ..., interact: _Optional[bool] = ..., newTameData: _Optional[_Union[PB_NewTameData, _Mapping]] = ..., repComp: _Optional[_Union[PB_ReproductionCompData, _Mapping]] = ..., newGrowData: _Optional[_Union[PB_NewGrowData, _Mapping]] = ..., feedCompData: _Optional[_Union[FB_FeedCompData, _Mapping]] = ..., dropItemComp: _Optional[_Union[PB_DropItemCompData, _Mapping]] = ..., sleepData: _Optional[_Union[PB_SleepData, _Mapping]] = ..., trainFollowData: _Optional[_Union[PB_TrainFollowData, _Mapping]] = ..., broomFlyData: _Optional[_Union[PB_BroomFlyData, _Mapping]] = ...) -> None: ...
+    bossGroupLinkLineData: PB_BossGroupLinkLineCompData
+    showHP: bool
+    def __init__(self, atkanim: _Optional[int] = ..., boundsize: _Optional[int] = ..., boundheight: _Optional[int] = ..., hitbound: _Optional[_Union[PB_Vector3, _Mapping]] = ..., walkanim: _Optional[int] = ..., runanim: _Optional[int] = ..., flyanim: _Optional[int] = ..., swimanim: _Optional[int] = ..., sneakanim: _Optional[int] = ..., phystype: _Optional[int] = ..., scale: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., jumpanim: _Optional[int] = ..., modelKv: _Optional[str] = ..., attackdistance: _Optional[float] = ..., rideID: _Optional[int] = ..., boneId: _Optional[int] = ..., rideHp: _Optional[int] = ..., rideoffsetpos: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., ridescale: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., riderote: _Optional[_Union[PB_Vector3f, _Mapping]] = ..., carryComp: _Optional[_Union[CarryCompData, _Mapping]] = ..., ridecomp: _Optional[_Union[PB_RideCompData, _Mapping]] = ..., ironInfo: _Optional[_Union[PB_IronCompData, _Mapping]] = ..., ironDomeEssenceInfo: _Optional[_Union[PB_IronDomeEssenceData, _Mapping]] = ..., partinfo: _Optional[_Union[PB_PartInfoData, _Mapping]] = ..., partmanagerinfo: _Optional[_Union[PB_PartManagerData, _Mapping]] = ..., hitcenter: _Optional[_Union[PB_Vector3, _Mapping]] = ..., moveData: _Optional[_Union[PB_MoveData, _Mapping]] = ..., interact: _Optional[bool] = ..., newTameData: _Optional[_Union[PB_NewTameData, _Mapping]] = ..., repComp: _Optional[_Union[PB_ReproductionCompData, _Mapping]] = ..., newGrowData: _Optional[_Union[PB_NewGrowData, _Mapping]] = ..., feedCompData: _Optional[_Union[FB_FeedCompData, _Mapping]] = ..., dropItemComp: _Optional[_Union[PB_DropItemCompData, _Mapping]] = ..., sleepData: _Optional[_Union[PB_SleepData, _Mapping]] = ..., trainFollowData: _Optional[_Union[PB_TrainFollowData, _Mapping]] = ..., broomFlyData: _Optional[_Union[PB_BroomFlyData, _Mapping]] = ..., bossGroupLinkLineData: _Optional[_Union[PB_BossGroupLinkLineCompData, _Mapping]] = ..., showHP: _Optional[bool] = ...) -> None: ...
 
 class PB_PlayWeaponMotionData(_message.Message):
     __slots__ = ("objID", "effectID", "name", "reset", "mclass", "scale")
