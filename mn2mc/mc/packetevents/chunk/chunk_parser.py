@@ -10,8 +10,6 @@ import queue
 import threading
 from typing import TYPE_CHECKING
 
-from aiorak import Priority
-
 import mn2mc
 import mn2mc.config as config
 import mn2mc.mapping.block_face as block_face_mapping
@@ -51,7 +49,138 @@ def send_air_chunk(miniplayer: MiniPlayer, x: int, z: int):
             ChunkBlob=PB_ChunkBlob(UnzipLen=805308264, BlobLen=554, BlobDetail=air),
         ),
     ).SerializeToString()
-    miniplayer.send_packet(ePBMsgCode.PB_SYNC_CHUNK_DATA_HC, minichunk, priority=Priority.LOW)
+    miniplayer.send_packet(ePBMsgCode.PB_SYNC_CHUNK_DATA_HC, minichunk)
+
+
+def send_fast_chunk(
+    miniplayer: MiniPlayer, x: int, z: int, blocks: list,
+    lights: list | None = None, light_flag: int = 0,
+):
+    """Build a real 1.58 PalettedTable chunk and send it to the Mini World client.
+
+    Replaces the slow path (air chunk + per-block updates) when
+    ``config.mc.fast_chunk_conversion`` is enabled. The chunk is built with
+    ``mn2mc.mini.chunk.chunk_builder_158`` (real 1.58 on-disk format),
+    zstd compressed and sent as a single ``PB_SYNC_CHUNK_DATA_HC``.
+
+    Args:
+        miniplayer: MiniPlayer to send to
+        x: Chunk X coordinate (already adjusted, e.g. -chunkdata["x"] - 1)
+        z: Chunk Z coordinate
+        blocks: List of block data [x, y, z, type] or [x, y, z, type, properties]
+        lights: Optional MC per-section light data from chunk.js:
+            [{sec_y, sky?, block?}] with 2048-byte nibble arrays. Written into
+            the container-f1 light table (real MC light). None → no light table
+            (client renders the chunk dark).
+        light_flag: Light flag u16 passed through to each section (default 0)
+    """
+    from mn2mc.mini.chunk.chunk_builder_158 import (
+        BLOCKS_PER_SECTION,
+        CHUNK_DATA_VERSION_158_0,
+        build_full_chunk_158,
+        compress_chunk_158,
+    )
+
+    # Use the MC per-section light data as-is (real sky/block light from
+    # chunk.js). Writing the container-f1 light table makes the client render
+    # light; absent table → empty light layers, dark chunk.
+    light = _mc_lights_to_table(lights) if lights else None
+    if light:
+        # MC light is packed at MC x; blocks are stored x-flipped (15-x), so
+        # flip light X too or it renders mirrored (light4.txt: 550 at local
+        # x=8..15, light 15 at 15-x=7..0).
+        for sec_y in list(light["sky"]):
+            light["sky"][sec_y] = _flip_light_x(light["sky"][sec_y])
+        for blk in light["block"]:
+            for sec_y in list(blk):
+                blk[sec_y] = _flip_light_x(blk[sec_y])
+    # Group MC blocks into 16x16x16 sections. The x axis is flipped to match
+    # the slow path's coordinate convention (encode_block(15 - x, ...)).
+    sections: dict[int, dict] = {}
+    for block in blocks:
+        if block[3] == 0:
+            continue
+        bx, by, bz, mctype = block[0], block[1], block[2], block[3]
+        mini_id = block_mapping.mc_to_mini(mctype)
+        sec_y = by // 16
+        sec = sections.setdefault(sec_y, {
+            "sec_y": sec_y,
+            "blocks": [0] * BLOCKS_PER_SECTION,
+            "states": [0] * BLOCKS_PER_SECTION,
+        })
+        idx = (15 - bx) + bz * 16 + (by % 16) * 256
+        sec["blocks"][idx] = mini_id
+        if len(block) == 5:
+            sec["states"][idx] = block_face_mapping.get_block_face(mini_id, block[4])
+    if not sections:
+        # all air — still emit a chunk so the client owns the region
+        sections[0] = {"sec_y": 0, "blocks": [0] * BLOCKS_PER_SECTION, "states": [0] * BLOCKS_PER_SECTION}
+    raw = build_full_chunk_158(
+        [sec for _, sec in sorted(sections.items())],
+        data_version=CHUNK_DATA_VERSION_158_0,
+        light=light,
+    )
+    compressed, unzip_len = compress_chunk_158(raw)
+    minichunk = PB_SyncChunkDataHC(
+        SectionFlags=SECTION_FLAGS,
+        Initialize=1,
+        ChunkData=PB_ChunkSaveDB(
+            OWID=_DEFAULT_OWID,
+            MapID=0,
+            x=x,
+            z=z,
+            ChunkBlob=PB_ChunkBlob(
+                UnzipLen=unzip_len, BlobLen=len(compressed), BlobDetail=compressed
+            ),
+        ),
+    ).SerializeToString()
+    miniplayer.send_packet(ePBMsgCode.PB_SYNC_CHUNK_DATA_HC, minichunk)
+
+
+
+def _flip_light_x(nibbles_2048: bytes) -> bytes:
+    """X-flip a 2048-byte light nibble array (4096 nibbles, linear x + z*16 + y*256).
+
+    chunk.js packs MC light at MC x; send_fast_chunk stores blocks x-flipped
+    (15-x), so light must be flipped too or it renders mirrored in X.
+    """
+    out = bytearray(2048)
+    for i in range(2048):
+        lo = nibbles_2048[i] & 0xF
+        hi = nibbles_2048[i] >> 4
+        for nib, src_idx in ((lo, i * 2), (hi, i * 2 + 1)):
+            x, rest = src_idx & 0xF, src_idx & 0xFF0
+            dst_idx = (15 - x) | rest
+            if dst_idx & 1:
+                out[dst_idx >> 1] |= nib << 4
+            else:
+                out[dst_idx >> 1] |= nib
+    return bytes(out)
+
+
+def _mc_lights_to_table(lights: list) -> dict:
+    """Convert MC per-section light data to a build_full_chunk_158 light dict.
+
+    chunk.js extracts per-section sky/block light as 2048-byte nibble arrays
+    (already in Mini World linear layout). The builder's light dict wants
+    {"sky": {sec_y: bytes}, "block": [{sec_y: bytes}]} — MC has a single
+    white block-light channel, so R = G = B (len 1 → builder triplicates).
+
+    Args:
+        lights: [{sec_y, sky?, block?}] with 2048-byte nibble arrays.
+
+    Returns:
+        Light dict accepted by build_full_chunk_158's ``light`` parameter.
+    """
+    sky: dict[int, bytes] = {}
+    block: dict[int, bytes] = {}
+    for light in lights:
+        sec_y = light.get("sec_y", 0)
+        if light.get("sky") is not None:
+            sky[sec_y] = light["sky"]
+        if light.get("block") is not None:
+            block[sec_y] = light["block"]
+    return {"sky": sky, "block": [block]}
 
 
 def send_blocks(
@@ -129,10 +258,24 @@ def create_worker_threads(process_func, chunkqueue, thread_count=None):
     def _parse_thread():
         while mn2mc.running:
             try:
-                data = chunkqueue.get()
+                data = chunkqueue.get(timeout=0.5)
                 process_func(data)
+            except queue.Empty:
+                continue
             except queue.ShutDown:
                 return
 
     for i in range(thread_count):
         threading.Thread(target=_parse_thread, name=f"Chunk parser {i}", daemon=True).start()
+
+
+def stop_chunk_workers() -> None:
+    """Shut down the active chunk parse queue (idempotent)."""
+    if config.mc.use_new_chunk_parser:
+        from mn2mc.mc.packetevents.chunk import parsed_chunk
+
+        parsed_chunk.stop()
+    else:
+        from mn2mc.mc.packetevents.chunk import map_chunk
+
+        map_chunk.stop()

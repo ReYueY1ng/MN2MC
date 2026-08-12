@@ -1,10 +1,7 @@
 """Chunk data bridge between MC and Mini World."""
 
 from __future__ import annotations
-from loguru import logger
-from javascript.events import TaskState
 
-import socket
 import threading
 import time
 import zlib
@@ -12,15 +9,17 @@ from typing import TYPE_CHECKING
 
 import javascript
 import ormsgpack
+from javascript.events import TaskState
+from loguru import logger
 
 import mn2mc.config as config
-from mn2mc.mc.packet import on_event
 from mn2mc.mc.chunk_transport import (
     ChunkTransport,
     KRENTransport,
     TCPTransport,
     detect_transport,
 )
+from mn2mc.mc.packet import on_event
 
 if TYPE_CHECKING:
     from mn2mc.mc.client import MCClient
@@ -75,20 +74,11 @@ class MCChunkBridge:
             logger.info("Chunk transport: tcp")
 
         self._writer_closed = False
+        self._stopped = False
         self.get_chunk_thread: threading.Thread | None = None
 
     def start(self, miniplayer_name: str, running_event: threading.Event) -> None:
         """Start the chunk polling thread."""
-
-        """
-        self.get_chunk_thread = threading.Thread(
-            target=self._poll_chunks,
-            name=f"({miniplayer_name}) Get chunk thread",
-            daemon=True,
-            args=(running_event,),
-        )
-        self.get_chunk_thread.start()
-        """
         self._running_event = running_event
 
         @javascript.AsyncTask(start=True)
@@ -123,7 +113,11 @@ class MCChunkBridge:
         on_event("parsed_chunk", self._mc_client, chunks, {"name": "parsed_chunk"})
 
     def stop(self) -> None:
-        """Stop the chunk manager."""
+        """Stop the chunk manager (idempotent)."""
+        if self._stopped:
+            return
+        self._stopped = True
+        self._writer_closed = True
         if hasattr(self, "_transport"):
             self._transport.close()
         if hasattr(self, "chunkmgr"):

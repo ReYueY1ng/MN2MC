@@ -31,8 +31,6 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
         bid, bex = mini_block.encode_block(
             block_id, (pos.x - 1) % 16, pos.y, pos.z % 16
         )
-        # logger.info(f'bid {bid}')
-        # logger.info(f'x {pos.x // 16} y {pos.z // 16}')
         client.miniplayer.send_packet(
             ePBMsgCode.PB_BLOCK_DATA_UPDATE_HC,
             PB_BlockUpdateHC(

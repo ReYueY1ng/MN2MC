@@ -58,14 +58,6 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     # Track buffs on the entity
     entity = client.entities.get(entityid)
     if entity is None:
-        '''
-        entity = MCEntity(
-            pos=Vector3f(0.0, 0.0, 0.0),
-            angle=Angle(0.0, 0.0),
-            type=0,
-        )
-        client.entities[entityid] = entity
-        '''
         logger.warning("entity_effect: unknown entity {}", entityid)
         return
 

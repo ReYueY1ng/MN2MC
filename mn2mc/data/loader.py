@@ -52,6 +52,11 @@ def load_mobs() -> Dict[int, int]:
     return _load_yaml("mobs.yaml")
 
 
+def load_block_face() -> Dict[int, int]:
+    """Load Mini block ID → face capability mapping from block_face.yaml."""
+    return _load_yaml("block_face.yaml")
+
+
 def load_sounds() -> Dict[str, str]:
     """Load Mini SoundPath → MC sound name mapping from sounds.yaml."""
     return _load_yaml_str("sounds.yaml")

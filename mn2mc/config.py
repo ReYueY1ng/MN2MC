@@ -18,7 +18,7 @@ mini:
     ip: 127.0.0.1
     port: 11155
     host_to_room_server: false # 创建迷你房间，若启用则无法通过 mitm 方式进入
-    max_players: 65535
+    max_players: 40
   send_log_to_chat: false # 发送日志至聊天栏
   admin_uins: [] # 允许执行 /mn2mc reload 等命令的玩家 UIN 列表，留空则仅房主可执行
   whitelist_uins: [] # 允许进入代理的玩家 UIN 列表，留空则允许所有玩家
@@ -29,6 +29,7 @@ mc:
   username: "" # 指定玩家名称，留空则使用迷你玩家名称
   version: "1.21.11" # 指定 MC 版本，目前仅支持 1.21.11
   use_new_chunk_parser: true # 是否使用新版区块解析器，能够减小跨语言调用开销，但可能会超时，占用大量内存
+  fast_chunk_conversion: false # 快速区块转换：直接构建 1.58 PalettedTable 区块包；关闭则使用空区块+方块更新（慢速）
   chunk_parse_thread: 4 # 区块解析线程数
   log_message: false # 记录聊天消息
   chunk_transport: auto  # auto=自动检测, kren=共享内存(快), tcp=TCP(兼容)
@@ -68,6 +69,7 @@ class MCConfig(BaseModel):
     version: Literal["1.21.11"] = "1.21.11"
     chunk_parse_thread: int = Field(default=4, ge=1, le=32)
     use_new_chunk_parser: bool = True
+    fast_chunk_conversion: bool = False
     log_message: bool = False
     chunk_transport: Literal["auto", "kren", "tcp"] = "auto"
     kren_buffer_size: int = Field(default=10485760, ge=1024, le=104857600)

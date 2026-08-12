@@ -71,6 +71,9 @@ class MCClient:
 
     def _setup_connection(self, options: dict) -> None:
         """Create MC client connection and bind event handlers."""
+        if self._chunk_bridge is not None:
+            self._chunk_bridge.stop()
+            self._chunk_bridge = None
         self.client = mcprotocol.createClient(options)
 
         # Create/reset connection component
@@ -441,11 +444,12 @@ class MCClient:
         on_event(metadata["name"], self, jsondata, metadata)
 
     def remove(self):
-        if self._open_timer:
+        if self._open_timer is not None:
             self._open_timer.cancel()
             self._open_timer = None
         if self._chunk_bridge is not None:
             self._chunk_bridge.stop()
+            self._chunk_bridge = None
         self.end()
 
     def get_chunks(self):

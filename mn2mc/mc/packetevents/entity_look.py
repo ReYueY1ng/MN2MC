@@ -4,11 +4,7 @@ from __future__ import annotations
 
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
-from mn2mc.mini.proto.common import (
-    PB_MoveMotion,
-    ePBMsgCode,
-)
-from mn2mc.mini.proto.hc import PB_ActorMoveHC
+from mn2mc.mc.packetevents._entity_move import broadcast_actor_move
 from mn2mc.utils.angle import Angle
 
 
@@ -23,22 +19,9 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     if objid is None:
         return
     pos3f = client.entities[entityid].pos
-    pos = pos3f.convert().to_vec3().to_mini()
     angle = Angle.from_mc_int8(jsondata["yaw"], jsondata["pitch"])
-    yaw, pitch = angle.to_mini_uint8()
     client.entities[entityid].angle = angle
-    client.miniplayer.send_packet(
-        ePBMsgCode.PB_ACTOR_MOVE_HC,
-        PB_ActorMoveHC(
-            ObjID=objid,
-            MoveMotion=PB_MoveMotion(
-                Position=pos,
-                Yaw=yaw,
-                Pitch=pitch,
-                ChangeFlags=0,
-            ),
-        ).SerializeToString(),
-    )
+    broadcast_actor_move(client, objid, pos3f, angle)
 
 
 add_event("entity_look", on_recv)

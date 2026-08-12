@@ -10,6 +10,7 @@ import mn2mc.mini.proto as proto
 import mn2mc.mini.room
 import mn2mc.mini.wsconn
 from mn2mc.mc.packet import load_all_event as mc_load_all_event
+from mn2mc.mc.packetevents.chunk.chunk_parser import stop_chunk_workers
 from mn2mc.mini.packet import MiniServerPacket
 from mn2mc.mini.packet import load_all_event as mini_load_all_event
 from mn2mc.mini.player import MiniPlayer, _players_lock, players
@@ -34,9 +35,6 @@ default_extra_info = {
 
 room_extra_info = proto.hc.PB_RoomExtraInfoHC()
 room_extra_info.room_extra = json.dumps(default_extra_info["room_extra"]).encode()
-# room_extra_info.CMURL = default_extra_info["CMURL"]
-# room_extra_info.MapMD5 = default_extra_info["MapMD5"]
-# room_extra_info.MapID = default_extra_info["MapID"]
 room_extra_info_bytes = room_extra_info.SerializeToString()
 
 miniserver: aiorak.Server
@@ -124,3 +122,4 @@ async def stop():
     if config.mini.server.host_to_room_server and mn2mc.mini.room.room_token:
         await mn2mc.mini.room.close_room()
     mn2mc.running = False
+    stop_chunk_workers()

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-MN2MC — Protocol translation proxy between 迷你世界 1.57.1 and Minecraft Java 1.21.11.
+MN2MC — Protocol translation proxy between 迷你世界 1.58.0 and Minecraft Java 1.21.11.
 
 ## Requirements
 
