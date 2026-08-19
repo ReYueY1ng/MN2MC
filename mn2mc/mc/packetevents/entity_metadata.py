@@ -4,7 +4,7 @@ from javascript import require
 
 import mn2mc.mapping.items as item_mapping
 from mn2mc.config import config
-from mn2mc.constants import MINI_OBJ_ID_BASE
+from mn2mc.constants import MINI_OBJ_ID_BASE, VELOCITY_SCALING
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.entity import entitytypes
 from mn2mc.mc.entity_metadata import ItemEntityMetadata, PlayerMetadata
@@ -62,9 +62,9 @@ def _handle_item(client: MCClient, entityid: int, metadata: ItemEntityMetadata):
     )
 
     motion = entity.motion.convert()
-    motion.x /= 100
-    motion.y /= 100
-    motion.z /= 100
+    motion.x *= VELOCITY_SCALING
+    motion.y *= VELOCITY_SCALING
+    motion.z *= VELOCITY_SCALING
     client.miniplayer.send_packet(
         ePBMsgCode.PB_ACTOR_MOTION_HC,
         PB_ActorMotionHC(

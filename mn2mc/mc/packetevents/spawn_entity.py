@@ -6,7 +6,7 @@ from loguru import logger
 
 import mn2mc.mapping.mobs as mob_mapping
 import mn2mc.mini.skin as skin
-from mn2mc.constants import MINI_OBJ_ID_BASE
+from mn2mc.constants import MINI_OBJ_ID_BASE, VELOCITY_SCALING
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.entity import MCEntity
 from mn2mc.mc.packet import add_event
@@ -72,9 +72,9 @@ def _build_entity_data(
     client.entities[entityid] = MCEntity(pos3f, angle, entitytype, motion)
     pos = pos3f.convert().to_vec3()
     motion = motion.convert()
-    motion.x /= 100
-    motion.y /= 100
-    motion.z /= 100
+    motion.x *= VELOCITY_SCALING
+    motion.y *= VELOCITY_SCALING
+    motion.z *= VELOCITY_SCALING
     return entityid, entitytype, uuid, pos3f, angle, pos, motion
 
 

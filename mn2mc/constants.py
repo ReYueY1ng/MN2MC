@@ -34,3 +34,6 @@ SECTION_FLAGS = 65535
 # - Verified against MC 1.21.11 protocol expectations
 GAMEMODE_SURVIVAL = 1
 GAMEMODE_CREATIVE = 3
+
+# Velocity scaling num
+VELOCITY_SCALING = 70

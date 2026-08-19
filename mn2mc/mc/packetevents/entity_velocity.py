@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from mn2mc.constants import VELOCITY_SCALING
 from mn2mc.mc.client import MCClient
 from mn2mc.mc.packet import add_event
 from mn2mc.mini.proto.common import ePBMsgCode
@@ -12,14 +13,11 @@ from mn2mc.utils.vector import Vector3f
 def on_recv(client: MCClient, jsondata: dict, _metadata: dict) -> None:
     """Apply velocity to an entity and forward to Mini World as motion.
 
-    Input velocity is already in blocks/tick (node-minecraft-protocol
-    applies the /8000 conversion internally).  PB_ActorMotionHC expects
-    centi-blocks/tick, hence the /100 scaling.
+    Input velocity is in blocks/tick (native lpVec3 units since 1.21.9,
+    vec3i16 units for older versions).
 
     Ignores untracked entities.
     """
-    # 注意：原版 node-minecraft-protocol 的 lpVec3 实现有问题（#1494），velocity 会变乱，需要手动 patch:
-    # https://github.com/atiweb/node-minecraft-protocol/blob/64c8cee434a24a08a050ef73c471075b160a3f64/src/datatypes/lpVec3.js
     entityid = jsondata["entityId"]
     vel = Vector3f.from_dict(jsondata["velocity"])
     objid = client.resolve_objid(entityid)
@@ -33,9 +31,9 @@ def on_recv(client: MCClient, jsondata: dict, _metadata: dict) -> None:
         ePBMsgCode.PB_ACTOR_MOTION_HC,
         PB_ActorMotionHC(
             ObjID=objid,
-            x=vel.x / 100,
-            y=vel.y / 100,
-            z=vel.z / 100,
+            x=vel.x * VELOCITY_SCALING,
+            y=vel.y * VELOCITY_SCALING,
+            z=vel.z * VELOCITY_SCALING,
             isChangePos=False,
         ).SerializeToString(),
     )
