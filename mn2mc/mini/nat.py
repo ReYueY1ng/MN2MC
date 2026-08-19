@@ -1,5 +1,7 @@
 import asyncio
 import atexit
+import sys
+from pathlib import Path
 
 import mn2mc.config as config
 import mn2mc.mini.auth
@@ -23,8 +25,13 @@ atexit.register(_cleanup)
 
 async def start():
     global _process
+    tools_dir = Path(__file__).parent.parent.parent / "tools"
+    raknet_proxy = tools_dir / "raknet_proxy"
+    if sys.platform == "win32":
+        raknet_proxy = raknet_proxy.with_suffix(".exe")
+    
     _process = await asyncio.create_subprocess_exec(
-        "./tools/raknet_proxy",
+        str(raknet_proxy),
         "-target_ip",
         "127.0.0.1",
         "-target_port",

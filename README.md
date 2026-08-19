@@ -9,6 +9,17 @@
 
 迷你世界 1.58.0 / Minecraft 1.21.11
 
+## 平台支持
+
+本项目基于 Python 和 Node.js，支持多平台：
+
+| 平台 | 支持状态 | 说明 |
+|------|----------|------|
+| **Linux** | ✅ 完全支持 | 推荐平台，支持所有功能（包括 KREN 共享内存加速） |
+| **Windows** | ✅ 支持 | 基本功能可用，KREN 使用 pipe 替代 shm |
+| **macOS** | ✅ 支持 | 基本功能可用，KREN 不支持（自动回退到 TCP） |
+
+
 ## 已实现功能
 
 - [x] 聊天
@@ -75,17 +86,21 @@ python main.py
 
 只需将 http://cs-gsmgr.mini1.cn/v2/room/get 响应中的 ip 和 port 替换为代理的地址和端口即可。
 
-Linux 示例：
+**Linux 示例：**
 
 ```bash
 mitmdump --mode local:wineserver -s tools/mitm.py
 ```
 
-在迷你世界里面选择一个地图（最好是云服地图），点击“联机”即可进入。
+**Windows / macOS：**
+
+需要单独配置 mitmproxy 或使用其他方式替换响应。
+
+在迷你世界里面选择一个地图（最好是云服地图），点击"联机"即可进入。
 
 #### 创建房间
 
-构建 [raknet_proxy](https://github.com/ReYueY1ng/raknet-proxy)，将产物放进 tools 文件夹里
+下载 [raknet_proxy](https://github.com/ReYueY1ng/raknet-proxy)（macOS 需要手动构建），重命名为 `raknet-proxy` (Linux / macOS) / `raknet-proxy.exe` (Windows) ，放进 tools 文件夹里
 
 将 config.yaml 内的 auth 子项填完，host_to_room_server 改为 true 即可创建房间
 

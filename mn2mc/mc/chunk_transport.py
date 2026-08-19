@@ -1,7 +1,7 @@
 """Chunk data transport abstractions for receiving parsed chunk data from JS.
 
 Provides two transport mechanisms:
-- KRENTransport: shared-memory via kren library (fast, Linux-only with /dev/shm)
+- KRENTransport: shared-memory via kren library (Linux uses /dev/shm, Windows uses pipe, macOS not supported)
 - TCPTransport: TCP socket with length-prefixed frames (universal fallback)
 
 Python side is always the Reader/Client; JS side is the Writer/Server.

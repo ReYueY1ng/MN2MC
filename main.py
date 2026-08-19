@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import asyncio
 import signal
+import sys
 
 import javascript
 from javascript import require
@@ -65,10 +66,11 @@ async def main():
         protobuf_parser.init()
     try:
         signal.signal(signal.SIGINT, signal_handler)
-        javascript.eval_js("""
-            const process = require('node:process')
-            process.on('SIGINT', () => {})
-        """)
+        if sys.platform != "win32":
+            javascript.eval_js("""
+                const process = require('node:process')
+                process.on('SIGINT', () => {})
+            """)
         await server.start(config.mini.server.ip, config.mini.server.port)
     except (KeyboardInterrupt, asyncio.CancelledError):
         pass
