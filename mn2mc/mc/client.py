@@ -35,6 +35,28 @@ vec3 = require("vec3")
 ChunkManager = require("./chunk.js")
 registry = require("prismarine-registry")
 
+# protodef 的数组大小保护(count > 0xffffff)在畸形/错位 NBT 下会抛普通 Error,
+# 而不是 PartialReadError. minecraft-protocol 的 FullPacketParser 会把它当作致命
+# 错误 cb(e), 销毁整个解析流导致断线. 这里给编译协议打补丁: 每次解析前开启
+# noArraySizeCheck, 让同样的越界变成 PartialReadError, 只丢弃那一个包、流继续.
+# 补丁作用于原型, 与模块加载顺序无关, 幂等, 覆盖所有状态/连接/重连.
+# 注意: eval_js 会把调用帧的局部变量注入 eval 作用域, 所以必须在没有名为 require
+# 的局部变量的函数内执行, 否则 Node 的 require 会被模块级的 Python require 遮蔽.
+def _patch_protodef_array_guard():
+    javascript.eval_js("""
+        const { CompiledProtodef } = require('protodef/src/compiler')
+        const origParsePacketBuffer = CompiledProtodef.prototype.parsePacketBuffer
+        CompiledProtodef.prototype.parsePacketBuffer = function (type, buffer, offset) {
+            this.setVariable('noArraySizeCheck', true)
+            return origParsePacketBuffer.call(this, type, buffer, offset)
+        }
+    """)
+
+try:
+    _patch_protodef_array_guard()
+except Exception:
+    logger.exception("Failed to patch CompiledProtodef.parsePacketBuffer")
+
 
 class MCClient:
     MAX_PENDING_ITEMS = 1000
@@ -465,8 +487,14 @@ class MCClient:
             self.get_chunks()
 
     def load_events(self):
+        # chunk.js owns update_light when the new chunk parser is active: its
+        # handler adds the _secY remap Python needs, then forwards via
+        # on_packet. Registering 'update_light' here too would make
+        # minecraft-protocol dispatch every packet twice — once direct (no
+        # _secY → no-op) plus once via the chunk.js forwarding.
+        chunk_handled = {"update_light"} if config.mc.use_new_chunk_parser else set()
         for event in events:
-            if isinstance(event, str) and event not in self.on_events:
+            if isinstance(event, str) and event not in self.on_events and event not in chunk_handled:
                 self.client.on(event, self.on_packet)
                 self.on_events.append(event)
 
