@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@pawanxz/kren": "^0.1.0",
-    "minecraft-protocol": "^1.66.0",
+    "minecraft-protocol": "^1.67.0",
     "msgpackr": "^1.11.10",
     "prismarine-block": "^1.23.0",
     "prismarine-chat": "^1.13.0",
@@ -9,5 +9,8 @@
     "prismarine-item": "^1.18.0",
     "prismarine-registry": "^1.12.0",
     "vec3": "^0.2.0"
+  },
+  "allowScripts": {
+    "msgpackr-extract@3.0.3": true
   }
 }
