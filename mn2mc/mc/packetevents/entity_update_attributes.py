@@ -54,16 +54,16 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
     if objid is None:
         return
 
-    logger.debug(jsondata)
+    #logger.debug(jsondata)
     properties: list[dict] = jsondata.get("properties", [])
 
     # Only handle the player's own entity
     if entityid != client.entityid:
-        logger.debug(
-            "entity_update_attributes: skipping non-player entity {} ({} properties)",
-            entityid,
-            len(properties),
-        )
+        #logger.debug(
+        #    "entity_update_attributes: skipping non-player entity {} ({} properties)",
+        #    entityid,
+        #    len(properties),
+        #)
         return
 
     attr_kwargs: dict[str, Any] = {}
@@ -118,29 +118,29 @@ def on_recv(client: MCClient, jsondata: dict, metadata: dict) -> None:
         if send_attr:
             msg = PB_PlayerAttrChangeHC(**attr_kwargs).SerializeToString()
             client.miniplayer.send_packet(ePBMsgCode.PB_PLAYER_ATTR_CHANGE_HC, msg)
-            logger.debug(
-                "player {} attrs changed: {}",
-                objid,
-                [k for k in attr_kwargs if k != "ObjID"],
-            )
+            #logger.debug(
+            #    "player {} attrs changed: {}",
+            #    objid,
+            #    [k for k in attr_kwargs if k != "ObjID"],
+            #)
 
         if send_speed:
             msg = PB_ActorAttrSpeedChangeHC(**speed_kwargs).SerializeToString()
             client.miniplayer.send_packet(ePBMsgCode.PB_ACTOR_SPEED_CHANGE_HC, msg)
-            logger.debug(
-                "entity {} speed attrs changed: {}",
-                entityid,
-                list(speed_kwargs.keys()),
-            )
+            #logger.debug(
+            #    "entity {} speed attrs changed: {}",
+            #    entityid,
+            #    list(speed_kwargs.keys()),
+            #)
     elif send_attr:
         attr_kwargs["ObjID"] = objid
         msg = PB_ActorAttrChangeHC(**attr_kwargs).SerializeToString()
         client.miniplayer.send_packet(ePBMsgCode.PB_ACTOR_ATTR_CHANGE_HC, msg)
-        logger.debug(
-            "entity {} attrs changed: {}",
-            entityid,
-            [k for k in attr_kwargs if k != "ObjID"],
-        )
+        #logger.debug(
+        #    "entity {} attrs changed: {}",
+        #    entityid,
+        #    [k for k in attr_kwargs if k != "ObjID"],
+        #)
 
 
 add_event("entity_update_attributes", on_recv)
