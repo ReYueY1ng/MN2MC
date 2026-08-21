@@ -8,7 +8,10 @@ from __future__ import annotations
 
 import queue
 import threading
+import time
 from typing import TYPE_CHECKING
+
+from loguru import logger
 
 import mn2mc
 import mn2mc.config as config
@@ -53,8 +56,12 @@ def send_air_chunk(miniplayer: MiniPlayer, x: int, z: int):
 
 
 def send_fast_chunk(
-    miniplayer: MiniPlayer, x: int, z: int, blocks: list,
-    lights: list | None = None, light_flag: int = 0,
+    miniplayer: MiniPlayer,
+    x: int,
+    z: int,
+    blocks: list,
+    lights: list | None = None,
+    light_flag: int = 0,
 ):
     """Build a real 1.58 PalettedTable chunk and send it to the Mini World client.
 
@@ -81,6 +88,7 @@ def send_fast_chunk(
         compress_chunk_158,
     )
 
+    ts = time.monotonic()
     # Use the MC per-section light data as-is (real sky/block light from
     # chunk.js). Writing the container-f1 light table makes the client render
     # light; absent table → empty light layers, dark chunk.
@@ -103,18 +111,29 @@ def send_fast_chunk(
         bx, by, bz, mctype = block[0], block[1], block[2], block[3]
         mini_id = block_mapping.mc_to_mini(mctype)
         sec_y = by // 16
-        sec = sections.setdefault(sec_y, {
-            "sec_y": sec_y,
-            "blocks": [0] * BLOCKS_PER_SECTION,
-            "states": [0] * BLOCKS_PER_SECTION,
-        })
+        # get-or-create, NOT setdefault: setdefault eagerly evaluates its
+        # default argument, so the two 4096-element lists + dict below would be
+        # allocated on EVERY block (even for existing sections) — ~250ms/chunk.
+        sec = sections.get(sec_y)
+        if sec is None:
+            sec = {
+                "sec_y": sec_y,
+                "blocks": [0] * BLOCKS_PER_SECTION,
+                "states": [0] * BLOCKS_PER_SECTION,
+            }
+            sections[sec_y] = sec
         idx = (15 - bx) + bz * 16 + (by % 16) * 256
         sec["blocks"][idx] = mini_id
         if len(block) == 5:
             sec["states"][idx] = block_face_mapping.get_block_face(mini_id, block[4])
-    if not sections:
-        # all air — still emit a chunk so the client owns the region
-        sections[0] = {"sec_y": 0, "blocks": [0] * BLOCKS_PER_SECTION, "states": [0] * BLOCKS_PER_SECTION}
+    # Always emit all 16 sections. The Mini World client MERGES the incoming
+    # chunk into the one it already holds for this position, so a reloaded
+    # chunk with fewer sections leaves the old ones visible (stale terrain).
+    # Filling missing sections with air forces a full replacement; an all-air
+    # section is cheap (single-entry palette, no packed data).
+    for sy in range(16):
+        if sy not in sections:
+            sections[sy] = {"sec_y": sy, "blocks": [0] * BLOCKS_PER_SECTION, "states": [0] * BLOCKS_PER_SECTION}
     raw = build_full_chunk_158(
         [sec for _, sec in sorted(sections.items())],
         data_version=CHUNK_DATA_VERSION_158_0,
@@ -129,13 +148,16 @@ def send_fast_chunk(
             MapID=0,
             x=x,
             z=z,
-            ChunkBlob=PB_ChunkBlob(
-                UnzipLen=unzip_len, BlobLen=len(compressed), BlobDetail=compressed
-            ),
+            ChunkBlob=PB_ChunkBlob(UnzipLen=unzip_len, BlobLen=len(compressed), BlobDetail=compressed),
         ),
     ).SerializeToString()
+    #logger.debug(f"build chunk cost {(time.monotonic() - ts) * 1000}ms")
     miniplayer.send_packet(ePBMsgCode.PB_SYNC_CHUNK_DATA_HC, minichunk)
 
+
+# byte → nibble-swapped byte: (hi,lo) → (lo,hi). Used by _flip_light_x where
+# each flipped row is a byte reversal combined with a per-byte nibble swap.
+_NIBBLE_SWAP_LUT = bytes(((i & 0x0F) << 4) | (i >> 4) for i in range(256))
 
 
 def _flip_light_x(nibbles_2048: bytes) -> bytes:
@@ -144,17 +166,14 @@ def _flip_light_x(nibbles_2048: bytes) -> bytes:
     chunk.js packs MC light at MC x; send_fast_chunk stores blocks x-flipped
     (15-x), so light must be flipped too or it renders mirrored in X.
     """
+    # The flip maps x → 15-x within each 16-nibble row. A row's 8 bytes are
+    # reversed AND nibble-swapped per byte (output byte j = swap(input byte
+    # 7-j)), so translate + per-row reverse replaces the per-nibble loop.
+    swapped = nibbles_2048.translate(_NIBBLE_SWAP_LUT)
     out = bytearray(2048)
-    for i in range(2048):
-        lo = nibbles_2048[i] & 0xF
-        hi = nibbles_2048[i] >> 4
-        for nib, src_idx in ((lo, i * 2), (hi, i * 2 + 1)):
-            x, rest = src_idx & 0xF, src_idx & 0xFF0
-            dst_idx = (15 - x) | rest
-            if dst_idx & 1:
-                out[dst_idx >> 1] |= nib << 4
-            else:
-                out[dst_idx >> 1] |= nib
+    for r in range(256):
+        base = r * 8
+        out[base : base + 8] = swapped[base : base + 8][::-1]
     return bytes(out)
 
 

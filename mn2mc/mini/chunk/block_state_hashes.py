@@ -20,6 +20,7 @@ Sources for the table (schema/block_state_hashes.json):
 
 import json
 import os
+from functools import lru_cache
 from typing import Dict, List, Tuple
 
 # Hash of the "empty / no-property" block state — real 1.58 saves write this for
@@ -50,6 +51,7 @@ def _load_table() -> Dict[int, List[Tuple[int, int, int]]]:
 _TABLE = _load_table()
 
 
+@lru_cache(maxsize=None)
 def state_hash_for(block_id: int, state_data: int = 0) -> int:
     """Return the state hash to write for (block_id, state_data).
 
